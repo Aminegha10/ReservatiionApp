@@ -6,6 +6,9 @@ const app = express();
 app.use(express.json());
 
 
+
+
+
 mongoose.connect(DBURL)
 .then(()=>{
     console.log("connected with MongoDB successfuly");
