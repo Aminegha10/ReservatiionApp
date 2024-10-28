@@ -8,10 +8,9 @@ export const createReservation = async (req, res) => {
       .status(404)
       .json({ success: false, message: "Veuillez remplir tous les champs" });
   }
-  const newReservation = new reservationModel(reservation);
-
+  
   try {
-    await newReservation.save();
+    const newReservation = await reservationModel.create(reservation)
     res.status(201).json({ succes: true, data: newReservation });
   } catch (error) {
     console.error("Erreur dans la création de la réservation", error.message);
