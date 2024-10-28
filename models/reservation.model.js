@@ -22,5 +22,5 @@ const reservationShema = new mongoose.Schema(
   }
 );
 
-const reservationModel = mongoose.model("reservation", reservationShema);
+const reservationModel = mongoose.model("Reservation", reservationShema);
 export default reservationModel; 
