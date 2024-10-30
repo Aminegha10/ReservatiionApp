@@ -1,9 +1,17 @@
 import express from "express";
-import  {createReservation, updateReservation} from "../controllers/reservation.controller.js";
+import {
+  createReservation,
+  deleteReservation,
+  getAllReservations,
+  getOneReservation,
+} from "../controllers/reservation.controller.js";
 
 const router = express.Router();
 
-router.post("/create", createReservation);
-router.put("/:id", updateReservation);
+router
+  .get("/", getAllReservations)
+  .get("/:id", getOneReservation)
+  .post("/create", createReservation)
+  .delete("/:id", deleteReservation);
 
 export default router;

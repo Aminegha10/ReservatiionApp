@@ -9,13 +9,13 @@ const reservationShema = new mongoose.Schema(
     heure: {
       type: Number,
       required: true,
-      min:0,
-      max:23
+      min: 0,
+      max: 23,
     },
     prestataire: {
       type: String,
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
@@ -23,4 +23,4 @@ const reservationShema = new mongoose.Schema(
 );
 
 const reservationModel = mongoose.model("Reservation", reservationShema);
-export default reservationModel; 
+export default reservationModel;
