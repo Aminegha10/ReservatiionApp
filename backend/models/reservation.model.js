@@ -14,6 +14,7 @@ const reservationShema = new mongoose.Schema(
     },
     prestataire: {
       type: String,
+      required: true,
     },
   },
   {

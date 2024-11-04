@@ -13,11 +13,12 @@ const app = express();
 // middleware to parse JSON request bodies
 app.use(express.json());
 
+//Middlware for parsing body
+app.use(cors())
+
 //routes middleware
 app.use("/api/reservations", reservationRoutes);
 
-//Middlware for parsing body
-app.use(cors())
 
 //connection with MongoDB
 connectWithMongoDB();
