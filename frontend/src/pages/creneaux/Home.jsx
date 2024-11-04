@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Calendar, MoveLeft, MoveRight, Pencil, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   const [availabilities] = useState([
@@ -87,32 +88,40 @@ export default function Home() {
   return (
     <div className="flex justify-center">
       <div className="mx-auto w-[90%] p-4">
-        <div className="py-4">
+        <div className="py-6">
           <Button>
             <Calendar /> Ajouter un créneau
           </Button>
         </div>
+
+        {/* Display the count of créneaux */}
+        <div className="mb-4">
+          <Badge variant="secondary" className={"p-2 text-base "}>
+            Nombre de créneaux: {availabilities.length}
+          </Badge>
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[250px]">Date</TableHead>
-              <TableHead className="w-[250px]">Start Time</TableHead>
-              <TableHead className="w-[250px]">End Time</TableHead>
+              <TableHead className="min-w-[90px] w-[250px]">Date</TableHead>
+              <TableHead className="min-w-[80px] w-[250px]">Le début</TableHead>
+              <TableHead className="min-w-[80px] w-[250px]">Le fin</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {currentItems.map((availability) => (
               <TableRow key={availability.id}>
-                <TableCell>{format(availability.date, "PP")}</TableCell>
+                <TableCell>{format(availability.date, "yyyy-MM-dd")}</TableCell>
                 <TableCell>{availability.startTime}</TableCell>
                 <TableCell>{availability.endTime}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    <Button variant="destructive">
+                    <Button variant="destructive" size="icon">
                       <Trash2 />
                     </Button>
-                    <Button>
+                    <Button size="icon">
                       <Pencil />
                     </Button>
                   </div>
@@ -121,13 +130,13 @@ export default function Home() {
             ))}
           </TableBody>
         </Table>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-5">
           <Button onClick={goToPreviousPage} disabled={currentPage === 1}>
             <MoveLeft />
           </Button>
-          <span>
+          <Badge className={"py-2"}>
             Page {currentPage} of {totalPages}
-          </span>
+          </Badge>
           <Button onClick={goToNextPage} disabled={currentPage === totalPages}>
             <MoveRight />
           </Button>
