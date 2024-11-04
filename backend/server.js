@@ -2,6 +2,7 @@ import express from "express";
 import reservationRoutes from "./routes/reservation.route.js";
 import dotenv from "dotenv";
 import { connectWithMongoDB } from "./config/db.js";
+import cors from "cors";
 
 
 dotenv.config();
@@ -14,6 +15,9 @@ app.use(express.json());
 
 //routes middleware
 app.use("/api/reservations", reservationRoutes);
+
+//Middlware for parsing body
+app.use(cors())
 
 //connection with MongoDB
 connectWithMongoDB();

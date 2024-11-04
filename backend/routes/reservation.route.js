@@ -4,14 +4,16 @@ import {
   deleteReservation,
   getAllReservations,
   getOneReservation,
+  updateReservation,
 } from "../controllers/reservation.controller.js";
 
 const router = express.Router();
 
 router
-  .get("/", getAllReservations)
-  .get("/:id", getOneReservation)
+  .put("/:id", updateReservation)
   .post("/create", createReservation)
-  .delete("/:id", deleteReservation);
+  .delete("/:id", deleteReservation)
+  .get("/:id", getOneReservation)
+  .get("/", getAllReservations)
 
 export default router;
