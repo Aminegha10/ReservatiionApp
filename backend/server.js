@@ -1,5 +1,6 @@
 import express from "express";
-import reservationRoutes from "./routes/reservation.route.js";
+import reservationRoutes from "./routes/user.route.js";
+import creneauRoutes from "./routes/creneau.route.js";
 import dotenv from "dotenv";
 import { connectWithMongoDB } from "./config/db.js";
 import cors from "cors";
@@ -16,8 +17,11 @@ app.use(express.json());
 //Middlware for parsing body
 app.use(cors())
 
-//routes middleware
+//user routes middleware 
 app.use("/api/reservations", reservationRoutes);
+
+//creneau routes middleware
+app.use("/api/creneaux",creneauRoutes )
 
 
 //connection with MongoDB

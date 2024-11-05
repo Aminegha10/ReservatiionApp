@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const reservationShema = new mongoose.Schema(
   {
     date: {
@@ -7,10 +6,8 @@ const reservationShema = new mongoose.Schema(
       required: true,
     },
     heure: {
-      type: Number,
+      type: String,
       required: true,
-      min: 0,
-      max: 23,
     },
     prestataire: {
       type: String,

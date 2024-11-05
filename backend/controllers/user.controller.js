@@ -1,4 +1,4 @@
-import reservationModel from "../models/reservation.model.js";
+import reservationModel from "../models/user.model.js";
 
 //create reservation
 export const createReservation = async (req, res) => {
@@ -44,9 +44,8 @@ export const updateReservation = async (req, res) => {
 //delete method
 export const deleteReservation = async (req, res) => {
   try {
-    const reservationDeleted = await reservationModel.findOneAndDelete({
-      _id: req.params.id,
-    });
+    const { id } = req.params;
+    const reservationDeleted = await reservationModel.findOneAndDelete(id);
     if (reservationDeleted)
       res.status(200).json({ success: true, dataDeleted: reservationDeleted });
     else
