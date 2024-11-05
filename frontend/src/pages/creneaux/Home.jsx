@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const disponibilites = [
@@ -98,9 +99,11 @@ export default function Home() {
           <Badge variant="secondary" className="py-2 px-3 text-sm font-bold">
             Total: {disponibilites.length}
           </Badge>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Ajouter un créneau
-          </Button>
+          <Link to={"/creneaux/create"}>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Ajouter un créneau
+            </Button>
+          </Link>
         </div>
 
         <div className="rounded-md border">
