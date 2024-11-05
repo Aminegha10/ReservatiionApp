@@ -129,9 +129,11 @@ export default function Home() {
                   <TableCell>{disponibilite.heureFin}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" size="icon">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      <Link to={"/creneaux/update"}>
+                        <Button variant="outline" size="icon">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button variant="destructive" size="icon">
                         <Trash2 className="h-4 w-4" />
                       </Button>

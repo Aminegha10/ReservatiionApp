@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { CalendarIcon, ClockIcon } from "lucide-react"
 
-export default function CreateCreneaux() {
+export default function CreateCreneau() {
   return (
     <Card className="sm:w-full w-[80%] max-w-md mx-auto p-2 mt-10">
       <CardHeader>
