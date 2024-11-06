@@ -7,11 +7,11 @@ const creneauShema = new mongoose.Schema(
       required: true,
     },
     debutHeure: {
-      type: String,
+      type: Number,
       required: true,
     },
     finHeure: {
-      type: String,
+      type: Number,
       required: true,
     },
   },

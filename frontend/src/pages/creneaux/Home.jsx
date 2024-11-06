@@ -1,91 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, Pencil, Trash2, Plus } from "lucide-react";
-
+import { Pencil, Trash2, Plus } from "lucide-react";
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
+  TableHead,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { formatTime } from "./formattime";
+
+
+// Fetch Data
+const fetchCreneaux = async () => {
+  const response = await fetch("http://localhost:5000/api/creneaux");
+  if (!response.ok) {
+    throw new Error("Failed to fetch creneaux");
+  }
+  const data = await response.json();
+  return data.data;
+};
 
 export default function Home() {
-  const disponibilites = [
-    {
-      id: "1",
-      date: new Date(2023, 5, 1),
-      heureDebut: "09:00",
-      heureFin: "17:00",
-    },
-    {
-      id: "2",
-      date: new Date(2023, 5, 2),
-      heureDebut: "10:00",
-      heureFin: "18:00",
-    },
-    {
-      id: "3",
-      date: new Date(2023, 5, 3),
-      heureDebut: "08:00",
-      heureFin: "16:00",
-    },
-    {
-      id: "4",
-      date: new Date(2023, 5, 4),
-      heureDebut: "09:00",
-      heureFin: "17:00",
-    },
-    {
-      id: "5",
-      date: new Date(2023, 5, 5),
-      heureDebut: "10:00",
-      heureFin: "18:00",
-    },
-    {
-      id: "6",
-      date: new Date(2023, 5, 6),
-      heureDebut: "08:00",
-      heureFin: "16:00",
-    },
-    {
-      id: "7",
-      date: new Date(2023, 5, 7),
-      heureDebut: "09:00",
-      heureFin: "17:00",
-    },
-    {
-      id: "8",
-      date: new Date(2023, 5, 8),
-      heureDebut: "10:00",
-      heureFin: "18:00",
-    },
-    {
-      id: "9",
-      date: new Date(2023, 5, 9),
-      heureDebut: "08:00",
-      heureFin: "16:00",
-    },
-  ];
+  const { data: creneaux, isLoading } = useQuery("creneaux", fetchCreneaux);
 
-  //PAGINATION
-  const [pageCourante, setPageCourante] = useState(1);
-  const elementsParPage = 4;
-  const totalPages = Math.ceil(disponibilites.length / elementsParPage);
-  const elementsActuels = disponibilites.slice(
-    (pageCourante - 1) * elementsParPage,
-    pageCourante * elementsParPage
-  );
-
-  const allerPagePrecedente = () =>
-    setPageCourante((prev) => Math.max(prev - 1, 1));
-  const allerPageSuivante = () =>
-    setPageCourante((prev) => Math.min(prev + 1, totalPages));
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto mt-5">
@@ -97,7 +44,7 @@ export default function Home() {
       <CardContent>
         <div className="flex items-center justify-between py-5">
           <Badge variant="secondary" className="py-2 px-3 text-sm font-bold">
-            Total: {disponibilites.length}
+            Total: {creneaux.length}
           </Badge>
           <Link to={"/creneaux/create"}>
             <Button>
@@ -105,7 +52,6 @@ export default function Home() {
             </Button>
           </Link>
         </div>
-
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -117,52 +63,40 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {elementsActuels.map((disponibilite) => (
-                <TableRow
-                  key={disponibilite.id}
-                  className="hover:bg-muted/50 transition-colors"
-                >
-                  <TableCell>
-                    {format(disponibilite.date, "dd/MM/yyyy")}
-                  </TableCell>
-                  <TableCell>{disponibilite.heureDebut}</TableCell>
-                  <TableCell>{disponibilite.heureFin}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end space-x-2">
-                      <Link to={"/creneaux/update"}>
-                        <Button variant="outline" size="icon">
-                          <Pencil className="h-4 w-4" />
+              {Array.isArray(creneaux) && creneaux.length > 0 ? (
+                creneaux.map((creneau) => (
+                  <TableRow
+                    key={creneau._id}
+                    className="hover:bg-muted/50 transition-colors"
+                  >
+                    <TableCell>
+                      {format(new Date(creneau.date), "dd/MM/yyyy")}
+                    </TableCell>
+                    <TableCell>{formatTime(creneau.debutHeure)}</TableCell>
+                    <TableCell>{formatTime(creneau.finHeure)}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-2">
+                        <Link to={`/creneaux/update/${creneau._id}`}>
+                          <Button variant="outline" size="icon">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        <Button variant="destructive" size="icon">
+                          <Trash2 className="h-4 w-4" />
                         </Button>
-                      </Link>
-                      <Button variant="destructive" size="icon">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan="4" className="text-center">
+                    Aucun créneau disponible
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
-        </div>
-
-        <div className="flex justify-between items-center mt-5">
-          <Button
-            onClick={allerPagePrecedente}
-            disabled={pageCourante === 1}
-            variant="outline"
-          >
-            <ChevronLeft className="mr-2 h-4 w-4" /> Précédent
-          </Button>
-          <Badge variant="secondary" className="py-2">
-            Page {pageCourante} sur {totalPages}
-          </Badge>
-          <Button
-            onClick={allerPageSuivante}
-            disabled={pageCourante === totalPages}
-            variant="outline"
-          >
-            Suivant <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
         </div>
       </CardContent>
     </Card>
