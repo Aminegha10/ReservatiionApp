@@ -24,10 +24,18 @@ const fetchCreneaux = async () => {
 };
 
 export default function Home() {
-  const { data: creneaux, isLoading } = useQuery("creneaux", fetchCreneaux);
+  const { data: creneaux, isLoading, isError } = useQuery("creneaux", fetchCreneaux);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  if (isError) {
+    return <div>Failed to load créneaux. Please try again later.</div>;
+  }
+
+  // Ensure `creneaux` is defined before rendering
+  const hasCreneaux = Array.isArray(creneaux) && creneaux.length > 0;
 
   return (
     <Card className="w-full max-w-4xl mx-auto mt-5">
@@ -39,7 +47,7 @@ export default function Home() {
       <CardContent>
         <div className="flex items-center justify-between py-5">
           <Badge variant="secondary" className="py-2 px-3 text-sm font-bold">
-            Total: {creneaux.length}
+            Total: {hasCreneaux ? creneaux.length : 0}
           </Badge>
           <Link to={"/creneaux/create"}>
             <Button>
@@ -58,7 +66,7 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Array.isArray(creneaux) && creneaux.length > 0 ? (
+              {hasCreneaux ? (
                 creneaux.map((creneau) => (
                   <TableRow
                     key={creneau._id}

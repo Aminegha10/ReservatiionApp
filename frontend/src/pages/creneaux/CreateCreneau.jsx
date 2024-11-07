@@ -25,12 +25,12 @@ const addCreneau = async (newTodo) => {
 };
 
 export default function CreateCreneau() {
-  //navigate
   const navigate = useNavigate();
 
-  const [date, setDate] = useState();
-  const [debutHeure, setDebutHeure] = useState();
-  const [finHeure, setFinHeure] = useState();
+  const [date, setDate] = useState("");
+  const [debutHeure, setDebutHeure] = useState("");
+  const [finHeure, setFinHeure] = useState("");
+  const [error, setError] = useState("");
 
   const mutation = useMutation(addCreneau);
 
@@ -40,10 +40,30 @@ export default function CreateCreneau() {
     return hours * 60 + minutes;
   };
 
-  const handleSumbit = async (e) => {
+  // Validate date (ensure it's today or in the future)
+  const validateDate = (date) => {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get today's date in yyyy-mm-dd format
+
+    if (date < currentDate) {
+      return "La date ne peut pas être dans le passé.";
+    }
+
+    return "";
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate date before submission
+    const dateError = validateDate(date);
+    if (dateError) {
+      setError(dateError);
+      return;
+    }
+
+    setError(""); // Reset error message if date is valid
+
     try {
-      // Convert time inputs to minutes
       const debutHeureInMinutes = convertTimeToMinutes(debutHeure);
       const finHeureInMinutes = convertTimeToMinutes(finHeure);
 
@@ -52,10 +72,12 @@ export default function CreateCreneau() {
         debutHeure: debutHeureInMinutes,
         finHeure: finHeureInMinutes,
       });
+
       setDate("");
       setDebutHeure("");
       setFinHeure("");
       navigate("/");
+
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +92,8 @@ export default function CreateCreneau() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4" onSubmit={handleSumbit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Date Input */}
           <div className="space-y-2">
             <Label htmlFor="date" className="flex items-center gap-2">
               <CalendarIcon className="w-4 h-4" />
@@ -81,9 +104,12 @@ export default function CreateCreneau() {
               className="w-full"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]} // Set the minimum date to today
             />
+            {error && <p className="text-red-600 text-sm">{error}</p>}
           </div>
 
+          {/* Start Time Input */}
           <div className="space-y-2">
             <Label htmlFor="heureDebut" className="flex items-center gap-2">
               <ClockIcon className="w-4 h-4" />
@@ -96,6 +122,8 @@ export default function CreateCreneau() {
               onChange={(e) => setDebutHeure(e.target.value)}
             />
           </div>
+
+          {/* End Time Input */}
           <div className="space-y-2">
             <Label htmlFor="heureFin" className="flex items-center gap-2">
               <ClockIcon className="w-4 h-4" />
@@ -108,7 +136,9 @@ export default function CreateCreneau() {
               onChange={(e) => setFinHeure(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full" >
+
+          {/* Submit Button */}
+          <Button type="submit" className="w-full">
             Ajouter le Créneau
           </Button>
         </form>
