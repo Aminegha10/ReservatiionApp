@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { formatTime } from "./formaTtime";
+import { formatTime } from "./formatTime";
 
 // Fetch Data
 const fetchCreneaux = async () => {

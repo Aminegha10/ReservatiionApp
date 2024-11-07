@@ -7,9 +7,6 @@ const deleteCreneauById = async (id) => {
   const response = await fetch(`http://localhost:5000/api/creneaux/${id}`, {
     method: "DELETE",
   });
-  if (!response.ok) {
-    throw new Error("Failed to delete creneau");
-  }
   return response.json();
 };
 
@@ -17,7 +14,7 @@ export default function DeleteCreneau() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Handle deletion
+  // Handle delete
   const handleDelete = async () => {
     try {
       await deleteCreneauById(id);
