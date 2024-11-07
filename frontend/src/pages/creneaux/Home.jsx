@@ -14,22 +14,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { formatTime } from "./formattime";
-
+import { formatTime } from "./formaTtime";
 
 // Fetch Data
 const fetchCreneaux = async () => {
   const response = await fetch("http://localhost:5000/api/creneaux");
-  if (!response.ok) {
-    throw new Error("Failed to fetch creneaux");
-  }
   const data = await response.json();
   return data.data;
 };
 
 export default function Home() {
   const { data: creneaux, isLoading } = useQuery("creneaux", fetchCreneaux);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -76,14 +71,19 @@ export default function Home() {
                     <TableCell>{formatTime(creneau.finHeure)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-2">
+                        {/* Update Button */}
                         <Link to={`/creneaux/update/${creneau._id}`}>
                           <Button variant="outline" size="icon">
                             <Pencil className="h-4 w-4" />
                           </Button>
                         </Link>
-                        <Button variant="destructive" size="icon">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+
+                        {/* Delete Button */}
+                        <Link to={`/creneaux/delete/${creneau._id}`}>
+                          <Button variant="destructive" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </Link>
                       </div>
                     </TableCell>
                   </TableRow>

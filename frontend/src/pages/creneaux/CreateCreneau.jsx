@@ -8,10 +8,10 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 const addCreneau = async (newTodo) => {
   const response = await fetch("http://localhost:5000/api/creneaux/create", {
@@ -25,6 +25,9 @@ const addCreneau = async (newTodo) => {
 };
 
 export default function CreateCreneau() {
+  //navigate
+  const navigate = useNavigate();
+
   const [date, setDate] = useState();
   const [debutHeure, setDebutHeure] = useState();
   const [finHeure, setFinHeure] = useState();
@@ -52,6 +55,7 @@ export default function CreateCreneau() {
       setDate("");
       setDebutHeure("");
       setFinHeure("");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +108,7 @@ export default function CreateCreneau() {
               onChange={(e) => setFinHeure(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" >
             Ajouter le Créneau
           </Button>
         </form>
