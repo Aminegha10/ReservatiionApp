@@ -50,7 +50,6 @@ export default function UpdateCreneau() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       const response = await fetch(`http://localhost:5000/api/creneaux/${id}`, {
         method: "PUT",

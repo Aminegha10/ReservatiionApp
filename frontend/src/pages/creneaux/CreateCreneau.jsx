@@ -106,7 +106,7 @@ export default function CreateCreneau() {
                 className="w-full"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]} // Set the minimum date to today
+                min={new Date().toISOString().split("T")[0]} 
               />
               {error && <p className="text-red-600 text-sm">{error}</p>}
             </div>
