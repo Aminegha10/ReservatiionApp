@@ -75,7 +75,7 @@ export default function CreateCreneau() {
       setDate("");
       setDebutHeure("");
       setFinHeure("");
-      navigate("/");
+      navigate("/creneaux");
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +83,7 @@ export default function CreateCreneau() {
 
   return (
     <div>
-      <Link to={"/"}>
+      <Link to={"/creneaux"}>
         <Button className="m-5">Back</Button>
       </Link>
       <Card className="sm:w-full w-[80%] max-w-md mx-auto p-2 mt-10">

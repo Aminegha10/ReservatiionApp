@@ -59,7 +59,7 @@ export default function UpdateCreneau() {
         },
         body: JSON.stringify(creneau),
       });
-      navigate("/");
+      navigate("/creneaux");
     } catch (error) {
       console.error("Error updating creneau:", error);
     } finally {
@@ -69,7 +69,7 @@ export default function UpdateCreneau() {
 
   return (
     <div>
-      <Link to={"/"}>
+      <Link to={"/creneaux"}>
         <Button className="m-5">Back</Button>
       </Link>
       <Card className="w-full max-w-md mx-auto p-2 mt-10">

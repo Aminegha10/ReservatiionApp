@@ -23,7 +23,7 @@ const fetchCreneaux = async () => {
   return data.data;
 };
 
-export default function Home() {
+export default function GetAllCreneaux() {
   const { data: creneaux, isLoading, isError } = useQuery("creneaux", fetchCreneaux);
 
   if (isLoading) {
