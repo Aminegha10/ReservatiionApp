@@ -62,7 +62,7 @@ export const getAllCreneaux = async (req, res) => {
       res.status(404).json({ success: true, message: "There is no creneau" });
     }
   } catch (error) {
-    console.error("Erreur dans la creation de la reservation", error.message);
+    console.error("Erreur dans lire de les crenaux", error.message);
     res.status(500).json({ success: false, message: "Erreur dans le serveur" });
   }
 };

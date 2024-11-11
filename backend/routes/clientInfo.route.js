@@ -1,7 +1,8 @@
 import express from "express";
-import { createClientInfo } from "../controllers/clientInfo.controller.js";
+import { createClientInfo, getAllClientInfo } from "../controllers/clientInfo.controller.js";
 const router = express.Router();
 
 router.post("/create", createClientInfo);
+router.get("/", getAllClientInfo)
 
 export default router;
