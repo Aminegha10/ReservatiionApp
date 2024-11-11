@@ -32,6 +32,6 @@ const clientInfoShema = new mongoose.Schema({
     }
 )
 
-const ClientInfo = mongoose.model("ClientInfo", clientInfoShema);
+const ClientInfoModel = mongoose.model("ClientInfo", clientInfoShema);
 
-export default ClientInfo;
+export default ClientInfoModel;
