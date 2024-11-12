@@ -45,7 +45,7 @@ export const createClientInfo = async (req, res) =>{
            email:req.body.email,
            telephone:req.body.telephone,
            notificationPreference:req.body.notificationPreference,
-           rappelAutomatique:req.body.rappelAutomatique === "on" // Convert checkbox value to boolean
+           rappelAutomatique:req.body.rappelAutomatique
         })
         const newClientInfo = await clientInfoModel.create(clientInfo);
         res.status(201).json({success:true, data:newClientInfo});
