@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import App from "./app/App";
 import { store } from "./app/store";  
 import "./index.css";
+import { Toaster } from './components/ui/toaster';
 
 const root = createRoot(document.getElementById("root"));
 
@@ -13,6 +14,7 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <App />
+        <Toaster />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

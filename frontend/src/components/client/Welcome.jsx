@@ -58,7 +58,7 @@ export default function WelcomeTutorial() {
           >
             Précédent
           </Button>
-          <Button 
+          <Button
             onClick={handleNext}
           >
             {currentStep === steps.length - 1 ? "Terminer" : "Suivant"}

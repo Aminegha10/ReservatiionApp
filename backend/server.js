@@ -6,8 +6,6 @@ import clientInfoRoute from "./routes/clientInfo.route.js";
 import dotenv from "dotenv";
 import { connectWithMongoDB } from "./config/db.js";
 import cors from "cors";
-
-
 dotenv.config();
 const PORT = process.env.PORT;
 
