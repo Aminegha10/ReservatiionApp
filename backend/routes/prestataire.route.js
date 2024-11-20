@@ -6,6 +6,8 @@ import {
   addProvider,
   DeleteProvider,
   loginProvider,
+  createCreneau,
+  deleteCreneau,
 } from "../controllers/prestataire.controller.js";
 import { authorization } from "../middlewares/authorisation.js";
 
@@ -15,5 +17,9 @@ router
   .post("/login", loginProvider)
   .get("/:id", authorization, getOneProvider)
   .post("/create", addProvider)
-  .delete("/:id", DeleteProvider);
+  .delete("/:id", DeleteProvider)
+  // Crenaux
+  .put("/createCrenau/:id", createCreneau)
+  .put("/deleteCrenau/:prestataireId/:id", deleteCreneau);
+
 export default router;

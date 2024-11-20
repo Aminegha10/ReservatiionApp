@@ -18,34 +18,134 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useUpdatePrestataireMutation } from "@/app/services/prestataireApi";
 const CreateCreneau = () => {
+  //
+  // Access location and state passed through navigation
+  const location = useLocation();
+
+  // Define states to manage isEdit and id
+  const [isEdit, setIsEdit] = useState(false);
+  const [itemEdit, setItemEdit] = useState(null);
+
+  // Use useEffect to set the state based on location state
+  useEffect(() => {
+    console.log(location);
+    if (location.state) {
+      setIsEdit(location.state.isEdit); // Set isEdit value
+      setItemEdit(location.state.item); // Set id value if provided
+    }
+  }, [location]);
+  //
+  const { toast } = useToast();
+  //
+  const id = localStorage.getItem("prestataireId");
+  //
+  const [updatePrestataire] = useUpdatePrestataireMutation();
+  //
+  const [selectedDay1, setSelectedDay1] = useState(""); // For first day select
+  const [selectedDay2, setSelectedDay2] = useState(""); // For second day select
+  //
   const navigate = useNavigate();
-  const toast = useToast();
   const [changeForm, setChangeForm] = useState(false);
+  //handling Time States change
+  const [startTime, setStartTime] = useState(""); // For storing the selected start time
+  const [endTime, setEndTime] = useState(""); // For storing the selected end time
+
+  //handling Days States change
+  const [availableDays, setAvailableDays] = useState([]); // To store available days for the second day
+
+  // Function to filter the days after the selected start day
+  const getRemainingDays = (startDay) => {
+    const daysOrder = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+
+    // Find index of selected day
+    const startIndex = daysOrder.indexOf(startDay);
+
+    // Get the remaining days in the week after the selected start day
+    return daysOrder.slice(startIndex + 1).map((day) => {
+      return { value: day, label: day };
+    });
+  };
+  //
+  // Handle the start time change
+  const handleStartTimeChange = (value) => {
+    setStartTime(value);
+
+    // Update the available end times based on the selected start time
+    setEndTime("");
+    setValue("finHeure", ""); // Reset the end time if start time is changed
+    setValue("debutHeure", value); // Update the start time in form state
+  };
+
+  // Handle the end time change
+  const handleEndTimeChange = (value) => {
+    setEndTime(value);
+    setValue("finHeure", value); // Update the end time in form state
+  };
   // Schema & Zod
   const schema = z.object({
-    time: z.string().min(1, "Le nom est requis"),
-    date: z.string().min(1, "Le prénom est requis"),
+    debutHeure: z.string().min(1, "the startTime is undefined"),
+    finHeure: z.string().min(1, "the endTime is undefined"),
+    date: z.string().min(1, "the endTime is undefined"),
   });
   const {
     register,
     handleSubmit,
-    reset,
+    setValue,
     formState: { errors },
-    trigger,
   } = useForm({
+    defaultValues: {
+      date: "",
+    },
     resolver: zodResolver(schema),
   });
+  // Toggle change form
+  // Handle the first day select change
+  const handleDay1Change = (value) => {
+    setSelectedDay1(value);
+    setAvailableDays(getRemainingDays(value));
+    // Combine the days if both are selected
+    const combinedValue = `${value}-${selectedDay2}`;
+    setValue("date", combinedValue); // Update form state with the combined value
+  };
+
+  // Handle the second day select change
+  const handleDay2Change = (value) => {
+    setSelectedDay2(value);
+    // Combine the days if both are selected
+    const combinedValue = `${selectedDay1}-${value}`;
+    setValue("date", combinedValue); // Update form state with the combined value
+  };
   // Submit data function
-  const SubmitData = (data) => {
-    navigate("/Prestataire/welcome");
+  const SubmitData = async (data) => {
     console.log(data);
-    toast({
-      style: { backgroundColor: "green", color: "white" }, // Custom green styling
-      description: "your data has been submit",
-    });
+    // Call to API
+    try {
+      const response = await updatePrestataire({ id, data }).unwrap();
+      console.log(response);
+      toast({
+        style: { backgroundColor: "green", color: "white" }, // Custom green styling
+        description: "your data has been submit",
+      });
+      navigate("/prestataire/creneaux");
+    } catch (err) {
+      console.error(err);
+      toast({
+        style: { backgroundColor: "red", color: "white" }, // Custom green styling
+        description: "there is an error",
+      });
+    }
   };
   const daysOfWeekOptions = [
     { value: "Monday", label: "Monday" },
@@ -56,24 +156,33 @@ const CreateCreneau = () => {
     { value: "Saturday", label: "Saturday" },
     { value: "Sunday", label: "Sunday" },
   ];
+  console.log(isEdit,itemEdit)
   return (
-    <div className="w-full max-w-md mx-auto p-4 border rounded mt-5">
+    <div className="w-full max-w-lg mx-auto bg-white p-4 border rounded mt-5">
       <h2 className="text-lg text-center bg-black text-white py-3 rounded-md mb-4">
-        Entrer votre premier creneau
+        {isEdit ? (
+          <>Modifier votre creneau</>
+        ) : (
+          <> Entrer votre premier creneau</>
+        )}
       </h2>
 
       <form onSubmit={handleSubmit(SubmitData)}>
         {!changeForm ? (
           <div className="space-y-2">
             <Label htmlFor="StartDate">Date</Label>
-
-            <Select>
+            <Select
+              value={isEdit ? itemEdit.date : ""}
+              // value do re-render auto after isEdit change in opposit of defaultValue it doesnt re-render after isEdit changed
+              onValueChange={(value) => setValue("date", value)}
+              required
+            >
               <SelectTrigger className="space-y-2">
-                <SelectValue placeholder="Select your diponibility" />
+                <SelectValue placeholder="Sélectionnez votre disponibilité" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
+                  <SelectLabel>Days</SelectLabel>
                   {daysOfWeekOptions.map((item, index) => {
                     return (
                       <SelectItem key={index} value={item.value}>
@@ -84,7 +193,6 @@ const CreateCreneau = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-
             <div className="flex space-x-4">
               <div className="flex-1 ">
                 <Label htmlFor="StartTime">de</Label>
@@ -93,7 +201,8 @@ const CreateCreneau = () => {
                   name="StartTime"
                   type="time"
                   required
-                  {...register("StartTime")}
+                  value={isEdit && itemEdit ? itemEdit.debutHeure : startTime} // Set the value to itemEdit's startTime when isEdit is true
+                  onChange={(e) => handleStartTimeChange(e.target.value)}
                 />
               </div>
               <div className="flex-1">
@@ -103,14 +212,16 @@ const CreateCreneau = () => {
                   name="EndTime"
                   type="time"
                   required
-                  {...register("EndTime")}
+                  value={isEdit && itemEdit ? itemEdit.finHeure : endTime}
+                  onChange={(e) => handleEndTimeChange(e.target.value)}
+                  min={startTime} // Set the minimum end time to be after the start time
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="disponibilité" className="flex items-center">
                 <Switch className="mr-2 " onClick={() => setChangeForm(true)} />
-                je veux definir les jours de disponibilité
+                je veux définir les jours de disponibilité
               </Label>
             </div>
           </div>
@@ -119,13 +230,13 @@ const CreateCreneau = () => {
             <div className="flex space-x-4">
               <div className="flex-1 space-y-2">
                 <Label htmlFor="StartDate">de</Label>
-                <Select>
+                <Select onValueChange={handleDay1Change} required>
                   <SelectTrigger className="">
-                    <SelectValue placeholder="Select your diponibility" />
+                    <SelectValue placeholder="Sélectionnez votre disponibilité" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
+                      <SelectLabel>Days</SelectLabel>
                       {daysOfWeekOptions.map((item, index) => {
                         return (
                           <SelectItem key={index} value={item.value}>
@@ -139,14 +250,14 @@ const CreateCreneau = () => {
               </div>
               <div className="flex-1 space-y-2">
                 <Label htmlFor="StartDate">à</Label>
-                <Select>
+                <Select onValueChange={handleDay2Change} required>
                   <SelectTrigger className="">
-                    <SelectValue placeholder="Select your diponibility" />
+                    <SelectValue placeholder="Sélectionnez votre disponibilité" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
-                      {daysOfWeekOptions.map((item, index) => {
+                      <SelectLabel>Days</SelectLabel>
+                      {availableDays.map((item, index) => {
                         return (
                           <SelectItem key={index} value={item.value}>
                             {item.label}
@@ -167,17 +278,20 @@ const CreateCreneau = () => {
                   name="StartTime"
                   type="time"
                   required
-                  {...register("StartTime")}
+                  value={startTime}
+                  onChange={(e) => handleStartTimeChange(e.target.value)}
                 />
               </div>
-              <div className="flex-1 ">
+              <div className="flex-1">
                 <Label htmlFor="EndTime">à</Label>
                 <Input
                   id="EndTime"
                   name="EndTime"
                   type="time"
                   required
-                  {...register("EndTime")}
+                  value={endTime}
+                  onChange={(e) => handleEndTimeChange(e.target.value)}
+                  min={startTime} // Ensure end time is after start time
                 />
               </div>
             </div>
@@ -189,7 +303,7 @@ const CreateCreneau = () => {
                   className="mr-2 "
                   onClick={() => setChangeForm(false)}
                 />
-                je veux definir les jours de disponibilité
+                je veux définir les jours de disponibilité
               </Label>
             </div>
           </div>

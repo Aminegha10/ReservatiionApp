@@ -31,11 +31,18 @@ export const getOneProvider = async (req, res) => {
 // Create a new provider
 export const addProvider = async (req, res) => {
   var { password, ...provider } = req.body;
-  console.log({ ...provider });
+  const { document, nom, prenom, email, adresse, telephone } = {
+    ...provider,
+  };
+  console.log(prenom);
   if (
     !password ||
-    !{ ...provider }
-    // !provider.document
+    !document ||
+    !nom ||
+    !prenom ||
+    !email ||
+    !adresse ||
+    !telephone
   ) {
     return res
       .status(404)
@@ -92,5 +99,52 @@ export const DeleteProvider = async (req, res) => {
     rerures
       .status(500)
       .json({ succes: false, message: "Erreur dans le Serveur" });
+  }
+};
+// Crenaux
+//create creneau-----------------------------------------------------------------------------
+export const createCreneau = async (req, res) => {
+  const creneau = req.body;
+  console.log(creneau);
+  if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Veuillez remplir tous les champs" });
+  }
+  try {
+    const newCreneau = await provider_Model.findOneAndUpdate(
+      { _id: req.params.id }, // Query to find the document
+      { $push: { creneaux: creneau } },
+      { new: true } // Options: Return the updated document}
+    );
+    if (!newCreneau)
+      return res
+        .status(404)
+        .json({ success: false, message: "Document not found" });
+    return res.status(201).json({ success: true, data: newCreneau });
+  } catch (error) {
+    console.error("Erreur dans la création du creneau", error.message);
+    res.status(500).json({ success: false, message: "Erreur dans le Serveur" });
+  }
+};
+// Delete Creanau
+export const deleteCreneau = async (req, res) => {
+  const { id, prestataireId } = req.params;
+  console.log(id, prestataireId);
+  try {
+    const CrenauDeleted = await provider_Model.findByIdAndUpdate(
+      prestataireId, // ID
+      { $pull: { creneaux: { _id: id } } }, // Update operation
+      { new: true } // Options
+    );
+    if (CrenauDeleted)
+      return res
+        .status(200)
+        .json({ success: true, dataDeleted: CrenauDeleted });
+    return res
+      .status(404)
+      .json({ success: false, message: "Crenau not found" });
+  } catch (error) {
+    res.status(500).json({ succes: false, message: error });
   }
 };

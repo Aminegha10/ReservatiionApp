@@ -20,6 +20,7 @@ export const prestataireApi = createApi({
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token to headers as Bearer token
         },
       }),
+      providesTags: ["Prestataire"],
     }),
     createPrestataire: builder.mutation({
       query: (data) => ({
@@ -35,6 +36,22 @@ export const prestataireApi = createApi({
         body: data,
       }),
     }),
+    updatePrestataire: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/createCrenau/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      // Invalidate cache after the update
+      invalidatesTags: ["Prestataire"],
+    }),
+    deletePrestataire: builder.mutation({
+      query: ({ id, prestataireId }) => ({
+        url: `/deleteCrenau/${prestataireId}/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Prestataire"],
+    }),
   }),
 });
 
@@ -43,4 +60,6 @@ export const {
   useCreatePrestataireMutation,
   useLoginPrestataireMutation,
   useGetOnePrestataireQuery,
+  useUpdatePrestataireMutation,
+  useDeletePrestataireMutation,
 } = prestataireApi;

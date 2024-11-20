@@ -11,7 +11,7 @@ const providers_Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    creneaux: [{ type: String }],
+    creneaux: [{ date: String, debutHeure: String, finHeure: String }],
     email: { type: String, required: true },
     telephone: {
       type: String,
@@ -24,6 +24,7 @@ const providers_Schema = new mongoose.Schema(
     document: {
       type: String,
     },
+    Service: String,
   },
   {
     timestamps: true,

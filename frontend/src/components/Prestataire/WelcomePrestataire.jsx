@@ -1,48 +1,31 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
 import { useGetOnePrestataireQuery } from "@/app/services/prestataireApi";
 import { Welcome } from "../Welcome";
 
-const WelcomePrestataire = () => {
+const WelcomePrestataire = ({ isPrestataire }) => {
   const id = localStorage.getItem("prestataireId");
   const {
     data: prestataire,
     isLoading,
     isError,
-    error,
-  } = useGetOnePrestataireQuery(id);
+  } = useGetOnePrestataireQuery(id, {
+    skip: !id, // Skip query execution if id is null
+  });
 
-  // const isEmpty = prestataires[0].creneaux.length;
-  console.log(prestataire);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Une erreur s'est produite.</div>;
 
-  return (
-    <>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isError ? (
-        <div>z</div>
-      ) : (
-        <div>
-          {prestataire.creneaux.length > 0 ? (
-            <div>d</div>
-          ) : (
-            <>
-              <Welcome />
-            </>
-          )}
-        </div>
-      )}
-    </>
-  );
+  if (isPrestataire) {
+    return prestataire?.creneaux?.length > 0 ? (
+      <Navigate to="/prestataire/creneaux" />
+    ) : (
+      <Welcome isPrestataire={true} />
+    );
+  }
+
+  return <Welcome isPrestataire={false} />;
 };
 
 export default WelcomePrestataire;

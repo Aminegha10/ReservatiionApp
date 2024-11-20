@@ -15,22 +15,7 @@ export const deleteCreneau = async (req, res) => {
   }
 };
 
-//create creneau-----------------------------------------------------------------------------
-export const createCreneau = async (req, res) => {
-  const creneau = req.body;
-  if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Veuillez remplir tous les champs" });
-  }
-  try {
-    const newCreneau = await creneauModel.create(creneau);
-    res.status(201).json({ success: true, data: newCreneau });
-  } catch (error) {
-    console.error("Erreur dans la création du creneau", error.message);
-    res.status(500).json({ success: false, message: "Erreur dans le Serveur" });
-  }
-};
+
 
 //update creneau-----------------------------------------------------------------------------
 export const updateCreneau = async (req, res) => {
@@ -62,7 +47,7 @@ export const getAllCreneaux = async (req, res) => {
       res.status(404).json({ success: true, message: "There is no creneau" });
     }
   } catch (error) {
-    console.error("Erreur dans lire de les crenaux", error.message);
+    console.error("Erreur dans la lecture des crenaux", error.message);
     res.status(500).json({ success: false, message: "Erreur dans le serveur" });
   }
 };

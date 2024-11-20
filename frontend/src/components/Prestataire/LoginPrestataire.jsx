@@ -35,7 +35,7 @@ const CreatePrestataire = ({ setSignIn, Login }) => {
       const response = await Login(data).unwrap();
       dispatch(LogInSuccess());
       console.log(response);
-      navigate("/prestataire/welcome");
+      navigate("/prestataire/login");
       const token = response.accesstoken;
       const prestataireId = response.id;
       localStorage.setItem("token", token);

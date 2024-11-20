@@ -3,9 +3,10 @@
 import { Navigation } from "lucide-react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoutes = ({ isLoggedIn }) => {
+const ProtectedRoutes = ({ isLoggedIn, User }) => {
   if (isLoggedIn) return <Outlet />;
-  return <Navigate to="/prestataire/login" />;
+  if (User == "prestataire") return <Navigate to="/prestataire/login" />;
+  return <Navigate to="/client/login" />;
 };
 
 export default ProtectedRoutes;
