@@ -4,53 +4,46 @@ import {
   useGetOnePrestataireQuery,
 } from "@/app/services/prestataireApi";
 import { Button } from "../ui/button";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HomeLoading from "../HomeLoading";
 import { useState } from "react";
 import {
-  useDeleteCreneauMutation,
   useDeleteServiceMutation,
-  useGetAllCreneauxQuery,
-} from "@/app/services/servicesApi";
-import { useToast } from "@/hooks/use-toast";
+  useGetAllServicesQuery,
+} from "@/app/services/servicesApi.js";
+import { FaEye } from "react-icons/fa";
 
-const Crenaux = () => {
-  const { toast } = useToast();
+const Services = () => {
   const navigate = useNavigate();
-  const { name: ServiceName } = useParams();
-  console.log(ServiceName);
-  // // Edit function
-  // //deletecrenau
-  const [deleteCrenau] = useDeleteCreneauMutation();
-  // //
+  const prestataireId = localStorage.getItem("prestataireId");
+  //   // Edit function
+
+  //   //deletecrenau
+  //   const [deleteCrenau] = useDeletePrestataireMutation();
+  //   //
   const {
-    data: creneaux,
+    data: services,
     isLoading,
     isError,
     error,
-  } = useGetAllCreneauxQuery(ServiceName);
-  console.log(creneaux);
-  //   delete crenau
-  const handlDeleteCrenau = async (id) => {
+  } = useGetAllServicesQuery(prestataireId);
+  //   Delete
+  const [deleteService] = useDeleteServiceMutation();
+
+  console.log(services);
+  //   //   delete crenau
+  const handleDeleteService = async (id) => {
     console.log(id);
     try {
-      await deleteCrenau(id).unwrap();
-      toast({
-        style: { backgroundColor: "red", color: "white" }, // Custom green styling
-        description: "your data has been Deleted",
-      });
+      await deleteService(id).unwrap();
     } catch (err) {
       console.error(err);
-      toast({
-        style: { backgroundColor: "red", color: "white" }, // Custom green styling
-        description: "there is an error",
-      });
     }
   };
-  // // addCreanu
-  // const handleAddCrenau = () => {
-  //   navigate("/prestataire/addCreneau");
-  // };
+  //   // addCreanu
+  const handleAddService = () => {
+    navigate("/prestataire/addService");
+  };
   return (
     <>
       {isLoading ? (
@@ -64,14 +57,11 @@ const Crenaux = () => {
           <div className="overflow-hidden rounded-lg bg-white border  border-gray-200 shadow-md m-5">
             <div className="flex justify-between py-3 px-3">
               <h5 className="text-2xl font-medium pl-5 text-gray-900">
-                Crenaux de travail
+                Services
               </h5>
               <div>
-                <Button
-                  onClick={() => navigate(`/prestataire/services/${ServiceName}/CreateCreneau`)}
-                  className="mr-2 "
-                >
-                  Add Crenau
+                <Button onClick={handleAddService} className="mr-2 ">
+                  Add Service
                 </Button>
                 <Button className="bg-gray-400">View All</Button>
               </div>
@@ -101,34 +91,58 @@ const Crenaux = () => {
                     scope="col"
                     className="px-6 text-center py-4 font-medium text-gray-900"
                   >
+                    EndTime
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 text-center py-4 font-medium text-gray-900"
+                  >
+                    Creneaux
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 text-center py-4 font-medium text-gray-900"
+                  >
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                {creneaux.length > 0 ? (
-                  creneaux.map((item) => {
+                {services.length > 0 ? (
+                  services.map((item) => {
                     return (
                       <>
                         <tr className="hover:bg-gray-50">
                           <th className=" text-center gap-3 px-20 py-4 font-normal text-gray-900">
-                            {item.date}
+                            {item.name}
                           </th>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-20 py-1 text-xs font-semibold text-green-600">
                               <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
-                              {item.debutHeure}
+                              {item.description}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-20 py-1 text-xs font-semibold text-red-600">
-                              {item.finHeure}
+                              {item.category}
                             </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-20 py-1 text-xs font-semibold text-red-600">
+                              {item.price}
+                            </span>
+                          </td>
+                          <td className="px-6 flex justify-center py-4">
+                            <Link to={`${item.name}`}>
+                              <span className="text-green-600  cursor-pointer">
+                                <FaEye className="size-6" />
+                              </span>
+                            </Link>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex justify-end gap-4">
                               <span
-                                onClick={() => handlDeleteCrenau(item._id)}
+                                onClick={() => handleDeleteService(item._id)}
                                 className="text-red-600 cursor-pointer"
                               >
                                 <svg
@@ -195,4 +209,4 @@ const Crenaux = () => {
   );
 };
 
-export default Crenaux;
+export default Services;

@@ -37,7 +37,6 @@ const SignUpPrestataire = ({ PostData, setSignIn }) => {
       .string()
       .email("L'email n'est pas valide")
       .min(1, "L'email est requis"),
-    Service: z.string().min(1, "L'adresse est requise"),
   });
 
   const {
@@ -53,13 +52,6 @@ const SignUpPrestataire = ({ PostData, setSignIn }) => {
     },
     resolver: zodResolver(schema),
   });
-  const Services = [
-    "Web Development",
-    "Graphic Design",
-    "SEO Optimization",
-    "Content Writing",
-    "Consulting",
-  ]; // Upload Document
   // File Upload
   const [file, setFile] = useState("");
   const onChange = (e) => {
@@ -201,24 +193,6 @@ const SignUpPrestataire = ({ PostData, setSignIn }) => {
             />
           </div>
         </div>
-        <Label htmlFor="StartDate">Services</Label>
-        <Select onValueChange={(value) => setValue("Service", value)} required>
-          <SelectTrigger className="space-y-2">
-            <SelectValue placeholder="Sélectionnez votre disponibilité" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Services</SelectLabel>
-              {Services.map((item, index) => {
-                return (
-                  <SelectItem key={index} value={item}>
-                    {item}
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
         <Button type="submit" className="w-full border-gray-500 py-5 mt-4">
           {!isLoading && <>Submit</>}
           {isLoading && (

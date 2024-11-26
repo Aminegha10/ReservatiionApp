@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card } from "flowbite-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +41,7 @@ export const Welcome = ({ isPrestataire }) => {
 
   const handleNext = () => {
     if (currentStep === steps.length - 1) {
-      navigate(isPrestataire ? "/prestataire/addCreneau" : "/client/profile");
+      navigate(isPrestataire ? "/prestataire/addService" : "/client/profile");
     } else {
       setCurrentStep((prev) => prev + 1);
     }

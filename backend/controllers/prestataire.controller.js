@@ -2,30 +2,22 @@ import provider_Model from "../models/prestataire.model.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-const secret_key = process.env.ACCESS_TOKEN_SECRET;
-// Get all Provider
-export const getAllProviders = async (req, res) => {
-  try {
-    const Provider = await provider_Model.find();
-    if (Provider.length > 0) return res.status(200).json(Provider);
-    return res
-      .status(404)
-      .json({ success: true, message: "there is no Provider" });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
+
 // Get One Provider
 export const getOneProvider = async (req, res) => {
   try {
-    const provider = await provider_Model.findOne({ _id: req.params.id });
-    console.log(provider);
+   const provider = await provider_Model.findById(req.params.id).populate({
+     path: "services", // Populate services
+     populate: {
+       path: "creneaux", // Populate creneaux inside each service
+     },
+   });
     if (provider) return res.status(200).json(provider);
     return res
       .status(404)
       .json({ success: true, message: "provider not found" });
   } catch (error) {
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Errors" + error.message);
   }
 };
 // Create a new provider
@@ -115,6 +107,38 @@ export const createCreneau = async (req, res) => {
     const newCreneau = await provider_Model.findOneAndUpdate(
       { _id: req.params.id }, // Query to find the document
       { $push: { creneaux: creneau } },
+      { new: true } // Options: Return the updated document}
+    );
+    if (!newCreneau)
+      return res
+        .status(404)
+        .json({ success: false, message: "Document not found" });
+    return res.status(201).json({ success: true, data: newCreneau });
+  } catch (error) {
+    console.error("Erreur dans la création du creneau", error.message);
+    res.status(500).json({ success: false, message: "Erreur dans le Serveur" });
+  }
+};
+//Update creneau-----------------------------------------------------------------------------
+export const updateCreneau = async (req, res) => {
+  const creneau = req.body;
+  const { id, prestataireId } = req.params;
+  console.log(creneau);
+  if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Veuillez remplir tous les champs" });
+  }
+  const prestataire = await provider_Model.findOne({ _id: prestataireId });
+  if (!prestataire) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Provider not found" });
+  }
+  try {
+    const newCreneau = await provider_Model.findByIdAndUpdate(
+      prestataireId, // Query to find the document
+      { $set: { creneaux: creneau } },
       { new: true } // Options: Return the updated document}
     );
     if (!newCreneau)

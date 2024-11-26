@@ -52,9 +52,11 @@ export function NavBar() {
       type === "prestataire" ? "/prestataire/profile" : "/client/profile";
     const additionalItems =
       type === "prestataire" ? (
-        <Link to="/prestataire/creneaux">
-          <Dropdown.Item>Mes Crenaux</Dropdown.Item>
-        </Link>
+        <>
+          <Link to="/prestataire/services">
+            <Dropdown.Item>Mes Services</Dropdown.Item>
+          </Link>
+        </>
       ) : null;
 
     return (
@@ -133,6 +135,7 @@ export function NavBar() {
         </Link>
         <Navbar.Link>About</Navbar.Link>
         <Navbar.Link>Services</Navbar.Link>
+        <Navbar.Link>Contact</Navbar.Link>
         <Navbar.Link>Pricing</Navbar.Link>
         <Navbar.Link>Contact</Navbar.Link>
       </Navbar.Collapse>

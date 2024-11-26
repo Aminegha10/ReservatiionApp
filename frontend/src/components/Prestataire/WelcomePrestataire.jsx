@@ -3,23 +3,24 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useGetOnePrestataireQuery } from "@/app/services/prestataireApi";
 import { Welcome } from "../Welcome";
+import { useGetAllServicesQuery } from "@/app/services/servicesApi";
 
 const WelcomePrestataire = ({ isPrestataire }) => {
   const id = localStorage.getItem("prestataireId");
   const {
-    data: prestataire,
+    data: services,
     isLoading,
     isError,
-  } = useGetOnePrestataireQuery(id, {
+  } = useGetAllServicesQuery(id, {
     skip: !id, // Skip query execution if id is null
   });
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Une erreur s'est produite.</div>;
+  if (isError) return <div>Une erreur sest produite.</div>;
 
   if (isPrestataire) {
-    return prestataire?.creneaux?.length > 0 ? (
-      <Navigate to="/prestataire/creneaux" />
+    return services?.length > 0 ? (
+      <Navigate to="/prestataire/services" />
     ) : (
       <Welcome isPrestataire={true} />
     );

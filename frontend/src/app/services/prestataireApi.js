@@ -6,22 +6,23 @@ export const prestataireApi = createApi({
     baseUrl: "http://localhost:5000/api/prestataires", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
-    getPrestataires: builder.query({
-      query: () => ({
-        url: "/",
-        method: "GET",
-      }),
-    }),
+    // getPrestataires: builder.query({
+    //   query: () => ({
+    //     url: "/",
+    //     method: "GET",
+    //   }),
+    // }),
     getOnePrestataire: builder.query({
       query: (id) => ({
         url: `/${id}`,
         method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token to headers as Bearer token
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-      providesTags: ["Prestataire"],
+      providesTags: ["Service"], // This connects to the "Prestataire" tag
     }),
+
     createPrestataire: builder.mutation({
       query: (data) => ({
         url: "/create",
@@ -36,22 +37,32 @@ export const prestataireApi = createApi({
         body: data,
       }),
     }),
-    updatePrestataire: builder.mutation({
-      query: ({ id, data }) => ({
-        url: `/createCrenau/${id}`,
-        method: "PUT",
-        body: data,
-      }),
-      // Invalidate cache after the update
-      invalidatesTags: ["Prestataire"],
-    }),
-    deletePrestataire: builder.mutation({
-      query: ({ id, prestataireId }) => ({
-        url: `/deleteCrenau/${prestataireId}/${id}`,
-        method: "PUT",
-      }),
-      invalidatesTags: ["Prestataire"],
-    }),
+    // // CreateCreneau
+    // updatePrestataire: builder.mutation({
+    //   query: ({ id, data }) => ({
+    //     url: `/createCrenau/${id}`,
+    //     method: "PUT",
+    //     body: data,
+    //   }),
+    //   // Invalidate cache after the update
+    //   invalidatesTags: ["Prestataire"],
+    // }),
+    // // delete Creneau
+    // deletePrestataire: builder.mutation({
+    //   query: ({ id, prestataireId }) => ({
+    //     url: `/deleteCrenau/${prestataireId}/${id}`,
+    //     method: "PUT",
+    //   }),
+    //   invalidatesTags: ["Prestataire"],
+    // }),
+    // UpdateCreneau: builder.mutation({
+    //   query: ({ id, data }) => ({
+    //     url: `/updateCrenau/${localStorage.getItem("prestataireId")}/${id}`,
+    //     method: "PUT",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Prestataire"],
+    // }),
   }),
 });
 
@@ -61,5 +72,6 @@ export const {
   useLoginPrestataireMutation,
   useGetOnePrestataireQuery,
   useUpdatePrestataireMutation,
+  useUpdateCreneauMutation,
   useDeletePrestataireMutation,
 } = prestataireApi;

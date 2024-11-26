@@ -10,6 +10,11 @@ import { NavBar } from "@/components/NavBar";
 import { useSelector } from "react-redux";
 import Profile from "@/components/Prestataire/Profile";
 import Crenaux from "@/components/Prestataire/Crenaux";
+import EditCreneau from "@/components/Prestataire/EditCreneau";
+import Calendar from "@/components/Prestataire/Calendar";
+import AddService from "@/components/Prestataire/addService";
+import Services from "@/components/Prestataire/Services";
+import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -44,8 +49,18 @@ export default function App() {
               }
             >
               <Route path="addCreneau" element={<AddCreneau />} />
-              <Route path="creneaux" element={<Crenaux />} />
+              <Route path="addService" element={<AddService />} />
+              <Route path="services">
+                <Route path="" element={<Services />} />
+                <Route path=":name" element={<Crenaux />} />
+                <Route path=":name/CreateCreneau" element={<CreateCreneau />} />
+              </Route>
               <Route path="profile" element={<Profile />} />
+              <Route path="MyCalendar" element={<Calendar />} />
+              <Route
+                path="creneaux/EditCreneau/:id"
+                element={<EditCreneau />}
+              />
             </Route>
           </Route>
 

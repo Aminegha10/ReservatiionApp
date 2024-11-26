@@ -1,6 +1,8 @@
 import express from "express";
 import prestataireRoute from "./routes/prestataire.route.js";
 import clientRoute from "./routes/client.route.js";
+import servicesRoute from "./routes/services.js";
+import creneauxRoute from "./routes/creneaux.js";
 import dotenv from "dotenv";
 import { connectWithMongoDB } from "./config/db.js";
 import cors from "cors";
@@ -17,6 +19,8 @@ app.use(cors());
 
 //prestataire routes middleware
 app.use("/api/prestataires", prestataireRoute);
+app.use("/api/services", servicesRoute);
+app.use("/api/creneaux", creneauxRoute);
 
 //client routes middleware
 app.use("/api/clients", clientRoute);

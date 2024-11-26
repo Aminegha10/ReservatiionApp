@@ -23,27 +23,11 @@ import { useState, useEffect } from "react";
 import { useUpdatePrestataireMutation } from "@/app/services/prestataireApi";
 const CreateCreneau = () => {
   //
-  // Access location and state passed through navigation
-  const location = useLocation();
-
-  // Define states to manage isEdit and id
-  const [isEdit, setIsEdit] = useState(false);
-  const [itemEdit, setItemEdit] = useState(null);
-
-  // Use useEffect to set the state based on location state
-  useEffect(() => {
-    console.log(location);
-    if (location.state) {
-      setIsEdit(location.state.isEdit); // Set isEdit value
-      setItemEdit(location.state.item); // Set id value if provided
-    }
-  }, [location]);
-  //
   const { toast } = useToast();
   //
   const id = localStorage.getItem("prestataireId");
   //
-  const [updatePrestataire] = useUpdatePrestataireMutation();
+  // const [updatePrestataire] = useUpdatePrestataireMutation();
   //
   const [selectedDay1, setSelectedDay1] = useState(""); // For first day select
   const [selectedDay2, setSelectedDay2] = useState(""); // For second day select
@@ -156,27 +140,17 @@ const CreateCreneau = () => {
     { value: "Saturday", label: "Saturday" },
     { value: "Sunday", label: "Sunday" },
   ];
-  console.log(isEdit,itemEdit)
   return (
     <div className="w-full max-w-lg mx-auto bg-white p-4 border rounded mt-5">
       <h2 className="text-lg text-center bg-black text-white py-3 rounded-md mb-4">
-        {isEdit ? (
-          <>Modifier votre creneau</>
-        ) : (
-          <> Entrer votre premier creneau</>
-        )}
+        Entrer votre premier creneau
       </h2>
 
       <form onSubmit={handleSubmit(SubmitData)}>
         {!changeForm ? (
           <div className="space-y-2">
             <Label htmlFor="StartDate">Date</Label>
-            <Select
-              value={isEdit ? itemEdit.date : ""}
-              // value do re-render auto after isEdit change in opposit of defaultValue it doesnt re-render after isEdit changed
-              onValueChange={(value) => setValue("date", value)}
-              required
-            >
+            <Select onValueChange={(value) => setValue("date", value)} required>
               <SelectTrigger className="space-y-2">
                 <SelectValue placeholder="Sélectionnez votre disponibilité" />
               </SelectTrigger>
@@ -201,7 +175,7 @@ const CreateCreneau = () => {
                   name="StartTime"
                   type="time"
                   required
-                  value={isEdit && itemEdit ? itemEdit.debutHeure : startTime} // Set the value to itemEdit's startTime when isEdit is true
+                  value={startTime} // Set the value to itemEdit's startTime when isEdit is true
                   onChange={(e) => handleStartTimeChange(e.target.value)}
                 />
               </div>
@@ -212,7 +186,7 @@ const CreateCreneau = () => {
                   name="EndTime"
                   type="time"
                   required
-                  value={isEdit && itemEdit ? itemEdit.finHeure : endTime}
+                  value={endTime}
                   onChange={(e) => handleEndTimeChange(e.target.value)}
                   min={startTime} // Set the minimum end time to be after the start time
                 />
