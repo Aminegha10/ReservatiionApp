@@ -41,7 +41,7 @@ export const Welcome = ({ isPrestataire }) => {
 
   const handleNext = () => {
     if (currentStep === steps.length - 1) {
-      navigate(isPrestataire ? "/prestataire/addService" : "/client/profile");
+      navigate(isPrestataire ? "/prestataire/services/addService" : "/client/profile");
     } else {
       setCurrentStep((prev) => prev + 1);
     }
