@@ -1,4 +1,9 @@
-import { useCreateServiceMutation } from "@/app/services/servicesApi";
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import {
+  useCreateServiceMutation,
+  useEditServiceMutation,
+} from "@/app/services/servicesApi";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -6,9 +11,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const Services = () => {
+const Services = ({ isEdit }) => {
+  const Location = useLocation();
+  var Service;
+  if (isEdit) {
+    Service = Location.state.item;
+  }
   const { toast } = useToast();
   const navigate = useNavigate();
   // Define Zod schema to validate the form
@@ -27,23 +37,42 @@ const Services = () => {
   } = useForm({
     resolver: zodResolver(schema),
   });
+  const [editService] = useEditServiceMutation();
   const [addService] = useCreateServiceMutation();
   // Submit function
   const onSubmit = async (data) => {
-    data.prestataire = localStorage.getItem("prestataireId");
-    try {
-      const res=await addService(data).unwrap();
-      console.log(res)
-      toast({
-        style: { backgroundColor: "green", color: "white" }, // Custom green styling
-        description: "your data has been submitted",
-      });
-      navigate("/prestataire/services");
-    } catch (error) {
-      toast({
-        style: { backgroundColor: "red", color: "white" }, // Custom green styling
-        description: error.message,
-      });
+    if (isEdit) {
+      const serviceId = Service._id;
+      console.log(data);
+      try {
+        await editService({ data, serviceId }).unwrap();
+        toast({
+          style: { backgroundColor: "green", color: "white" }, // Custom green styling
+          description: "your data has been submitted",
+        });
+        navigate(-1);
+      } catch (error) {
+        toast({
+          style: { backgroundColor: "red", color: "white" }, // Custom green styling
+          description: error.message,
+        });
+      }
+    } else {
+      data.prestataire = localStorage.getItem("prestataireId");
+      try {
+        const res = await addService(data).unwrap();
+        console.log(res);
+        toast({
+          style: { backgroundColor: "green", color: "white" }, // Custom green styling
+          description: "your data has been submitted",
+        });
+        navigate(-1);
+      } catch (error) {
+        toast({
+          style: { backgroundColor: "red", color: "white" }, // Custom green styling
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -62,6 +91,7 @@ const Services = () => {
               id="name"
               {...register("name")}
               type="text"
+              defaultValue={isEdit ? Service.name : ""}
               placeholder="Enter service name"
               required
             />
@@ -77,6 +107,7 @@ const Services = () => {
               id="description"
               {...register("description")}
               type="text"
+              defaultValue={isEdit ? Service.description : ""}
               placeholder="Enter service description (optional)"
             />
             {errors.description && (
@@ -90,6 +121,7 @@ const Services = () => {
             <Input
               id="category"
               {...register("category")}
+              defaultValue={isEdit ? Service.category : ""}
               type="text"
               placeholder="Enter service category (optional)"
             />
@@ -103,6 +135,7 @@ const Services = () => {
             <Label htmlFor="price">Price</Label>
             <Input
               id="price"
+              defaultValue={isEdit ? Service.price : ""}
               {...register("price", { valueAsNumber: true })}
               type="number"
               placeholder="Enter service price"

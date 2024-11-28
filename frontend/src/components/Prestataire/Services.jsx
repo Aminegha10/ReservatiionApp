@@ -1,8 +1,4 @@
 /* eslint-disable no-unused-vars */
-import {
-  useDeletePrestataireMutation,
-  useGetOnePrestataireQuery,
-} from "@/app/services/prestataireApi";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import HomeLoading from "../HomeLoading";
@@ -42,7 +38,12 @@ const Services = () => {
   };
   //   // addCreanu
   const handleAddService = () => {
-    navigate("/prestataire/addService");
+    navigate("addService");
+  };
+  const EditService = (item) => {
+    navigate(`${item.name}/EditService`, {
+      state: { item },
+    });
   };
   return (
     <>
@@ -133,7 +134,7 @@ const Services = () => {
                             </span>
                           </td>
                           <td className="px-6 flex justify-center py-4">
-                            <Link to={`${item.name}`}>
+                            <Link to={`${item.name}/${item._id}/creneaux`}>
                               <span className="text-green-600  cursor-pointer">
                                 <FaEye className="size-6" />
                               </span>
@@ -160,33 +161,26 @@ const Services = () => {
                                   />
                                 </svg>
                               </span>
-                              <Link
-                                to={{
-                                  pathname: `EditCreneau/${item._id}`,
-                                  state: {
-                                    date: item.date,
-                                    finHeure: item.finHeure,
-                                    debutHeure: item.debutHeure,
-                                  },
-                                }}
+
+                              <span
+                                onClick={() => EditService(item)}
+                                className="text-blue-600 cursor-pointer "
                               >
-                                <span className="text-blue-600 cursor-pointer ">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="h-6 w-6"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                                    />
-                                  </svg>
-                                </span>
-                              </Link>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="h-6 w-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                                  />
+                                </svg>
+                              </span>
                             </div>
                           </td>
                         </tr>

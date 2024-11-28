@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 const Crenaux = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { name: ServiceName } = useParams();
+  const { name: ServiceName, id: ServiceId } = useParams();
   console.log(ServiceName);
   // // Edit function
   // //deletecrenau
@@ -68,7 +68,11 @@ const Crenaux = () => {
               </h5>
               <div>
                 <Button
-                  onClick={() => navigate(`/prestataire/services/${ServiceName}/CreateCreneau`)}
+                  onClick={() =>
+                    navigate(
+                      `/prestataire/services/${ServiceName}/${ServiceId}/creneaux/CreateCreneau`
+                    )
+                  }
                   className="mr-2 "
                 >
                   Add Crenau

@@ -5,6 +5,7 @@ import {
   getOneService,
   getAllServices,
   DeleteService,
+  editService,
 } from "../controllers/services.controller.js";
 import { authorization } from "../middlewares/authorisation.js";
 
@@ -13,6 +14,7 @@ router
   .post("/createService", addService)
   .get("/getOneService/:serviceId", getOneService)
   .get("/getAllServices/:id", getAllServices)
+  .put("/editService/:serviceId", editService)
   .delete("/deleteService/:id", DeleteService);
 
 export default router;

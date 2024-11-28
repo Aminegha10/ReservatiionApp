@@ -12,7 +12,7 @@ import Profile from "@/components/Prestataire/Profile";
 import Crenaux from "@/components/Prestataire/Crenaux";
 import EditCreneau from "@/components/Prestataire/EditCreneau";
 import Calendar from "@/components/Prestataire/Calendar";
-import AddService from "@/components/Prestataire/addService";
+import AddService from "@/components/Prestataire/handleService";
 import Services from "@/components/Prestataire/Services";
 import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 
@@ -49,11 +49,22 @@ export default function App() {
               }
             >
               <Route path="addCreneau" element={<AddCreneau />} />
-              <Route path="addService" element={<AddService />} />
               <Route path="services">
+                <Route path="addService" element={<AddService />} />
+                <Route
+                  path=":name/EditService"
+                  element={<AddService isEdit={true} />}
+                />
                 <Route path="" element={<Services />} />
-                <Route path=":name" element={<Crenaux />} />
-                <Route path=":name/CreateCreneau" element={<CreateCreneau />} />
+                {/* <Route
+                  path=":name/EditService"
+                  element={<EditService isEdit={true} />}
+                /> */}
+                <Route path=":name/:id/creneaux" element={<Crenaux />} />
+                <Route
+                  path=":name/:id/creneaux/CreateCreneau"
+                  element={<CreateCreneau />}
+                />
               </Route>
               <Route path="profile" element={<Profile />} />
               <Route path="MyCalendar" element={<Calendar />} />

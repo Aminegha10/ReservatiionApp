@@ -35,6 +35,14 @@ export const servicesApi = createApi({
       }),
       providesTags: ["Service"], // Provides Service cache
     }),
+    editService: builder.mutation({
+      query: ({ data, serviceId }) => ({
+        url: `services/editService/${serviceId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Service"], // Invalidates Service cache
+    }),
     // Creneaux
     getAllCreneaux: builder.query({
       query: (name) => ({
@@ -50,13 +58,23 @@ export const servicesApi = createApi({
       }),
       invalidatesTags: ["Creneaux"], // Invalidates Service cache
     }),
+    createCreneau: builder.mutation({
+      query: (data) => ({
+        url: `creneaux/createCreneau`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Creneaux"], // Invalidates Service cache
+    }),
   }),
 });
 
 export const {
   useCreateServiceMutation,
+  useCreateCreneauMutation,
   useGetAllServicesQuery,
   useDeleteCreneauMutation,
   useDeleteServiceMutation,
   useGetAllCreneauxQuery,
+  useEditServiceMutation
 } = servicesApi;

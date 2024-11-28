@@ -18,16 +18,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useUpdatePrestataireMutation } from "@/app/services/prestataireApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useCreateCreneauMutation } from "@/app/services/servicesApi";
 const CreateCreneau = () => {
+  //
+  const { id: ServiceId } = useParams();
   //
   const { toast } = useToast();
   //
-  const id = localStorage.getItem("prestataireId");
-  //
-  // const [updatePrestataire] = useUpdatePrestataireMutation();
+  const [CreateCreneau] = useCreateCreneauMutation();
   //
   const [selectedDay1, setSelectedDay1] = useState(""); // For first day select
   const [selectedDay2, setSelectedDay2] = useState(""); // For second day select
@@ -113,16 +113,15 @@ const CreateCreneau = () => {
   };
   // Submit data function
   const SubmitData = async (data) => {
-    console.log(data);
-    // Call to API
+    data.service = ServiceId; // Call to API
     try {
-      const response = await updatePrestataire({ id, data }).unwrap();
+      const response = await CreateCreneau(data).unwrap();
       console.log(response);
       toast({
         style: { backgroundColor: "green", color: "white" }, // Custom green styling
         description: "your data has been submit",
       });
-      navigate("/prestataire/creneaux");
+      navigate(-1);
     } catch (err) {
       console.error(err);
       toast({

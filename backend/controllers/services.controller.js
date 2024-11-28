@@ -73,3 +73,22 @@ export const DeleteService = async (req, res) => {
     res.status(500).send({ success: false, message: error.message });
   }
 };
+// Delete all services
+export const editService = async (req, res) => {
+  console.log(req.params.serviceId);
+  try {
+    const serviceUpdated = await Services_Model.findByIdAndUpdate(
+      req.params.serviceId,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (serviceUpdated) return res.status(200).json(serviceUpdated);
+    return res
+      .status(404)
+      .json({ success: true, message: "services is not found" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: error.message });
+  }
+};
