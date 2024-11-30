@@ -15,6 +15,7 @@ import Calendar from "@/components/Prestataire/Calendar";
 import AddService from "@/components/Prestataire/handleService";
 import Services from "@/components/Prestataire/Services";
 import CreateCreneau from "@/components/Prestataire/CreateCreneau";
+import GetPrestataires from "@/components/client/GetPrestataires";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -94,6 +95,7 @@ export default function App() {
                 <ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />
               }
             >
+               <Route path="prestataires" element={<GetPrestataires/>} />
               <Route path="profile" element={<Profile />} />
             </Route>
           </Route>

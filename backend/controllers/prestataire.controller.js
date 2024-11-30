@@ -20,6 +20,25 @@ export const getOneProvider = async (req, res) => {
     res.status(500).send("Server Errors" + error.message);
   }
 };
+
+
+//Get all providers 
+export const getAllProviders = async (req, res) =>{
+  try{
+    const providers = await provider_Model.find().populate({
+      path:"services",
+      populate:{
+        path:"creneaux"
+      },
+    });
+    if(providers) return res.status(200).json(providers)
+   
+  }catch(error){
+    res.status(500).send(error.message)
+  }
+}
+
+
 // Create a new provider
 export const addProvider = async (req, res) => {
   var { password, ...provider } = req.body;
@@ -56,6 +75,8 @@ export const addProvider = async (req, res) => {
     res.status(500).send("error: " + error.message);
   }
 };
+
+//login 
 export const loginProvider = async (req, res) => {
   try {
     const provider = await provider_Model.findOne({ email: req.body.email });
@@ -75,6 +96,8 @@ export const loginProvider = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+//delete 
 export const DeleteProvider = async (req, res) => {
   try {
     const providerDeleted = await provider_Model.findOneAndDelete({

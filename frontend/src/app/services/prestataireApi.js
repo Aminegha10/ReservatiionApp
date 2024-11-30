@@ -6,12 +6,13 @@ export const prestataireApi = createApi({
     baseUrl: "http://localhost:5000/api/prestataires", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
-    // getPrestataires: builder.query({
-    //   query: () => ({
-    //     url: "/",
-    //     method: "GET",
-    //   }),
-    // }),
+     getPrestataires: builder.query({
+       query: () => ({
+        url: "/",
+        method: "GET",
+     }),
+   }),
+   
     getOnePrestataire: builder.query({
       query: (id) => ({
         url: `/${id}`,
@@ -30,6 +31,9 @@ export const prestataireApi = createApi({
         body: data,
       }),
     }),
+
+
+
     LoginPrestataire: builder.mutation({
       query: (data) => ({
         url: "/login",

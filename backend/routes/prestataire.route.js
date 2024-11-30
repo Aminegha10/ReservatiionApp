@@ -8,8 +8,10 @@ import {
   createCreneau,
   deleteCreneau,
   updateCreneau,
+  getAllProviders,
 } from "../controllers/prestataire.controller.js";
-import { authorization } from "../middlewares/authorisation.js";
+
+
 
 // Create endpoint to add a new user
 router
@@ -17,6 +19,8 @@ router
   .get("/:id",  getOneProvider)
   .post("/create", addProvider)
   .delete("/:id", DeleteProvider)
+  .get("/", getAllProviders)
+
   // Crenaux
   .put("/createCrenau/:id", createCreneau)
   .put("/updateCrenau/:prestataireId/:id", updateCreneau)
