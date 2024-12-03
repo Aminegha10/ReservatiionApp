@@ -42,15 +42,15 @@ const GetPrestataires = () => {
               <h3 className="text-xl font-semibold">
                 {prestataire.prenom} {prestataire.nom}
               </h3>
-              <p>Email: {prestataire.email}</p>
-              <p>Téléphone: {prestataire.telephone}</p>
               <p>Adresse: {prestataire.adresse}</p>
               <h4 className="font-semibold mt-2">Services:</h4>
               <ul className="list-disc pl-5">
                 {prestataire.services &&
                   prestataire.services.map((service) => (
                     <li key={service._id}>
-                      {service.name} - {service.price}€
+                        {service.name} <br />
+                         prix:{service.price} DH<br />
+                         description: {service.description}
                       <ul className="list-circle pl-5">
                         {service.creneaux &&
                           service.creneaux.map((creneau) => (
