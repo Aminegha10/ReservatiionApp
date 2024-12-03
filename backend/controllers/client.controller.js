@@ -22,9 +22,7 @@ export const getOneClient = async (req, res) => {
     const client = await ClientModel.findOne({ _id: req.params.id });
     console.log(client);
     if (client) return res.status(200).json(client);
-    return res
-      .status(404)
-      .json({ success: true, message: "client not found" });
+    return res.status(404).json({ success: true, message: "client not found" });
   } catch (error) {
     res.status(500).send("Server Error");
   }
@@ -34,10 +32,7 @@ export const getOneClient = async (req, res) => {
 export const addClient = async (req, res) => {
   var { password, ...client } = req.body;
   console.log({ ...client });
-  if (
-    !password ||
-    !{ ...client }
-  ) {
+  if (!password || !{ ...client }) {
     return res
       .status(404)
       .json({ successs: false, message: "Complete your from please" });
@@ -49,16 +44,12 @@ export const addClient = async (req, res) => {
       password: hashPassword,
       ...client,
     });
-    if (client)
-      return res.status(200).json({ success: true, data: client });
-    return res
-      .status(404)
-      .json({ success: true, message: "client not found" });
+    if (client) return res.status(200).json({ success: true, data: client });
+    return res.status(404).json({ success: true, message: "client not found" });
   } catch (error) {
     res.status(500).send("error: " + error.message);
   }
 };
-
 
 //login client
 export const loginClient = async (req, res) => {
@@ -89,12 +80,46 @@ export const deleteClient = async (req, res) => {
       return res
         .status(200)
         .json({ success: true, dataDeleted: clientDeleted });
-    return res
-      .status(404)
-      .json({ success: true, message: "client not found" });
+    return res.status(404).json({ success: true, message: "client not found" });
   } catch (error) {
     rerures
       .status(500)
       .json({ succes: false, message: "Erreur dans le Serveur" });
   }
 };
+
+
+
+//add favorite
+export const addFavorite = async (req, res) => {
+  const { clientId } = req.params;
+  const { prestataireId } = req.body;
+
+  console.log('Request body:', req.body); // Debugging line
+
+  if (!prestataireId) {
+    return res.status(400).json({ message: "Prestataire ID is required" });
+  }
+
+  try {
+    const client = await ClientModel.findById(clientId);
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    if (client.favorites.includes(prestataireId)) {
+      return res.status(400).json({ message: "Prestataire already in favorites" });
+    }
+
+    client.favorites.push(prestataireId);
+    await client.save();
+
+    res.status(200).json({ 
+      message: "Prestataire added to favorites", 
+      favorites: client.favorites 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+

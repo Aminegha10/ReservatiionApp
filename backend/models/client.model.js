@@ -21,7 +21,8 @@ const clientShema = new mongoose.Schema(
     telephone: {
       type: String,
       required: true,
-    }
+    },
+    favorites:[{type:mongoose.Schema.Types.ObjectId, ref:"prestataire"}]
   },
   {
     timestamps: true,

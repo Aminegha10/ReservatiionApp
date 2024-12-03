@@ -30,6 +30,6 @@ const providers_Schema = new mongoose.Schema(
     timestamps: true,
   }
 );
-const providers_Model = new mongoose.model("prestataires", providers_Schema);
+const providers_Model = new mongoose.model("prestataire", providers_Schema);
 
 export default providers_Model;
