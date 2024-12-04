@@ -22,7 +22,8 @@ const clientShema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    favorites:[{type:mongoose.Schema.Types.ObjectId, ref:"prestataire"}]
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "prestataire" }],
+    historique: [{ type: mongoose.Schema.Types.ObjectId, ref: "services" }],
   },
   {
     timestamps: true,

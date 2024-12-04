@@ -19,7 +19,6 @@ export function NavBar() {
   const prestataireId = localStorage.getItem("prestataireId");
   const clientId = localStorage.getItem("clientId");
   console.log(clientId);
-  
 
   const { data: prestataire, isLoading: isLoadingPrestataire } =
     useGetOnePrestataireQuery(prestataireId, {
@@ -59,7 +58,16 @@ export function NavBar() {
             <Dropdown.Item>Mes Services</Dropdown.Item>
           </Link>
         </>
-      ) : null;
+      ) : (
+        <>
+          <Link to="/client/prestataires">
+            <Dropdown.Item>Prestataires</Dropdown.Item>
+          </Link>
+          <Link to="/client/historique">
+            <Dropdown.Item>Historique</Dropdown.Item>
+          </Link>
+        </>
+      );
 
     return (
       <Dropdown

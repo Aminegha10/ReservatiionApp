@@ -5,11 +5,11 @@ import {
   getAllCreneaux,
   deleteCreneaux,
 } from "../controllers/creneaux.controller.js";
-import { authorization } from "../middlewares/authorisation.js";
+import { authorization } from "../../../../backend/middlewares/authorisation.js";
 
 // Create endpoint to add a new user
 router
-  .post("/createCreneau", addCreneau)
+  .post("/createCreneau/:service", addCreneau)
   .get("/getAllCreneaux/:name", getAllCreneaux)
   .delete("/deleteCreneau/:id", deleteCreneaux);
 

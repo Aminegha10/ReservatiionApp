@@ -71,6 +71,7 @@ export const loginClient = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
 export const deleteClient = async (req, res) => {
   try {
     const clientDeleted = await ClientModel.findOneAndDelete({
@@ -123,7 +124,6 @@ export const addFavorite = async (req, res) => {
   }
 };
 
-
 //remove favorite---------------------------------------------------------------------------------------------------------------------------
 export const removeFavorite = async (req, res) => {
   const { clientId } = req.params;
@@ -162,7 +162,6 @@ export const removeFavorite = async (req, res) => {
   }
 };
 
-
 //get all client favorites----------------------------------------------------------------------------------------------------------------
 export const getAllFavorite = async (req, res) => {
   const { clientId } = req.params;
@@ -176,6 +175,74 @@ export const getAllFavorite = async (req, res) => {
     res.status(200).json({
       message: "Favorites retrieved successfully",
       favorites: client.favorites,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "server error", error });
+  }
+};
+
+//add historique-----------------------------------------------------------------------------------------------------------------------------
+export const addHistorique = async (req, res) => {
+  const { clientId } = req.params;
+  const { serviceId } = req.body;
+  if (!serviceId) {
+    return res.status(400).json({ message: "service ID is required" });
+  }
+  if (!clientId) {
+    return res.status(400).json({ message: "client ID is required" });
+  }
+
+  try {
+    const client = await ClientModel.findByIdAndUpdate(
+      clientId,
+      {
+        $push: { historique: serviceId },
+      },
+      { new: true }
+    );
+    // console.log(client) null if it didnt find it
+    if (!client)
+      return res
+        .status(404)
+        .send({ success: false, message: "client not created" });
+    res.status(201).send({ success: true, data: client });
+  } catch (error) {
+    res.status(500).json({ message: "error in the server " + error });
+  }
+};
+
+//get all client historique----------------------------------------------------------------------------------------------------------------
+export const getAllHistorique = async (req, res) => {
+  const { clientId } = req.params;
+  try {
+    const client = await ClientModel.findById(clientId).populate({
+      path: "historique",
+      populate: { path: "prestataire" },
+    });
+    if (!client) {
+      return res.status(404).json({ message: "client not found" });
+    }
+    res.status(200).json(client.historique);
+  } catch (error) {
+    res.status(500).json({ message: "server error", error: error.message });
+  }
+};
+
+//remove historique---------------------------------------------------------------------------------------------------------------------------
+export const removeHistorique = async (req, res) => {
+  const { clientId } = req.params;
+
+  if (!clientId) {
+    return res.status(400).json({ message: "clientId is required" });
+  }
+
+  try {
+    const client = await ClientModel.findByIdAndUpdate(clientId, {
+      $set: { historique: [] },
+    });
+    return res.status(200).json({
+      message: "historique has been cleared successfully",
+      client: client,
     });
   } catch (error) {
     res.status(500).json({ message: "server error", error });

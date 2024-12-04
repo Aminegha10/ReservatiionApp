@@ -59,10 +59,10 @@ export const servicesApi = createApi({
       invalidatesTags: ["Creneaux"], // Invalidates Service cache
     }),
     createCreneau: builder.mutation({
-      query: (data) => ({
-        url: `creneaux/createCreneau`,
+      query: ({ selectedDays, ServiceId }) => ({
+        url: `creneaux/createCreneau/${ServiceId}`,
         method: "POST",
-        body: data,
+        body: selectedDays,
       }),
       invalidatesTags: ["Creneaux"], // Invalidates Service cache
     }),
@@ -76,5 +76,5 @@ export const {
   useDeleteCreneauMutation,
   useDeleteServiceMutation,
   useGetAllCreneauxQuery,
-  useEditServiceMutation
+  useEditServiceMutation,
 } = servicesApi;

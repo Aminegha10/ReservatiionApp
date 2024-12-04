@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { useGetOnePrestataireQuery } from "@/app/services/prestataireApi";
 import { Welcome } from "../Welcome";
 import { useGetAllServicesQuery } from "@/app/services/servicesApi";
 

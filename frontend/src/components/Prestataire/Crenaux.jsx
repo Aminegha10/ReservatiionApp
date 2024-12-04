@@ -58,7 +58,7 @@ const Crenaux = () => {
           <HomeLoading />
         </div>
       ) : error ? (
-        <div>Error: {error.message}</div>
+        <div>Error: {error.data}</div>
       ) : (
         <>
           <div className="overflow-hidden rounded-lg bg-white border  border-gray-200 shadow-md m-5">
@@ -116,17 +116,17 @@ const Crenaux = () => {
                       <>
                         <tr className="hover:bg-gray-50">
                           <th className=" text-center gap-3 px-20 py-4 font-normal text-gray-900">
-                            {item.date}
+                            {item.day}
                           </th>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-20 py-1 text-xs font-semibold text-green-600">
                               <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
-                              {item.debutHeure}
+                              {item.startTime}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-20 py-1 text-xs font-semibold text-red-600">
-                              {item.finHeure}
+                              {item.endTime}
                             </span>
                           </td>
                           <td className="px-6 py-4">

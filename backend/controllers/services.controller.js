@@ -33,10 +33,11 @@ export const addService = async (req, res) => {
 // GetOneService
 export const getOneService = async (req, res) => {
   try {
+    console.log(serviceId);
     const serviceId = req.params.serviceId;
-    const service = await Services_Model.findById(serviceId).populate(
-      "creneaux"
-    );
+    const service = await Services_Model.findById(serviceId).populate({
+      path: "creneaux",
+    });
     if (service) return res.status(200).json({ success: true, data: service });
     return res
       .status(404)

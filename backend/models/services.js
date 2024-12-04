@@ -6,7 +6,7 @@ const Services_Schema = new mongoose.Schema(
     description: { type: String },
     category: { type: String },
     price: { type: Number },
-    prestataire: { type: mongoose.Schema.Types.ObjectId, ref: "Prestataire" }, // Reference to the prestataire
+    prestataire: { type: mongoose.Schema.Types.ObjectId, ref: "prestataire" }, // Reference to the prestataire
     creneaux: [{ type: mongoose.Schema.Types.ObjectId, ref: "creneaux" }],
   },
   {

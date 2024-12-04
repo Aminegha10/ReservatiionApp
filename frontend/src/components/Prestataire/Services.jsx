@@ -8,8 +8,11 @@ import {
   useGetAllServicesQuery,
 } from "@/app/services/servicesApi.js";
 import { FaEye } from "react-icons/fa";
+import { useToast } from "@/hooks/use-toast";
 
 const Services = () => {
+  const { toast } = useToast();
+
   const navigate = useNavigate();
   const prestataireId = localStorage.getItem("prestataireId");
   //   // Edit function
@@ -32,8 +35,15 @@ const Services = () => {
     console.log(id);
     try {
       await deleteService(id).unwrap();
+      toast({
+        style: { backgroundColor: "red", color: "white" }, // Custom green styling
+        description: "Your service has been deleted",
+      });
     } catch (err) {
-      console.error(err);
+      toast({
+        style: { backgroundColor: "red", color: "white" }, // Custom green styling
+        description: err.message,
+      });
     }
   };
   //   // addCreanu

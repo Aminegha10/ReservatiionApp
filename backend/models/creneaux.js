@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const Creneaux_Schema = new mongoose.Schema(
   {
-    date: String,
-    debutHeure: String,
-    finHeure: String,
+    day: String,
+    startTime: String,
+    endTime: String,
     service: { type: mongoose.Schema.Types.ObjectId, ref: "services" },
   },
   {

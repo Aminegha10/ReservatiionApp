@@ -35,6 +35,29 @@ export const clientApi = createApi({
         body: data,
       }),
     }),
+    // Historique
+    createHistorique: builder.mutation({
+      query: (serviceId) => ({
+        url: `${localStorage.getItem("clientId")}/addhistorique`,
+        method: "POST",
+        body: { serviceId },
+      }),
+      invalidatesTags: ["Historique"], // Provides Historique cache
+    }),
+    getHistorique: builder.query({
+      query: () => ({
+        url: `${localStorage.getItem("clientId")}/gethistorique`,
+        method: "GET",
+      }),
+      providesTags: ["Historique"], // Provides Historique cache
+    }),
+    deleteHistorique: builder.mutation({
+      query: () => ({
+        url: `${localStorage.getItem("clientId")}/deletehistorique`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Historique"], // Provides Historique cache
+    }),
   }),
 });
 
@@ -43,4 +66,7 @@ export const {
   useGetClientsQuery,
   useGetOneClientQuery,
   useLoginClientMutation,
+  useCreateHistoriqueMutation,
+  useGetHistoriqueQuery,
+  useDeleteHistoriqueMutation,
 } = clientApi;

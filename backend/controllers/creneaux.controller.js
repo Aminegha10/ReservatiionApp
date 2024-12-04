@@ -4,25 +4,32 @@ import Services_Model from "../models/services.js";
 // Create a new Creneaux
 export const addCreneau = async (req, res) => {
   const creneau = req.body;
-  console.log(creneau);
-  if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Veuillez remplir tous les champs" });
-  }
+  console.log(req.params.service);
+
+  // if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
+  //   return res
+  //     .status(404)
+  //     .json({ success: false, message: "Veuillez remplir tous les champs" });
+  // }
 
   try {
-    const newCreneau = await Creneaux_Model.create(creneau);
+    const newCreneau = await Creneaux_Model.insertMany(creneau, {
+      ordered: false,
+    });
+    console.log(newCreneau);
     if (!newCreneau) {
       return res
         .status(404)
         .json({ success: false, message: "Creneau hasnt created" });
     }
+    const newCreneauIds = newCreneau.map((creneau) => creneau._id);
+    console.log(newCreneauIds); // Extract the IDs from the array
     const ServiceUpdated = await Services_Model.findByIdAndUpdate(
-      creneau.service,
-      { $push: { creneaux: newCreneau._id } },
+      req.params.service,
+      { $push: { creneaux: { $each: newCreneauIds } } },
       { new: true }
     );
+    console.log(ServiceUpdated);
     if (!ServiceUpdated)
       return res
         .status(400)
@@ -36,18 +43,20 @@ export const addCreneau = async (req, res) => {
 // Get all creneaux
 export const getAllCreneaux = async (req, res) => {
   const serviceName = req.params.name;
+  console.log(serviceName);
   try {
     const service = await Services_Model.findOne({
       name: serviceName,
     }).populate("creneaux");
+    console.log(service);
     if (!service) {
       return res
         .status(404)
         .json({ success: false, message: "Creneau hasnt created" });
     }
-    return res.status(201).json(service.creneaux);
+    res.status(201).json(service.creneaux);
   } catch (error) {
-    res.status(500).send("error: " + error.message);
+    return res.status(500).send(error);
   }
 };
 // Get all creneaux

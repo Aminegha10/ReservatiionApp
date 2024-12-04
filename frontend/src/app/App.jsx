@@ -16,6 +16,7 @@ import AddService from "@/components/Prestataire/handleService";
 import Services from "@/components/Prestataire/Services";
 import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 import GetPrestataires from "@/components/client/GetPrestataires";
+import Historique from "@/components/client/Historique";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -23,7 +24,7 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex bg-blue-100 justify-center items-center">
+      <div className="flex-grow flex bg-blue-100 justify-center items-center p-3">
         <Routes>
           {/* Presstataire Routes */}
           <Route path="/" element={<Home />} />
@@ -95,7 +96,9 @@ export default function App() {
                 <ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />
               }
             >
-               <Route path="prestataires" element={<GetPrestataires/>} />
+              <Route path="prestataires" element={<GetPrestataires />} />
+              <Route path="historique" element={<Historique />} />
+
               <Route path="profile" element={<Profile />} />
             </Route>
           </Route>
