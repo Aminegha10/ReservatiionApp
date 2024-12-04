@@ -88,14 +88,12 @@ export const deleteClient = async (req, res) => {
   }
 };
 
-
-
-//add favorite
+//add favorite-----------------------------------------------------------------------------------------------------------------------------
 export const addFavorite = async (req, res) => {
   const { clientId } = req.params;
   const { prestataireId } = req.body;
 
-  console.log('Request body:', req.body); // Debugging line
+  console.log("Request body:", req.body);
 
   if (!prestataireId) {
     return res.status(400).json({ message: "Prestataire ID is required" });
@@ -108,18 +106,78 @@ export const addFavorite = async (req, res) => {
     }
 
     if (client.favorites.includes(prestataireId)) {
-      return res.status(400).json({ message: "Prestataire already in favorites" });
+      return res
+        .status(400)
+        .json({ message: "Prestataire already in favorites" });
     }
 
     client.favorites.push(prestataireId);
     await client.save();
 
-    res.status(200).json({ 
-      message: "Prestataire added to favorites", 
-      favorites: client.favorites 
+    res.status(200).json({
+      message: "Prestataire added to favorites",
+      favorites: client.favorites,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
 
+
+//remove favorite---------------------------------------------------------------------------------------------------------------------------
+export const removeFavorite = async (req, res) => {
+  const { clientId } = req.params;
+  const { prestataireId } = req.body;
+
+  console.log("request body", req.body);
+
+  if (!prestataireId) {
+    return res.status(400).json({ message: "prestataire id is required" });
+  }
+
+  try {
+    const client = await ClientModel.findById(clientId);
+    if (!client) {
+      return res.status(404).jon({ message: "client not found" });
+    }
+
+    //check if prestataire on favorites
+    const index = client.favorites.indexOf(prestataireId);
+    if (index === -1) {
+      return res
+        .status(400)
+        .json({ message: "Prestataire not found in favorites" });
+    }
+
+    // Remove the prestataireId from the favorites array
+    client.favorites.splice(index, 1);
+    await client.save();
+
+    res.status(200).json({
+      message: "prestataire removed from favorites succefully",
+      favorites: client.favorites,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "server error", error });
+  }
+};
+
+
+//get all client favorites----------------------------------------------------------------------------------------------------------------
+export const getAllFavorite = async (req, res) => {
+  const { clientId } = req.params;
+  try {
+    const client = await ClientModel.findById(clientId).populate("favorites");
+    console.log(client);
+
+    if (!client) {
+      return res.status(404).json({ message: "client not found" });
+    }
+    res.status(200).json({
+      message: "Favorites retrieved successfully",
+      favorites: client.favorites,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "server error", error });
+  }
+};
