@@ -1,44 +1,24 @@
 import React from "react";
-// Adjust the import path as needed
 import { useGetOneClientQuery } from "@/app/services/clientApi";
 import { useGetAllFavoritesQuery, useRemoveFavoriteMutation } from "@/app/services/favorites";
 import { useSelector } from "react-redux";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
+
 
 const FavoritesList = () => {
-  // Check if the client is logged in
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const clientId = localStorage.getItem("clientId");
 
-  // Fetch client data with skip logic based on login status
   const { data: client, isLoading: isLoadingClient } = useGetOneClientQuery(clientId, {
     skip: !isClientLoggedIn,
   });
 
-  // Fetch the client's favorites, and get the refetch function
   const { data, error, isLoading, refetch } = useGetAllFavoritesQuery(clientId);
 
-  // Use the mutation hook to remove a favorite
   const [removeFavorite] = useRemoveFavoriteMutation();
-
-  // Handle loading state for client data
-  if (isLoadingClient) {
-    return <div>Loading client data...</div>;
-  }
-
-  // Handle error fetching client data
-  if (error) {
-    return <div>Error fetching client data</div>;
-  }
-
-  // Handle loading state for favorites
-  if (isLoading) {
-    return <div>Loading favorites...</div>;
-  }
-
-  // Handle error fetching favorites
-  if (error) {
-    return <div>Error fetching favorites</div>;
-  }
 
   const handleRemoveFavorite = (prestataireId) => {
     if (clientId) {
@@ -46,7 +26,6 @@ const FavoritesList = () => {
         .unwrap()
         .then(() => {
           console.log("Removed from favorites");
-          // Refetch the favorites to get the updated list
           refetch();
         })
         .catch((err) => {
@@ -55,31 +34,59 @@ const FavoritesList = () => {
     }
   };
 
+  if (isLoadingClient || isLoading) {
+    return (
+      <div className="p-4">
+        <Skeleton className="h-6 w-48 mb-4" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full mt-4" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-red-500">
+        <p>Error fetching data. Please try again later.</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2>
+    <div className="p-6 space-y-6">
+      <h2 className="text-xl font-bold">
         {client?.prenom} {client?.nom}'s Favorites
       </h2>
-      <h3>Favorites List</h3>
-      <ul>
-        {data?.favorites?.map((favorite) => (
-          <li key={favorite._id}>
-            <hr />
-            <h4>
-              {favorite.prenom} {favorite.nom}
-            </h4>
-            <p>Email: {favorite.email}</p>
-            <p>Phone: {favorite.telephone}</p>
-            <p>Address: {favorite.adresse}</p>
-            <button
-              className="mt-2 p-2 bg-red-500 text-white rounded"
-              onClick={() => handleRemoveFavorite(favorite._id)}
-            >
-              Remove from Favorites
-            </button>
-          </li>
-        ))}
-      </ul>
+      <Separator />
+
+      {data?.favorites?.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {data.favorites.map((favorite) => (
+            <Card key={favorite._id} className="shadow-lg">
+              <CardHeader>
+                <CardTitle>
+                  {favorite.prenom} {favorite.nom}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">Email: {favorite.email}</p>
+                <p className="text-sm">Phone: {favorite.telephone}</p>
+                <p className="text-sm">Address: {favorite.adresse}</p>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRemoveFavorite(favorite._id)}
+                >
+                  Remove from Favorites
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-600">No favorites found.</p>
+      )}
     </div>
   );
 };
