@@ -1,17 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useGetPrestatairesQuery } from "@/app/services/prestataireApi";
-import { useNavigate } from "react-router-dom";
-import { useCreateHistoriqueMutation } from "@/app/services/clientApi";
+import { Link } from "react-router-dom";
+import { useAddFavoriteMutation } from "@/app/services/favorites";
+import { useCreateHistoriqueMutation } from "@/app/services/clientApi"; // Import historique creation
 import { useToast } from "@/hooks/use-toast";
 
 const GetPrestataires = () => {
-  const { toast } = useToast(); // useToast hook from use-toast
-  const navigate = useNavigate();
-  // Historique Handling
-  const [createHistorique] = useCreateHistoriqueMutation();
-  //
   const { data: prestataires, isLoading, error } = useGetPrestatairesQuery();
   const [searchQuery, setSearchQuery] = useState("");
+  const [addFavorite] = useAddFavoriteMutation();
+  const [createHistorique] = useCreateHistoriqueMutation(); // Mutation for historique
+  const { toast } = useToast();
+
+  const clientId = localStorage.getItem("clientId");
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.toString()}</div>;
@@ -20,42 +21,69 @@ const GetPrestataires = () => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
+  const handleAddFavorite = (prestataireId) => {
+    if (clientId) {
+      addFavorite({ clientId, prestataireId })
+        .unwrap()
+        .then(() => {
+          toast({
+            style: { backgroundColor: "green", color: "white" },
+            description: "Added to favorites successfully!",
+          });
+        })
+        .catch(() => {
+          toast({
+            style: { backgroundColor: "red", color: "white" },
+            description: "Error adding to favorites.",
+          });
+        });
+    } else {
+      toast({
+        style: { backgroundColor: "red", color: "white" },
+        description: "Client ID not found.",
+      });
+    }
+  };
+
+  const handleAddHistorique = (serviceId) => {
+    createHistorique(serviceId)
+      .unwrap()
+      .then(() => {
+        toast({
+          style: { backgroundColor: "green", color: "white" },
+          description: "Added to consultation history!",
+        });
+      })
+      .catch(() => {
+        toast({
+          style: { backgroundColor: "red", color: "white" },
+          description: "Error adding to consultation history.",
+        });
+      });
+  };
+
   const filteredPrestataires = prestataires?.filter((prestataire) => {
-    const addressMatch = prestataire.adresse
-      ?.toLowerCase()
-      .includes(searchQuery);
+    const addressMatch = prestataire.adresse?.toLowerCase().includes(searchQuery);
     const serviceMatch = prestataire.services?.some((service) =>
       service.name?.toLowerCase().includes(searchQuery)
     );
     const creneauxMatch = prestataire.services?.some((service) =>
       service.creneaux?.some((creneau) =>
-        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`
-          .toLowerCase()
-          .includes(searchQuery)
+        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`.toLowerCase().includes(searchQuery)
       )
     );
     return addressMatch || serviceMatch || creneauxMatch;
   });
 
-  //handling historique
-  const handleHistorique = async (service) => {
-    try {
-      await createHistorique(service._id).unwrap();
-      navigate(`${service.name}`, {
-        state: {
-          service: service,
-        },
-      });
-    } catch (error) {
-      toast({
-        style: { backgroundColor: "red", color: "white" }, // Custom green styling
-        description: error.data.message,
-      });
-    }
-  };
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Prestataires</h2>
+      <Link to="/client/favorites" className="text-blue-500 underline">
+        My Favorites
+      </Link>
+      <Link to="/client/historique" className="text-blue-500 underline">
+        My historique
+      </Link>
       <input
         type="text"
         placeholder="Search by address, service, or time slots"
@@ -77,29 +105,23 @@ const GetPrestataires = () => {
                   prestataire.services.map((service) => (
                     <li key={service._id}>
                       {service.name} <br />
-                      prix:{service.price} DH
-                      <br />
-                      description: {service.description}
-                      <ul className="list-circle pl-5">
-                        {service.creneaux &&
-                          service.creneaux.map((creneau) => (
-                            <>
-                              <li key={creneau._id}>
-                                {creneau.date}: {creneau.debutHeure} -{" "}
-                                {creneau.finHeure}
-                              </li>
-                              <button
-                                onClick={() => handleHistorique(service)}
-                                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                              >
-                                Voir plus
-                              </button>
-                            </>
-                          ))}
-                      </ul>
+                      Prix: {service.price} DH <br />
+                      Description: {service.description}
+                      <button
+                        className="mt-2 text-sm bg-green-500 text-white p-1 rounded"
+                        onClick={() => handleAddHistorique(service._id)}
+                      >
+                        Add to History
+                      </button>
                     </li>
                   ))}
               </ul>
+              <button
+                className="mt-4 p-2 bg-blue-500 text-white rounded"
+                onClick={() => handleAddFavorite(prestataire._id)}
+              >
+                Add to Favorites
+              </button>
             </div>
           ))}
         </div>

@@ -17,6 +17,7 @@ import Services from "@/components/Prestataire/Services";
 import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 import GetPrestataires from "@/components/client/GetPrestataires";
 import Historique from "@/components/client/Historique";
+import FavoritesList from "@/components/client/FavoriteList";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -97,8 +98,8 @@ export default function App() {
               }
             >
               <Route path="prestataires" element={<GetPrestataires />} />
+              <Route path="favorites" element={<FavoritesList/>} />
               <Route path="historique" element={<Historique />} />
-
               <Route path="profile" element={<Profile />} />
             </Route>
           </Route>
