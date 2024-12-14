@@ -11,6 +11,7 @@ export const addService = async (req, res) => {
   }
   try {
     const newService = await Services_Model.create(service);
+    console.log(newService);
     // 2. Find the provider (prestataire) by ID
     const provider = await providers_Model.findById(prestataire);
 
@@ -33,7 +34,6 @@ export const addService = async (req, res) => {
 // GetOneService
 export const getOneService = async (req, res) => {
   try {
-    console.log(serviceId);
     const serviceId = req.params.serviceId;
     const service = await Services_Model.findById(serviceId).populate({
       path: "creneaux",

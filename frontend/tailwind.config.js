@@ -3,6 +3,7 @@ const flowbite = require("flowbite-react/tailwind");
 
 module.exports = {
   darkMode: ["class"],
+
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}", flowbite.content()],
   theme: {
     extend: {
@@ -11,6 +12,10 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        HeroText: ["HeroText"],
+      },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -55,5 +60,12 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), flowbite.plugin()],
+  daisyui: {
+    themes: "light",
+  },
+  plugins: [
+    require("tailwindcss-animate"),
+    flowbite.plugin(),
+    require("daisyui"),
+  ],
 };

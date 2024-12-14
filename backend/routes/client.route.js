@@ -13,6 +13,8 @@ import {
   addHistorique,
   getAllHistorique,
   removeHistorique,
+  getAllReservations,
+  addReservation,
 } from "../controllers/client.controller.js";
 
 // Create endpoint to add a new user
@@ -27,6 +29,8 @@ router
   .delete("/:clientId/favorites", removeFavorite)
   .post("/:clientId/addhistorique", addHistorique)
   .get("/:clientId/gethistorique", getAllHistorique)
-  .delete("/:clientId/deletehistorique", removeHistorique);
+  .delete("/:clientId/deletehistorique", removeHistorique)
+  .post("/:clientId/addreservation", addReservation)
+  .get("/:clientId/getreservations", getAllReservations);
 
 export default router;

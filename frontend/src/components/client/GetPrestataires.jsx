@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGetPrestatairesQuery } from "@/app/services/prestataireApi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAddFavoriteMutation } from "@/app/services/favorites";
-import { useCreateHistoriqueMutation } from "@/app/services/clientApi"; // Import historique creation
+import {} from "@/app/services/clientApi"; // Import historique creation
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "../ui/button";
+import { FaRegStar } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
+import Loading from "../HomeLoading";
+import { FaMapLocationDot } from "react-icons/fa6";
 
 const GetPrestataires = () => {
+  const navigate = useNavigate();
   const { data: prestataires, isLoading, error } = useGetPrestatairesQuery();
   const [searchQuery, setSearchQuery] = useState("");
   const [addFavorite] = useAddFavoriteMutation();
-  const [createHistorique] = useCreateHistoriqueMutation(); // Mutation for historique
   const { toast } = useToast();
 
   const clientId = localStorage.getItem("clientId");
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="bg-white ">
+        <Loading />
+      </div>
+    );
   if (error) return <div>Error: {error.toString()}</div>;
 
   const handleSearch = (e) => {
@@ -45,89 +55,179 @@ const GetPrestataires = () => {
     }
   };
 
-  const handleAddHistorique = (serviceId) => {
-    createHistorique(serviceId)
-      .unwrap()
-      .then(() => {
-        toast({
-          style: { backgroundColor: "green", color: "white" },
-          description: "Added to consultation history!",
-        });
-      })
-      .catch(() => {
-        toast({
-          style: { backgroundColor: "red", color: "white" },
-          description: "Error adding to consultation history.",
-        });
-      });
-  };
-
   const filteredPrestataires = prestataires?.filter((prestataire) => {
-    const addressMatch = prestataire.adresse?.toLowerCase().includes(searchQuery);
+    const addressMatch = prestataire.adresse
+      ?.toLowerCase()
+      .includes(searchQuery);
     const serviceMatch = prestataire.services?.some((service) =>
       service.name?.toLowerCase().includes(searchQuery)
     );
     const creneauxMatch = prestataire.services?.some((service) =>
       service.creneaux?.some((creneau) =>
-        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`.toLowerCase().includes(searchQuery)
+        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`
+          .toLowerCase()
+          .includes(searchQuery)
       )
     );
     return addressMatch || serviceMatch || creneauxMatch;
   });
-
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Prestataires</h2>
-      <Link to="/client/favorites" className="text-blue-500 underline">
-        My Favorites
-      </Link>
-      <Link to="/client/historique" className="text-blue-500 underline">
-        My historique
-      </Link>
-      <input
-        type="text"
-        placeholder="Search by address, service, or time slots"
-        className="w-full p-2 mb-4 border rounded"
-        value={searchQuery}
-        onChange={handleSearch}
-      />
-      {filteredPrestataires && filteredPrestataires.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredPrestataires.map((prestataire) => (
-            <div key={prestataire._id} className="border p-4 rounded-lg shadow">
-              <h3 className="text-xl font-semibold">
-                {prestataire.prenom} {prestataire.nom}
-              </h3>
-              <p>Adresse: {prestataire.adresse}</p>
-              <h4 className="font-semibold mt-2">Services:</h4>
-              <ul className="list-disc pl-5">
-                {prestataire.services &&
-                  prestataire.services.map((service) => (
-                    <li key={service._id}>
-                      {service.name} <br />
-                      Prix: {service.price} DH <br />
-                      Description: {service.description}
-                      <button
-                        className="mt-2 text-sm bg-green-500 text-white p-1 rounded"
-                        onClick={() => handleAddHistorique(service._id)}
-                      >
-                        Add to History
-                      </button>
-                    </li>
-                  ))}
-              </ul>
-              <button
-                className="mt-4 p-2 bg-blue-500 text-white rounded"
-                onClick={() => handleAddFavorite(prestataire._id)}
-              >
-                Add to Favorites
-              </button>
-            </div>
-          ))}
+    <div className="flex-grow flex mt-4 justify-center items-center ">
+      <div className="container mx-auto  space-y-2">
+        <div className="flex justify-between ">
+          <h2 className="text-2xl font-bold mb-4">Prestataires</h2>
+          <div className="space-x-2 flex ">
+            <Link to="/client/favorites">
+              <Button>
+                <FaRegStar />
+                My Favorites
+              </Button>
+            </Link>
+            <Link to="/client/historique">
+              <Button>
+                <FaHistory />
+                My historique
+              </Button>
+            </Link>
+          </div>
         </div>
-      ) : (
-        <p>No prestataires found.</p>
-      )}
+
+        <input
+          type="text"
+          placeholder="Search by address, service, or time slots"
+          className="w-full p-2 mb-4 border rounded"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+
+        <div className="p-6 ">
+          <div className="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10">
+            {filteredPrestataires.map((prestataire) => (
+              <>
+                <div
+                  onClick={() => {
+                    console.log(prestataire);
+                    navigate(`${prestataire.nom}`, { state: prestataire });
+                  }}
+                  key={prestataire._id}
+                  className="hover:bg-gray-900 cursor-pointer bg-gray-100 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg"
+                >
+                  <div className="py-4 px-8 relative  ">
+                    {/* Outlined Star (Visible by default) */}
+                    <FaRegStar
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevents click from bubbling to parent
+                        handleAddFavorite(prestataire._id);
+                      }}
+                      className="absolute top-5 right-5 text-[25px] text-gray-500 group-hover:hidden cursor-pointer"
+                    />
+
+                    <div className="flex space-x-2">
+                      <img
+                        src="https://tailwindcss.com/img/jonathan.jpg"
+                        className="rounded-full h-12 w-12 mb-4 "
+                      />
+                      <div className="">
+                        <h1 className="text-gray-600   font-bold ">
+                          {prestataire.prenom} {prestataire.nom}
+                        </h1>
+                        <p className="text-gray-400">{prestataire.email}</p>
+                      </div>
+                    </div>
+                    <p className="flex items-center gap-1 mb-3">
+                      <FaMapLocationDot />
+                      {prestataire.adresse}
+                    </p>
+
+                    <h4 className="text-lg mb-3 font-semibold">
+                      How to be effective at working remotely?
+                    </h4>
+
+                    <p className="mb-2 text-sm text-gray-600">
+                      Lorem Ipsum is simply dummy text of the printing and
+                      typesetting industry. Lorem Ipsum has been the industrys
+                      standard dummy text ever since the 1500s
+                    </p>
+                    <div className="space-x-2">
+                      <span className="text-xs ">SERVICES</span>
+                      {prestataire.services &&
+                        prestataire.services.map((service) => (
+                          <>
+                            <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-800/30 dark:text-teal-500">
+                              {service.name}
+                            </span>
+                          </>
+                        ))}
+                    </div>
+                    <div className="mt-2  flex  justify-center items-center gap-4">
+                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
+                        <div className="flex flex-row items-center justify-center">
+                          <svg
+                            className="mr-3 fill-gray-500/95"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlnsXlink="http://www.w3.org/1999/xlink"
+                            version="1.1"
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12,23A1,1 0 0,1 11,22V19H7A2,2 0 0,1 5,17V7A2,2 0 0,1 7,5H21A2,2 0 0,1 23,7V17A2,2 0 0,1 21,19H16.9L13.2,22.71C13,22.89 12.76,23 12.5,23H12M13,17V20.08L16.08,17H21V7H7V17H13M3,15H1V3A2,2 0 0,1 3,1H19V3H3V15M9,9H19V11H9V9M9,13H17V15H9V13Z" />
+                          </svg>
+                          <span className="font-bold text-gray-600">
+                            {" "}
+                            4.6K{" "}
+                          </span>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          Comments
+                        </div>
+                      </span>
+                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
+                        <div className="flex flex-row items-center justify-center">
+                          <svg
+                            className="mr-3 fill-gray-500/95"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlnsXlink="http://www.w3.org/1999/xlink"
+                            version="1.1"
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M2.5 19.6L3.8 20.2V11.2L1.4 17C1 18.1 1.5 19.2 2.5 19.6M15.2 4.8L20.2 16.8L12.9 19.8L7.9 7.9V7.8L15.2 4.8M15.3 2.8C15 2.8 14.8 2.8 14.5 2.9L7.1 6C6.4 6.3 5.9 7 5.9 7.8C5.9 8 5.9 8.3 6 8.6L11 20.5C11.3 21.3 12 21.7 12.8 21.7C13.1 21.7 13.3 21.7 13.6 21.6L21 18.5C22 18.1 22.5 16.9 22.1 15.9L17.1 4C16.8 3.2 16 2.8 15.3 2.8M10.5 9.9C9.9 9.9 9.5 9.5 9.5 8.9S9.9 7.9 10.5 7.9C11.1 7.9 11.5 8.4 11.5 8.9S11.1 9.9 10.5 9.9M5.9 19.8C5.9 20.9 6.8 21.8 7.9 21.8H9.3L5.9 13.5V19.8Z" />
+                          </svg>
+                          <span className="font-bold text-gray-600"> 45 </span>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          Projects
+                        </div>
+                      </span>
+                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
+                        <div className="flex flex-row items-center justify-center">
+                          <svg
+                            className="mr-3 fill-gray-500/95"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlnsXlink="http://www.w3.org/1999/xlink"
+                            version="1.1"
+                            width={24}
+                            height={24}
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M5.68,19.74C7.16,20.95 9,21.75 11,21.95V19.93C9.54,19.75 8.21,19.17 7.1,18.31M13,19.93V21.95C15,21.75 16.84,20.95 18.32,19.74L16.89,18.31C15.79,19.17 14.46,19.75 13,19.93M18.31,16.9L19.74,18.33C20.95,16.85 21.75,15 21.95,13H19.93C19.75,14.46 19.17,15.79 18.31,16.9M15,12A3,3 0 0,0 12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12M4.07,13H2.05C2.25,15 3.05,16.84 4.26,18.32L5.69,16.89C4.83,15.79 4.25,14.46 4.07,13M5.69,7.1L4.26,5.68C3.05,7.16 2.25,9 2.05,11H4.07C4.25,9.54 4.83,8.21 5.69,7.1M19.93,11H21.95C21.75,9 20.95,7.16 19.74,5.68L18.31,7.1C19.17,8.21 19.75,9.54 19.93,11M18.32,4.26C16.84,3.05 15,2.25 13,2.05V4.07C14.46,4.25 15.79,4.83 16.9,5.69M11,4.07V2.05C9,2.25 7.16,3.05 5.68,4.26L7.1,5.69C8.21,4.83 9.54,4.25 11,4.07Z" />
+                          </svg>
+                          <span className="font-bold text-gray-600">120K</span>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          Downloads
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

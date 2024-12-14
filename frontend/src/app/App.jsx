@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Prestataire from "../pages/Prestataire/Prestataire";
 import Home from "../pages/home/Home";
 import Client from "../pages/client/Client";
@@ -18,14 +18,20 @@ import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 import GetPrestataires from "@/components/client/GetPrestataires";
 import Historique from "@/components/client/Historique";
 import FavoritesList from "@/components/client/FavoriteList";
+import { IoMdReturnLeft } from "react-icons/io";
+import { Button } from "@/components/ui/button";
+import PrestataireDetails from "@/components/client/PrestataireDetails";
+import Creneaux from "@/components/client/Creneaux";
+import Reservations from "@/components/client/Reservations";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
+  const navigate = useNavigate();
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex bg-[#E2E2E2] flex-col min-h-screen ">
       <NavBar />
-      <div className="flex-grow flex bg-blue-100 justify-center items-center p-3">
+      <div className="flex-grow px-[40px]">
         <Routes>
           {/* Presstataire Routes */}
           <Route path="/" element={<Home />} />
@@ -97,8 +103,13 @@ export default function App() {
                 <ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />
               }
             >
-              <Route path="prestataires" element={<GetPrestataires />} />
-              <Route path="favorites" element={<FavoritesList/>} />
+              <Route path="prestataires">
+                <Route path="" element={<GetPrestataires />} />
+                <Route path=":name" element={<PrestataireDetails />} />
+                <Route path=":name/creneaux" element={<Creneaux />} />
+              </Route>
+              <Route path="reservations" element={<Reservations />} />
+              <Route path="favorites" element={<FavoritesList />} />
               <Route path="historique" element={<Historique />} />
               <Route path="profile" element={<Profile />} />
             </Route>

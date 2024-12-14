@@ -214,11 +214,13 @@ export const addHistorique = async (req, res) => {
 //get all client historique----------------------------------------------------------------------------------------------------------------
 export const getAllHistorique = async (req, res) => {
   const { clientId } = req.params;
+  console.log(clientId);
   try {
     const client = await ClientModel.findById(clientId).populate({
       path: "historique",
       populate: { path: "prestataire" },
     });
+    console.log(client.historique);
     if (!client) {
       return res.status(404).json({ message: "client not found" });
     }
@@ -246,5 +248,47 @@ export const removeHistorique = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "server error", error });
+  }
+};
+//Add Reservation ---------------------------------------------------------------------------------------------------------------------------
+
+export const addReservation = async (req, res) => {
+  const { clientId } = req.params;
+
+  if (!clientId) {
+    return res.status(400).json({ message: "client ID is required" });
+  }
+
+  try {
+    const client = await ClientModel.findByIdAndUpdate(
+      clientId,
+      {
+        $push: { reservations: req.body },
+      },
+      { new: true }
+    );
+    // console.log(client) null if it didnt find it
+    if (!client)
+      return res
+        .status(404)
+        .send({ success: false, message: "client not created" });
+    res.status(201).send({ success: true, data: client });
+  } catch (error) {
+    res.status(500).json({ message: "error in the server " + error });
+  }
+};
+//get all client reservations----------------------------------------------------------------------------------------------------------------
+export const getAllReservations = async (req, res) => {
+  const { clientId } = req.params;
+  try {
+    const client = await ClientModel.findById(clientId).populate(
+      "reservations"
+    );
+    if (!client) {
+      return res.status(404).json({ message: "client not found" });
+    }
+    res.status(200).json(client.reservations);
+  } catch (error) {
+    res.status(500).json({ message: "server error", error: error.message });
   }
 };

@@ -1,0 +1,135 @@
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import { FaHistory, FaRegStar } from "react-icons/fa";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CheckCircle, Clock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useCreateHistoriqueMutation } from "@/app/services/clientApi";
+const PrestataireDetails = () => {
+  const [createHistorique] = useCreateHistoriqueMutation(); // Mutation for historique
+
+  const toast = useToast();
+  const location = useLocation();
+  const Services = location.state.services;
+  console.log(Services);
+  const navigate = useNavigate();
+
+  const handleConsultaion = async (service) => {
+    await createHistorique(service._id)
+      .unwrap()
+      .then(() => {
+        toast({
+          style: { backgroundColor: "green", color: "white" },
+          description: "Added to consultation history!",
+        });
+      })
+      .catch(() => {
+        toast({
+          style: { backgroundColor: "red", color: "white" },
+          description: "Error adding to consultation history.",
+        });
+      });
+  };
+  return (
+    <>
+      <div className="flex-grow flex mt-4 justify-center items-center ">
+        <div className="container mx-auto  space-y-2">
+          <div className="flex justify-between ">
+            <h2 className="text-2xl font-bold mb-4">
+              <span className="ml-2">Services</span>
+            </h2>
+            {/* Title & Buttons */}
+            <div className="space-x-2 flex ">
+              <Link to="/client/favorites">
+                <Button>
+                  <FaRegStar />
+                  My Favorites
+                </Button>
+              </Link>
+              <Link to="/client/historique">
+                <Button>
+                  <FaHistory />
+                  My historique
+                </Button>
+              </Link>
+            </div>
+          </div>
+          {/* Services List */}
+          <div className="p-6 ">
+            <div className="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10">
+              {Services.map((service) => (
+                <>
+                  <Card className="w-full">
+                    <CardHeader className="bg-primary text-primary-foreground">
+                      <CardTitle className="text-2xl font-bold text-center">
+                        {service.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                      <p className="text-muted-foreground mb-4">
+                        {service.description}
+                      </p>
+                      <ul className="space-y-2 mb-6">
+                        <li className="flex items-center">
+                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
+                          Responsive Design
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
+                          SEO Optimization
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
+                          24/7 Support
+                        </li>
+                      </ul>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <p className="text-2xl font-bold text-primary">
+                            {service.price}dh
+                            <span className="text-sm font-normal text-muted-foreground">
+                              /month
+                            </span>
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          <h3 className="font-semibold  flex items-center">
+                            <Clock className="w-4 h-4 mr-2" />
+                            Disponible
+                          </h3>
+                        </Badge>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col space-y-2">
+                      <Button
+                        onClick={() => {
+                          navigate("creneaux", {
+                            state: service.creneaux,
+                          });
+                          handleConsultaion(service);
+                        }}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        View Creneaux
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default PrestataireDetails;

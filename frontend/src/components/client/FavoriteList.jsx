@@ -1,24 +1,41 @@
 import React from "react";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
-import { useGetAllFavoritesQuery, useRemoveFavoriteMutation } from "@/app/services/favorites";
+import {
+  useGetAllFavoritesQuery,
+  useRemoveFavoriteMutation,
+} from "@/app/services/favorites";
 import { useSelector } from "react-redux";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { MdDelete } from "react-icons/md";
+
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
-
+import { useNavigate } from "react-router-dom";
+import { IoMdReturnLeft } from "react-icons/io";
+import ReturnButton from "../ReturnButton";
 
 const FavoritesList = () => {
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const clientId = localStorage.getItem("clientId");
 
-  const { data: client, isLoading: isLoadingClient } = useGetOneClientQuery(clientId, {
-    skip: !isClientLoggedIn,
-  });
+  const { data: client, isLoading: isLoadingClient } = useGetOneClientQuery(
+    clientId,
+    {
+      skip: !isClientLoggedIn,
+    }
+  );
 
   const { data, error, isLoading, refetch } = useGetAllFavoritesQuery(clientId);
 
   const [removeFavorite] = useRemoveFavoriteMutation();
+  const navigate = useNavigate();
 
   const handleRemoveFavorite = (prestataireId) => {
     if (clientId) {
@@ -54,6 +71,7 @@ const FavoritesList = () => {
 
   return (
     <div className="p-6 space-y-6">
+      <ReturnButton />
       <h2 className="text-xl font-bold">
         {client?.prenom} {client?.nom}'s Favorites
       </h2>
@@ -78,6 +96,7 @@ const FavoritesList = () => {
                   variant="destructive"
                   onClick={() => handleRemoveFavorite(favorite._id)}
                 >
+                  <MdDelete />
                   Remove from Favorites
                 </Button>
               </CardFooter>

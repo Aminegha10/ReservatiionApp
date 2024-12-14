@@ -58,6 +58,23 @@ export const clientApi = createApi({
       }),
       invalidatesTags: ["Historique"], // Provides Historique cache
     }),
+    // Reservations
+    createReservation: builder.mutation({
+      query: (creneaux) => ({
+        url: `${localStorage.getItem("clientId")}/addreservation`,
+        method: "POST",
+        body: creneaux,
+      }),
+      invalidatesTags: ["Reservation"], // Provides Historique cache
+    }),
+    // getAll reservations
+    getReservation: builder.query({
+      query: () => ({
+        url: `${localStorage.getItem("clientId")}/getreservations`,
+        method: "GET",
+      }),
+      providesTags: ["Reservation"], // Provides Historique cache
+    }),
   }),
 });
 
@@ -69,4 +86,6 @@ export const {
   useCreateHistoriqueMutation,
   useGetHistoriqueQuery,
   useDeleteHistoriqueMutation,
+  useCreateReservationMutation,
+  useGetReservationQuery,
 } = clientApi;

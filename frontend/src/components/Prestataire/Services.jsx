@@ -127,7 +127,7 @@ const Services = () => {
                           <th className=" text-center gap-3 px-20 py-4 font-normal text-gray-900">
                             {item.name}
                           </th>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-20 py-1 text-xs font-semibold text-green-600">
                               <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
                               {item.description}
@@ -143,12 +143,15 @@ const Services = () => {
                               {item.price}
                             </span>
                           </td>
-                          <td className="px-6 flex justify-center py-4">
-                            <Link to={`${item.name}/${item._id}/creneaux`}>
-                              <span className="text-green-600  cursor-pointer">
-                                <FaEye className="size-6" />
-                              </span>
-                            </Link>
+                          <td>
+                            <div className="flex justify-center   ">
+                              {" "}
+                              <Link to={`${item.name}/${item._id}/creneaux`}>
+                                <span className="text-green-600   cursor-pointer">
+                                  <FaEye className="size-6" />
+                                </span>
+                              </Link>
+                            </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex justify-end gap-4">

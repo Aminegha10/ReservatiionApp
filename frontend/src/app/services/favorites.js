@@ -14,6 +14,7 @@ export const favoritesApi = createApi({
         method: "POST",
         body: { prestataireId },
       }),
+      invalidatesTags: ["Favorites"],
     }),
 
     // Remove favorite
@@ -23,11 +24,13 @@ export const favoritesApi = createApi({
         method: "DELETE",
         body: { prestataireId },
       }),
+      invalidatesTags: ["Favorites"],
     }),
 
     // Get all favorites for a client
     getAllFavorites: builder.query({
       query: (clientId) => `clients/${clientId}/favorites`,
+      providesTags: ["Favorites"],
     }),
   }),
 });
