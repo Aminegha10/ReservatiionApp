@@ -9,6 +9,7 @@ import {
   deleteCreneau,
   updateCreneau,
   getAllProviders,
+  createNotification,
 } from "../controllers/prestataire.controller.js";
 
 // Create endpoint to add a new user
@@ -22,6 +23,9 @@ router
   // Crenaux
   .put("/createCrenau/:id", createCreneau)
   .put("/updateCrenau/:prestataireId/:id", updateCreneau)
-  .put("/deleteCrenau/:prestataireId/:id", deleteCreneau);
+  .put("/deleteCrenau/:prestataireId/:id", deleteCreneau)
+  // Notifications
+  .put("/addNotification/:id", createNotification)
+  // .put("/createReservations/:id", createReservations);
 
 export default router;

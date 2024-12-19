@@ -11,7 +11,6 @@ export const addService = async (req, res) => {
   }
   try {
     const newService = await Services_Model.create(service);
-    console.log(newService);
     // 2. Find the provider (prestataire) by ID
     const provider = await providers_Model.findById(prestataire);
 
@@ -50,7 +49,6 @@ export const getOneService = async (req, res) => {
 // Get all services
 export const getAllServices = async (req, res) => {
   try {
-    console.log("Prestataire ID:", req.params.id);
     const service = await Services_Model.find({
       prestataire: req.params.id,
     });
@@ -76,7 +74,6 @@ export const DeleteService = async (req, res) => {
 };
 // Delete all services
 export const editService = async (req, res) => {
-  console.log(req.params.serviceId);
   try {
     const serviceUpdated = await Services_Model.findByIdAndUpdate(
       req.params.serviceId,

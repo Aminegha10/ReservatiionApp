@@ -11,9 +11,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useCreateReservationMutation } from "@/app/services/clientApi";
 import { useToast } from "@/hooks/use-toast";
+import { useCreateReservationMutation } from "@/app/services/reservationAPi";
+import { io } from "socket.io-client";
+import { useCreateNotificationMutation } from "@/app/services/prestataireApi";
+
+const socket = io("http://localhost:5000"); // Replace with your server's address
+
 const Creneaux = () => {
+  const [CreateNotification] = useCreateNotificationMutation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSelected, setIsSelected] = useState([]);
@@ -28,11 +34,28 @@ const Creneaux = () => {
         : [...isSelected, creneau] // Add if not selected
     );
   };
+  console.log(isSelected);
   const location = useLocation();
-  const Creneaux = location.state;
+  const Creneaux = location.state.creneaux;
+  console.log(location.state);
+  // const prestataireId = location.state.id;
   const handleaddReservation = async () => {
+    const creneauxIds = isSelected.map((item) => item._id);
+    const reservation = {
+      clientId: localStorage.getItem("clientId"),
+      prestataireId: location.state.id,
+      creneaux: creneauxIds,
+      serviceId: location.state.serviceId,
+    };
     try {
-      await createReservation(isSelected).unwrap();
+      const res = await createReservation(reservation).unwrap();
+      await CreateNotification({
+        prestataireId: reservation.prestataireId,
+        reservationId: res._id,
+      });
+      socket.emit("new-reservation", {
+        prestataireId: location.state.id,
+      }); // Emit new reservation event to server
       toast({
         style: { backgroundColor: "green", color: "white" },
         description: "Added to Reservations successfully!",

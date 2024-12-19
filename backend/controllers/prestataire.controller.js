@@ -6,38 +6,47 @@ import jwt from "jsonwebtoken";
 // Get One Provider
 export const getOneProvider = async (req, res) => {
   try {
-   const provider = await provider_Model.findById(req.params.id).populate({
-     path: "services", // Populate services
-     populate: {
-       path: "creneaux", // Populate creneaux inside each service
-     },
-   });
+    const provider = await provider_Model.findById(req.params.id).populate([
+      {
+        path: "notifications.reservation",
+        populate: [
+          { path: "clientId", select: "nom prenom" },
+          { path: "creneaux" },
+          { path: "serviceId", select: "name" },
+        ],
+      },
+      // Populate senderId inside notifications
+      {
+        path: "services", // Populate services
+        populate: {
+          path: "creneaux", // Populate creneaux inside each service
+        },
+      },
+    ]);
+
     if (provider) return res.status(200).json(provider);
     return res
       .status(404)
       .json({ success: true, message: "provider not found" });
   } catch (error) {
-    res.status(500).send("Server Errors" + error.message);
+    res.status(500).send("Server Error" + error.message);
   }
 };
 
-
-//Get all providers 
-export const getAllProviders = async (req, res) =>{
-  try{
+//Get all providers
+export const getAllProviders = async (req, res) => {
+  try {
     const providers = await provider_Model.find().populate({
-      path:"services",
-      populate:{
-        path:"creneaux"
+      path: "services",
+      populate: {
+        path: "creneaux",
       },
     });
-    if(providers) return res.status(200).json(providers)
-   
-  }catch(error){
-    res.status(500).send(error.message)
+    if (providers) return res.status(200).json(providers);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-}
-
+};
 
 // Create a new provider
 export const addProvider = async (req, res) => {
@@ -76,7 +85,7 @@ export const addProvider = async (req, res) => {
   }
 };
 
-//login 
+//login
 export const loginProvider = async (req, res) => {
   try {
     const provider = await provider_Model.findOne({ email: req.body.email });
@@ -97,7 +106,7 @@ export const loginProvider = async (req, res) => {
   }
 };
 
-//delete 
+//delete
 export const DeleteProvider = async (req, res) => {
   try {
     const providerDeleted = await provider_Model.findOneAndDelete({
@@ -193,5 +202,23 @@ export const deleteCreneau = async (req, res) => {
       .json({ success: false, message: "Crenau not found" });
   } catch (error) {
     res.status(500).json({ succes: false, message: error });
+  }
+};
+
+// Create Notification
+export const createNotification = async (req, res) => {
+  try {
+    const notiUpdated = await provider_Model.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { notifications: req.body },
+      },
+      { new: true }
+    );
+    if (!notiUpdated)
+      return res.status(400).send({ success: false, message: "not found" });
+    return res.status(200).json({ success: true, message: notiUpdated });
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 };

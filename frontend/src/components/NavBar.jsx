@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, Dropdown, Navbar } from "flowbite-react";
+import { Avatar, Badge, Dropdown, Navbar } from "flowbite-react";
 import logo from "@/assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,22 +10,50 @@ import NavBarLoading from "./NavBarLoading";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
 import { Button } from "@/components/ui/button";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { HiCheck, HiClock } from "react-icons/hi";
+
+const socket = io("http://localhost:5000"); // Replace with your server's address
 
 export function NavBar() {
+  const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
+  const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
+  const prestataireId = localStorage.getItem("prestataireId");
+  const [notification, setNotification] = useState(null);
+  const {
+    data: prestataire,
+    isLoading: isLoadingPrestataire,
+    refetch,
+  } = useGetOnePrestataireQuery(prestataireId, {
+    skip: !isLoggedIn,
+  });
+  useEffect(() => {
+    if (prestataireId) socket.emit("prestataire-join", prestataireId);
+
+    const handleNewNotification = () => {
+      setNotification((prevNotification) => prevNotification + 1);
+    };
+
+    socket.on("New-Notification", handleNewNotification);
+
+    // Cleanup
+    return () => {
+      socket.off("New-Notification", handleNewNotification);
+    };
+  }, [prestataireId]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
-  const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
-
-  const prestataireId = localStorage.getItem("prestataireId");
   const clientId = localStorage.getItem("clientId");
-  console.log(clientId);
-
-  const { data: prestataire, isLoading: isLoadingPrestataire } =
-    useGetOnePrestataireQuery(prestataireId, {
-      skip: !isLoggedIn,
-    });
 
   const { data: client, isLoading: isLoadingClient } = useGetOneClientQuery(
     clientId,
@@ -33,7 +61,9 @@ export function NavBar() {
       skip: !isClientLoggedIn,
     }
   );
-
+  // const handlerefetch = () => {
+  //   refetch();
+  // };
   const handleLogOut = () => {
     if (isClientLoggedIn) {
       dispatch(LogOutClient());
@@ -45,6 +75,7 @@ export function NavBar() {
     localStorage.removeItem("token");
     navigate("/");
   };
+  console.log(prestataire);
 
   const renderDropdown = (user, isLoading, type) => {
     if (isLoading) {
@@ -57,6 +88,9 @@ export function NavBar() {
         <>
           <Link to="/prestataire/services">
             <Dropdown.Item>Mes Services</Dropdown.Item>
+          </Link>
+          <Link to="/prestataire/reservations">
+            <Dropdown.Item>Mes Reservastions</Dropdown.Item>
           </Link>
         </>
       ) : (
@@ -72,21 +106,59 @@ export function NavBar() {
           </Link>
         </>
       );
+    var notiButton = <>d</>;
+    if (type == "prestataire") {
+      const isNotReadNotification = prestataire.notifications.filter(
+        (noti) => noti.isRead == false
+      );
+      notiButton = (
+        <DropdownMenu>
+          {/* Notification Button as Dropdown Trigger */}
+          <DropdownMenuTrigger>
+            <button
+              className="py-3 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
+              aria-label="Notifications"
+            >
+              <IoIosNotificationsOutline className="text-[35px]" />
+              <span className="absolute inset-0 object-right-top -mr-6">
+                <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
+                  {notification
+                    ? notification + isNotReadNotification.length
+                    : isNotReadNotification.length}
+                </div>
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+
+          {/* Dropdown Content */}
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {isNotReadNotification.length > 0 ? (
+              isNotReadNotification.map((notif, index) => (
+                <DropdownMenuItem key={index} className=" p-4">
+                  {notif.reservation.clientId.nom}{" "}
+                  {notif.reservation.clientId.nom} a reserver{" "}
+                  <Badge color="warning">
+                    {notif.reservation.creneaux.length}
+                  </Badge>
+                  creneaux pour la service
+                  <Badge> {notif.reservation.serviceId.name} </Badge>
+                  <Badge color="gray" icon={HiClock} className="">
+                    3 days ago
+                  </Badge>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem>No new notifications</DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
     return (
       <>
-        {type == "prestataire" && (
-          <button
-            className="py-3 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
-            aria-label="Cart"
-          >
-            <IoIosNotificationsOutline className="text-[35px]" />
-            <span className="absolute inset-0 object-right-top -mr-6 ">
-              <div className="inline-flex items-center px-[4px]  border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
-                2
-              </div>
-            </span>
-          </button>
-        )}
+        {notiButton}
         <Dropdown
           arrowIcon={false}
           inline

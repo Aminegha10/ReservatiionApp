@@ -2,19 +2,21 @@
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import HomeLoading from "../HomeLoading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useDeleteServiceMutation,
   useGetAllServicesQuery,
 } from "@/app/services/servicesApi.js";
 import { FaEye } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast";
+import { io } from "socket.io-client";
 
 const Services = () => {
   const { toast } = useToast();
-
   const navigate = useNavigate();
   const prestataireId = localStorage.getItem("prestataireId");
+
+  // socket.emit("prestataire-join", "hello amine");
   //   // Edit function
 
   //   //deletecrenau
@@ -29,7 +31,6 @@ const Services = () => {
   //   Delete
   const [deleteService] = useDeleteServiceMutation();
 
-  console.log(services);
   //   //   delete crenau
   const handleDeleteService = async (id) => {
     console.log(id);
@@ -74,6 +75,7 @@ const Services = () => {
                 <Button onClick={handleAddService} className="mr-2 ">
                   Add Service
                 </Button>
+
                 <Button className="bg-gray-400">View All</Button>
               </div>
             </div>

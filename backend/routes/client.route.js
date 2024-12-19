@@ -30,7 +30,7 @@ router
   .post("/:clientId/addhistorique", addHistorique)
   .get("/:clientId/gethistorique", getAllHistorique)
   .delete("/:clientId/deletehistorique", removeHistorique)
-  .post("/:clientId/addreservation", addReservation)
-  .get("/:clientId/getreservations", getAllReservations);
+  // .post("/:clientId/addreservation", addReservation)
+  // .get("/:clientId/getreservations", getAllReservations);
 
 export default router;

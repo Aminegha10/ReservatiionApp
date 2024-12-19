@@ -5,7 +5,7 @@ import LoginReducer from "./services/LoginSlice"; // For provider login
 import ClientLoginReducer from "./services/ClientLoginSlice"; // For client login
 import { servicesApi } from "./services/servicesApi"; // RTK Query API for Services
 import { favoritesApi } from "./services/favorites";
-
+import { reservationApi } from "./services/reservationAPi";
 
 export const store = configureStore({
   reducer: {
@@ -15,12 +15,14 @@ export const store = configureStore({
     [prestataireApi.reducerPath]: prestataireApi.reducer, // RTK Query API for providers
     [servicesApi.reducerPath]: servicesApi.reducer, // RTK Query API for Services
     [favoritesApi.reducerPath]: favoritesApi.reducer, // RTK Query API for Favorites
+    [reservationApi.reducerPath]: reservationApi.reducer, // RTK Query API for Favorites
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       clientApi.middleware,
       prestataireApi.middleware,
       servicesApi.middleware,
-      favoritesApi.middleware 
+      favoritesApi.middleware,
+      reservationApi.middleware
     ),
 });

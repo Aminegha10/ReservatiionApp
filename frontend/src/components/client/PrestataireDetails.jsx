@@ -18,8 +18,8 @@ const PrestataireDetails = () => {
   const toast = useToast();
   const location = useLocation();
   const Services = location.state.services;
-  console.log(Services);
   const navigate = useNavigate();
+  console.log(location.state.services);
 
   const handleConsultaion = async (service) => {
     await createHistorique(service._id)
@@ -111,7 +111,11 @@ const PrestataireDetails = () => {
                       <Button
                         onClick={() => {
                           navigate("creneaux", {
-                            state: service.creneaux,
+                            state: {
+                              creneaux: service.creneaux,
+                              id: location.state._id,
+                              serviceId: service._id,
+                            },
                           });
                           handleConsultaion(service);
                         }}

@@ -24,7 +24,6 @@ const clientShema = new mongoose.Schema(
     },
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "prestataire" }],
     historique: [{ type: mongoose.Schema.Types.ObjectId, ref: "services" }],
-    reservations: [{ type: mongoose.Schema.Types.ObjectId, ref: "creneaux" }],
   },
   {
     timestamps: true,

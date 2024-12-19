@@ -60,12 +60,9 @@ module.exports = {
       },
     },
   },
-  daisyui: {
-    themes: "light",
-  },
   plugins: [
     require("tailwindcss-animate"),
     flowbite.plugin(),
-    require("daisyui"),
   ],
+  purge: { enabled: true }, // Ensure purge is active for production
 };

@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import PrestataireDetails from "@/components/client/PrestataireDetails";
 import Creneaux from "@/components/client/Creneaux";
 import Reservations from "@/components/client/Reservations";
-
+import ReservationsPrestataire from "@/components/Prestataire/ReservationsPrestataire";
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
@@ -77,6 +77,10 @@ export default function App() {
               </Route>
               <Route path="profile" element={<Profile />} />
               <Route path="MyCalendar" element={<Calendar />} />
+              <Route
+                path="reservations"
+                element={<ReservationsPrestataire />}
+              />
               <Route
                 path="creneaux/EditCreneau/:id"
                 element={<EditCreneau />}

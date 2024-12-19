@@ -6,13 +6,13 @@ export const prestataireApi = createApi({
     baseUrl: "http://localhost:5000/api/prestataires", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
-     getPrestataires: builder.query({
-       query: () => ({
+    getPrestataires: builder.query({
+      query: () => ({
         url: "/",
         method: "GET",
-     }),
-   }),
-   
+      }),
+    }),
+
     getOnePrestataire: builder.query({
       query: (id) => ({
         url: `/${id}`,
@@ -32,8 +32,6 @@ export const prestataireApi = createApi({
       }),
     }),
 
-
-
     LoginPrestataire: builder.mutation({
       query: (data) => ({
         url: "/login",
@@ -41,32 +39,15 @@ export const prestataireApi = createApi({
         body: data,
       }),
     }),
-    // // CreateCreneau
-    // updatePrestataire: builder.mutation({
-    //   query: ({ id, data }) => ({
-    //     url: `/createCrenau/${id}`,
-    //     method: "PUT",
-    //     body: data,
-    //   }),
-    //   // Invalidate cache after the update
-    //   invalidatesTags: ["Prestataire"],
-    // }),
-    // // delete Creneau
-    // deletePrestataire: builder.mutation({
-    //   query: ({ id, prestataireId }) => ({
-    //     url: `/deleteCrenau/${prestataireId}/${id}`,
-    //     method: "PUT",
-    //   }),
-    //   invalidatesTags: ["Prestataire"],
-    // }),
-    // UpdateCreneau: builder.mutation({
-    //   query: ({ id, data }) => ({
-    //     url: `/updateCrenau/${localStorage.getItem("prestataireId")}/${id}`,
-    //     method: "PUT",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["Prestataire"],
-    // }),
+
+    CreateNotification: builder.mutation({
+      query: ({ prestataireId, reservationId }) => ({
+        url: `addNotification/${prestataireId}`,
+        method: "PUT",
+        body: { reservation: reservationId },
+      }),
+      
+    }),
   }),
 });
 
@@ -78,4 +59,5 @@ export const {
   useUpdatePrestataireMutation,
   useUpdateCreneauMutation,
   useDeletePrestataireMutation,
+  useCreateNotificationMutation,
 } = prestataireApi;

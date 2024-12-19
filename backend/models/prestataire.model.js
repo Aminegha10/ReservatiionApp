@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 
 const providers_Schema = new mongoose.Schema(
@@ -25,6 +24,22 @@ const providers_Schema = new mongoose.Schema(
       type: String,
     },
     services: [{ type: mongoose.Schema.Types.ObjectId, ref: "services" }],
+    notifications: [
+      {
+        reservation: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "reservation",
+        },
+
+        // Status of the notification (read/unread)
+        isRead: {
+          type: Boolean,
+          default: false,
+        },
+
+        // Type of notification (optional, e.g., 'reservation', 'cancellation')
+      },
+    ],
   },
   {
     timestamps: true,

@@ -12,13 +12,17 @@ import { FaMapLocationDot } from "react-icons/fa6";
 
 const GetPrestataires = () => {
   const navigate = useNavigate();
-  const { data: prestataires, isLoading, error } = useGetPrestatairesQuery();
+  const {
+    data: prestataires,
+    isLoading,
+    error,
+  } = useGetPrestatairesQuery(localStorage.getItem("prestataireId"));
   const [searchQuery, setSearchQuery] = useState("");
   const [addFavorite] = useAddFavoriteMutation();
   const { toast } = useToast();
 
   const clientId = localStorage.getItem("clientId");
-
+  console.log(prestataires);
   if (isLoading)
     return (
       <div className="bg-white ">
