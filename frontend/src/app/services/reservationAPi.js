@@ -30,6 +30,14 @@ export const reservationApi = createApi({
       }),
       invalidatesTags: ["Reservation"], // Provides Reservation cache
     }),
+    //
+    confirmReservation: builder.mutation({
+      query: (reservationId) => ({
+        url: `/confirmReservation/${reservationId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Reservation"], // Provides Reservation cache
+    }),
   }),
 });
 
@@ -37,4 +45,5 @@ export const {
   useGetClientReservationsQuery,
   useGetPrestataireReservationsQuery,
   useCreateReservationMutation,
+  useConfirmReservationMutation,
 } = reservationApi;

@@ -22,7 +22,6 @@ const GetPrestataires = () => {
   const { toast } = useToast();
 
   const clientId = localStorage.getItem("clientId");
-  console.log(prestataires);
   if (isLoading)
     return (
       <div className="bg-white ">

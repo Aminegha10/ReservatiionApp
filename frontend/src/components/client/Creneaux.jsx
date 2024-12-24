@@ -15,10 +15,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useCreateReservationMutation } from "@/app/services/reservationAPi";
 import { io } from "socket.io-client";
 import { useCreateNotificationMutation } from "@/app/services/prestataireApi";
-
+import axios from "axios";
+import { useGetOneClientQuery } from "@/app/services/clientApi";
 const socket = io("http://localhost:5000"); // Replace with your server's address
 
 const Creneaux = () => {
+  // emailJs
+  const { data: client } = useGetOneClientQuery(
+    localStorage.getItem("clientId")
+  );
+  console.log(client);
   const [CreateNotification] = useCreateNotificationMutation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -34,10 +40,12 @@ const Creneaux = () => {
         : [...isSelected, creneau] // Add if not selected
     );
   };
-  console.log(isSelected);
   const location = useLocation();
+  console.log(isSelected);
+
   const Creneaux = location.state.creneaux;
-  console.log(location.state);
+  const { NamePrestataire, email, telephone } =
+    location.state.prestataireDetails;
   // const prestataireId = location.state.id;
   const handleaddReservation = async () => {
     const creneauxIds = isSelected.map((item) => item._id);
@@ -53,6 +61,40 @@ const Creneaux = () => {
         prestataireId: reservation.prestataireId,
         reservationId: res._id,
       });
+      const data = {
+        service_id: "service_s09yv6s",
+        template_id: "template_8vj4lcq",
+        user_id: "OKNAn7DCfufMNC6d2",
+        template_params: {
+          subject: "You have received new reservation",
+          from_name: client.nom+" "+client.prenom,
+          from_email: "anasghanim053@gmail.com",
+          from_telephone: client.telephone,
+          // to_telephone: telephone,
+          to_name: NamePrestataire,
+          to_email: "aminogha@gmail.com",
+          message:
+            "aminegha" +
+            " has reserved you service " +
+            location.state.serviceName +
+            " for " +
+            isSelected.map(
+              (item) =>
+                item.day +
+                " at " +
+                item.startTime +
+                " to " +
+                item.endTime +
+                " | "
+            ),
+        },
+      };
+
+      const response = await axios.post(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        data
+      );
+      console.log(response);
       socket.emit("new-reservation", {
         prestataireId: location.state.id,
       }); // Emit new reservation event to server

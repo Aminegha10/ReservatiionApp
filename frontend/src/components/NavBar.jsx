@@ -5,7 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { LogOut } from "@/app/services/LoginSlice";
 import { LogOutClient } from "@/app/services/ClientLoginSlice.js";
-import { useGetOnePrestataireQuery } from "@/app/services/prestataireApi";
+import {
+  useGetOnePrestataireQuery,
+  useReadNotificationsMutation,
+} from "@/app/services/prestataireApi";
 import NavBarLoading from "./NavBarLoading";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
 import { Button } from "@/components/ui/button";
@@ -28,7 +31,6 @@ export function NavBar() {
   const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const prestataireId = localStorage.getItem("prestataireId");
-  const [notification, setNotification] = useState(null);
   const {
     data: prestataire,
     isLoading: isLoadingPrestataire,
@@ -36,11 +38,15 @@ export function NavBar() {
   } = useGetOnePrestataireQuery(prestataireId, {
     skip: !isLoggedIn,
   });
+
+  // readingNotifications
+  const [readNotifications] = useReadNotificationsMutation();
+
   useEffect(() => {
     if (prestataireId) socket.emit("prestataire-join", prestataireId);
 
     const handleNewNotification = () => {
-      setNotification((prevNotification) => prevNotification + 1);
+      refetch();
     };
 
     socket.on("New-Notification", handleNewNotification);
@@ -75,12 +81,19 @@ export function NavBar() {
     localStorage.removeItem("token");
     navigate("/");
   };
-  console.log(prestataire);
-
+  const handleReadingNotifications = async () => {
+    try {
+      await readNotifications().unwrap();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  console.log(prestataire?.notifications);
   const renderDropdown = (user, isLoading, type) => {
     if (isLoading) {
       return <NavBarLoading />;
     }
+
     const profileRoute =
       type === "prestataire" ? "/prestataire/profile" : "/client/profile";
     const additionalItems =
@@ -95,7 +108,7 @@ export function NavBar() {
         </>
       ) : (
         <>
-          <Link to="/client/prestataires">
+          <Link to={{ pathname: "/client/prestataires", state: client }}>
             <Dropdown.Item>Prestataires</Dropdown.Item>
           </Link>
           <Link to="/client/reservations">
@@ -121,11 +134,11 @@ export function NavBar() {
             >
               <IoIosNotificationsOutline className="text-[35px]" />
               <span className="absolute inset-0 object-right-top -mr-6">
-                <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
-                  {notification
-                    ? notification + isNotReadNotification.length
-                    : isNotReadNotification.length}
-                </div>
+                {isNotReadNotification.length > 0 && (
+                  <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
+                    {isNotReadNotification.length}
+                  </div>
+                )}
               </span>
             </button>
           </DropdownMenuTrigger>
@@ -145,13 +158,24 @@ export function NavBar() {
                   creneaux pour la service
                   <Badge> {notif.reservation.serviceId.name} </Badge>
                   <Badge color="gray" icon={HiClock} className="">
-                    3 days ago
+                    {notif.timeAgo}
                   </Badge>
                 </DropdownMenuItem>
               ))
             ) : (
               <DropdownMenuItem>No new notifications</DropdownMenuItem>
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="flex justify-end ">
+              {isNotReadNotification.length > 0 && (
+                <Button
+                  className=" px-3 text-sm text-white rounded hover:bg-white hover:text-black"
+                  onClick={handleReadingNotifications}
+                >
+                  Read All
+                </Button>
+              )}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

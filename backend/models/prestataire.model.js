@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import mongoose from "mongoose";
 
 const providers_Schema = new mongoose.Schema(
@@ -36,7 +37,7 @@ const providers_Schema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
-
+        createdAt: { type: Date, default: Date.now },
         // Type of notification (optional, e.g., 'reservation', 'cancellation')
       },
     ],

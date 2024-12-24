@@ -21,7 +21,7 @@ export const prestataireApi = createApi({
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-      providesTags: ["Service"], // This connects to the "Prestataire" tag
+      providesTags: ["Notifications"], // This connects to the "Prestataire" tag
     }),
 
     createPrestataire: builder.mutation({
@@ -46,7 +46,14 @@ export const prestataireApi = createApi({
         method: "PUT",
         body: { reservation: reservationId },
       }),
-      
+    }),
+    // ReadingNotifications
+    ReadNotifications: builder.mutation({
+      query: () => ({
+        url: `readNotifications/${localStorage.getItem("prestataireId")}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Notifications"], // Invalidates Notifications cache
     }),
   }),
 });
@@ -60,4 +67,5 @@ export const {
   useUpdateCreneauMutation,
   useDeletePrestataireMutation,
   useCreateNotificationMutation,
+  useReadNotificationsMutation,
 } = prestataireApi;

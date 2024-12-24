@@ -24,7 +24,48 @@ export const getOneProvider = async (req, res) => {
       },
     ]);
 
-    if (provider) return res.status(200).json(provider);
+    if (provider) {
+      // Convert Mongoose document to a plain object
+      const providerData = provider.toObject();
+
+      // Get current time
+      const currentTime = new Date();
+
+      // Format the 'createdAt' date in each notification
+      providerData.notifications = providerData.notifications.map(
+        (notification) => {
+          // Get the time difference in milliseconds
+          const timeDifference = currentTime - new Date(notification.createdAt);
+
+          // Calculate the time difference in various units
+          const seconds = Math.floor(timeDifference / 1000);
+          const minutes = Math.floor(seconds / 60);
+          const hours = Math.floor(minutes / 60);
+          const days = Math.floor(hours / 24);
+
+          let timeAgo = "";
+
+          // Determine the correct time unit (minutes, hours, or days)
+          if (days > 0) {
+            timeAgo = `${days} day(s) ago`;
+          } else if (hours > 0) {
+            timeAgo = `${hours} hour(s) ago`;
+          } else if (minutes > 0) {
+            timeAgo = `${minutes} minute(s) ago`;
+          } else {
+            timeAgo = `${seconds} second(s) ago`;
+          }
+
+          // Add the timeAgo property to the notification
+          return {
+            ...notification,
+            timeAgo,
+          };
+        }
+      );
+      return res.status(200).json(providerData);
+    }
+
     return res
       .status(404)
       .json({ success: true, message: "provider not found" });
@@ -213,6 +254,22 @@ export const createNotification = async (req, res) => {
       {
         $push: { notifications: req.body },
       },
+      { new: true }
+    );
+    if (!notiUpdated)
+      return res.status(400).send({ success: false, message: "not found" });
+    return res.status(200).json({ success: true, message: notiUpdated });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+
+// Read notifications
+export const readNotifications = async (req, res) => {
+  try {
+    const notiUpdated = await provider_Model.findByIdAndUpdate(
+      req.params.id,
+      { $set: { "notifications.$[].isRead": true } }, // Update all elements in the array
       { new: true }
     );
     if (!notiUpdated)

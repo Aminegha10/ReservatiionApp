@@ -19,7 +19,7 @@ const PrestataireDetails = () => {
   const location = useLocation();
   const Services = location.state.services;
   const navigate = useNavigate();
-  console.log(location.state.services);
+  console.log(location.state);
 
   const handleConsultaion = async (service) => {
     await createHistorique(service._id)
@@ -115,6 +115,15 @@ const PrestataireDetails = () => {
                               creneaux: service.creneaux,
                               id: location.state._id,
                               serviceId: service._id,
+                              serviceName: service.name,
+                              prestataireDetails: {
+                                NamePrestataire:
+                                  location.state.nom +
+                                  " " +
+                                  location.state.prenom,
+                                email: location.state.email,
+                                telephone: location.state.telephone,
+                              },
                             },
                           });
                           handleConsultaion(service);

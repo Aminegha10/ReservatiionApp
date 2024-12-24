@@ -12,6 +12,7 @@ import { FaHistory, FaRegStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetClientReservationsQuery } from "@/app/services/reservationAPi";
 import { MdHomeRepairService } from "react-icons/md";
+import HomeLoading from "@/components/HomeLoading";
 
 const Reservations = () => {
   const {
@@ -22,7 +23,7 @@ const Reservations = () => {
   } = useGetClientReservationsQuery(localStorage.getItem("clientId"));
 
   if (isLoading) {
-    return <div className="text-center text-gray-600">Loading...</div>;
+    return <HomeLoading />;
   }
 
   if (isError) {
