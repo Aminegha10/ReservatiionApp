@@ -10,7 +10,10 @@ import {
   useReadNotificationsMutation,
 } from "@/app/services/prestataireApi";
 import NavBarLoading from "./NavBarLoading";
-import { useGetOneClientQuery } from "@/app/services/clientApi";
+import {
+  useGetOneClientQuery,
+  useReadNotificationsClientMutation,
+} from "@/app/services/clientApi";
 import { Button } from "@/components/ui/button";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { useEffect, useState } from "react";
@@ -31,6 +34,8 @@ export function NavBar() {
   const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const prestataireId = localStorage.getItem("prestataireId");
+  const clientId = localStorage.getItem("clientId");
+
   const {
     data: prestataire,
     isLoading: isLoadingPrestataire,
@@ -38,35 +43,40 @@ export function NavBar() {
   } = useGetOnePrestataireQuery(prestataireId, {
     skip: !isLoggedIn,
   });
-
-  // readingNotifications
+  const {
+    data: client,
+    isLoading: isLoadingClient,
+    refetch: clientRefetch,
+  } = useGetOneClientQuery(clientId, {
+    skip: !isClientLoggedIn,
+  });
+  // readingNotifications Prestataire
   const [readNotifications] = useReadNotificationsMutation();
+  // readingNotifications client
+  const [readNotificationsClient] = useReadNotificationsClientMutation();
 
   useEffect(() => {
     if (prestataireId) socket.emit("prestataire-join", prestataireId);
+    if (clientId) socket.emit("client-join", clientId);
 
     const handleNewNotification = () => {
       refetch();
     };
-
+    const handleNewNotificationClient = () => {
+      clientRefetch();
+    };
+    socket.on("New-Notification-Client", handleNewNotificationClient);
     socket.on("New-Notification", handleNewNotification);
 
     // Cleanup
     return () => {
       socket.off("New-Notification", handleNewNotification);
+      socket.off("New-Notification-Client", handleNewNotificationClient);
     };
-  }, [prestataireId]);
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const clientId = localStorage.getItem("clientId");
-
-  const { data: client, isLoading: isLoadingClient } = useGetOneClientQuery(
-    clientId,
-    {
-      skip: !isClientLoggedIn,
-    }
-  );
   // const handlerefetch = () => {
   //   refetch();
   // };
@@ -83,12 +93,14 @@ export function NavBar() {
   };
   const handleReadingNotifications = async () => {
     try {
-      await readNotifications().unwrap();
+      if (prestataireId) await readNotifications().unwrap();
+      else {
+        const res = await readNotificationsClient().unwrap();
+      }
     } catch (err) {
       console.log(err);
     }
   };
-  console.log(prestataire?.notifications);
   const renderDropdown = (user, isLoading, type) => {
     if (isLoading) {
       return <NavBarLoading />;
@@ -156,6 +168,63 @@ export function NavBar() {
                     {notif.reservation.creneaux.length}
                   </Badge>
                   creneaux pour la service
+                  <Badge> {notif.reservation.serviceId.name} </Badge>
+                  <Badge color="gray" icon={HiClock} className="">
+                    {notif.timeAgo}
+                  </Badge>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem>No new notifications</DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="flex justify-end ">
+              {isNotReadNotification.length > 0 && (
+                <Button
+                  className=" px-3 text-sm text-white rounded hover:bg-white hover:text-black"
+                  onClick={handleReadingNotifications}
+                >
+                  Read All
+                </Button>
+              )}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+    if (type == "client") {
+      const isNotReadNotification = client.notifications.filter(
+        (noti) => noti.isRead == false
+      );
+      notiButton = (
+        <DropdownMenu>
+          {/* Notification Button as Dropdown Trigger */}
+          <DropdownMenuTrigger>
+            <button
+              className="py-3 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
+              aria-label="Notifications"
+            >
+              <IoIosNotificationsOutline className="text-[35px]" />
+              <span className="absolute inset-0 object-right-top -mr-6">
+                {isNotReadNotification.length > 0 && (
+                  <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
+                    {isNotReadNotification.length}
+                  </div>
+                )}
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+
+          {/* Dropdown Content */}
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {isNotReadNotification.length > 0 ? (
+              isNotReadNotification.map((notif, index) => (
+                <DropdownMenuItem key={index} className=" p-4">
+                  {notif.reservation.prestataireId.nom}{" "}
+                  {notif.reservation.prestataireId.nom} a confirmer votre
+                  reservation pour la service
                   <Badge> {notif.reservation.serviceId.name} </Badge>
                   <Badge color="gray" icon={HiClock} className="">
                     {notif.timeAgo}

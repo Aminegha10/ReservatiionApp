@@ -30,19 +30,19 @@ io.on("connection", (socket) => {
     console.log(prestataireId);
     socket.join(prestataireId);
   });
-  // Handle new reservation event
+  // Listen for Client to join with their unique ID
+  socket.on("client-join", (clientId) => {
+    console.log(clientId);
+    socket.join(clientId);
+  });
+  // Handle new reservation event PRESTATAIRE
   socket.on("new-reservation", ({ prestataireId }) => {
     socket.to(prestataireId).emit("New-Notification");
-    // try {
-    //   // Save the reservation using the controller
-    //   const savedReservation = await saveReservation({
-    //     reservationDetails,
-    //     prestataireId,
-    //   });
-    // Notify the prestataire about the new reservation
-    // } catch (error) {
-    //   console.error("Error handling reservation:", error.message);
-    // }
+  });
+  // Handle new reservation event cLIENT
+  socket.on("new-Confirmation", ({ clientId }) => {
+    console.log(clientId);
+    socket.to(clientId).emit("New-Notification-Client");
   });
   // Handle client disconnection
   socket.on("disconnect", () => {

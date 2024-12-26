@@ -19,10 +19,60 @@ export const getAllClients = async (req, res) => {
 // Get One Client
 export const getOneClient = async (req, res) => {
   try {
-    const client = await ClientModel.findOne({ _id: req.params.id });
-    console.log(client);
-    if (client) return res.status(200).json(client);
-    return res.status(404).json({ success: true, message: "client not found" });
+    const client = await ClientModel.findOne({ _id: req.params.id }).populate({
+      path: "notifications.reservation",
+      populate: [
+        { path: "prestataireId", select: "nom prenom" },
+        { path: "clientId", select: "nom prenom" },
+        { path: "creneaux" },
+        { path: "serviceId", select: "name" },
+      ],
+    });
+    if (client) {
+      // Convert Mongoose document to a plain object
+      const clientData = client.toObject();
+
+      // Get current time
+      const currentTime = new Date();
+
+      // Format the 'createdAt' date in each notification
+      clientData.notifications = clientData.notifications.map(
+        (notification) => {
+          // Get the time difference in milliseconds
+          const timeDifference = currentTime - new Date(notification.createdAt);
+
+          // Calculate the time difference in various units
+          const seconds = Math.floor(timeDifference / 1000);
+          const minutes = Math.floor(seconds / 60);
+          const hours = Math.floor(minutes / 60);
+          const days = Math.floor(hours / 24);
+
+          let timeAgo = "";
+
+          // Determine the correct time unit (minutes, hours, or days)
+          if (days > 0) {
+            timeAgo = `${days} day(s) ago`;
+          } else if (hours > 0) {
+            timeAgo = `${hours} hour(s) ago`;
+          } else if (minutes > 0) {
+            timeAgo = `${minutes} minute(s) ago`;
+          } else {
+            timeAgo = `${seconds} second(s) ago`;
+          }
+
+          // Add the timeAgo property to the notification
+          return {
+            ...notification,
+            timeAgo,
+          };
+        }
+      );
+      return res.status(200).json(clientData);
+    }
+
+    return res
+      .status(404)
+      .json({ success: true, message: "client not found" });
   } catch (error) {
     res.status(500).send("Server Error");
   }
@@ -196,7 +246,7 @@ export const addHistorique = async (req, res) => {
     const client = await ClientModel.findByIdAndUpdate(
       clientId,
       {
-        $push: { historique: serviceId },
+        $push: { historique: { service: serviceId } },
       },
       { new: true }
     );
@@ -217,7 +267,7 @@ export const getAllHistorique = async (req, res) => {
   console.log(clientId);
   try {
     const client = await ClientModel.findById(clientId).populate({
-      path: "historique",
+      path: "historique.service",
       populate: { path: "prestataire" },
     });
     console.log(client.historique);
@@ -290,5 +340,39 @@ export const getAllReservations = async (req, res) => {
     res.status(200).json(client.reservations);
   } catch (error) {
     res.status(500).json({ message: "server error", error: error.message });
+  }
+};
+
+// Create Notification
+export const createNotification = async (req, res) => {
+  try {
+    const notiUpdated = await ClientModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { notifications: req.body },
+      },
+      { new: true }
+    );
+    if (!notiUpdated)
+      return res.status(400).send({ success: false, message: "not found" });
+    return res.status(200).json({ success: true, message: notiUpdated });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+
+// Read notifications
+export const readNotifications = async (req, res) => {
+  try {
+    const notiUpdated = await ClientModel.findByIdAndUpdate(
+      req.params.id,
+      { $set: { "notifications.$[].isRead": true } }, // Update all elements in the array
+      { new: true }
+    );
+    if (!notiUpdated)
+      return res.status(400).send({ success: false, message: "not found" });
+    return res.status(200).json({ success: true, message: notiUpdated });
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 };

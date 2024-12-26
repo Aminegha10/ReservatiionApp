@@ -23,7 +23,28 @@ const clientShema = new mongoose.Schema(
       required: true,
     },
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "prestataire" }],
-    historique: [{ type: mongoose.Schema.Types.ObjectId, ref: "services" }],
+    historique: [
+      {
+        service: { type: mongoose.Schema.Types.ObjectId, ref: "services" },
+        createdAt: { type: Date, default: Date.now() },
+      },
+    ],
+    notifications: [
+      {
+        reservation: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "reservation",
+        },
+
+        // Status of the notification (read/unread)
+        isRead: {
+          type: Boolean,
+          default: false,
+        },
+        createdAt: { type: Date, default: Date.now },
+        // Type of notification (optional, e.g., 'reservation', 'cancellation')
+      },
+    ],
   },
   {
     timestamps: true,

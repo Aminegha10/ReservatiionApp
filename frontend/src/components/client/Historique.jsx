@@ -8,7 +8,7 @@ import { MdHomeRepairService } from "react-icons/md";
 import { Button } from "../ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ReturnButton from "../ReturnButton";
-
+import HomeLoading from "@/components/HomeLoading";
 const ConsultingHistoryList = () => {
   const { toast } = useToast();
   //
@@ -35,13 +35,13 @@ const ConsultingHistoryList = () => {
       timeStyle: "short",
     });
   };
-
+  console.log(historique);
   //   const handleItemClick = (id) => {
   //     setExpandedItem(expandedItem === id ? null : id);
   //   };
 
   if (isLoading) {
-    return <div className="text-center text-gray-600">Loading...</div>;
+    return <HomeLoading />;
   }
 
   if (isError) {
@@ -61,7 +61,7 @@ const ConsultingHistoryList = () => {
 
   return (
     <>
-      <div className=" bg-gray-50 p-4 md:p-8 rounded-md">
+      <div className=" p-4 md:p-8 rounded-md">
         <div className="">
           <div className="flex justify-between items-center mb-6">
             <div className="text-2xl font-bold text-gray-800">
@@ -85,12 +85,15 @@ const ConsultingHistoryList = () => {
                 <div className="p-4 flex gap-24 items-center justify-between cursor-pointer">
                   <div className="flex items-center space-x-4">
                     <MdHomeRepairService className="text-gray-400" />
-                    <div className="">{consultation.name} </div>
+                    <div className="">{consultation.service.name} </div>
                   </div>
                   <div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <FaUser className="text-gray-400" />
-                      <span>{consultation.prestataire.nom}</span>
+                      <span>
+                        {consultation.service.prestataire.nom}{" "}
+                        {consultation.service.prestataire.prenom}
+                      </span>
                     </div>
                   </div>
                   <div className="text-right">

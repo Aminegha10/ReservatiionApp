@@ -20,6 +20,7 @@ export const clientApi = createApi({
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token to headers as Bearer token
         },
       }),
+      providesTags: ["Notifications"], // Invalidates Notifications cache
     }),
     createClient: builder.mutation({
       query: (data) => ({
@@ -58,6 +59,22 @@ export const clientApi = createApi({
       }),
       invalidatesTags: ["Historique"], // Provides Historique cache
     }),
+    // ReadingNotifications
+    ReadNotificationsClient: builder.mutation({
+      query: () => ({
+        url: `readNotifications/${localStorage.getItem("clientId")}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Notifications"], // Invalidates Notifications cache
+    }),
+    // Create Notification
+    CreateNotification: builder.mutation({
+      query: ({ clientId, reservationId }) => ({
+        url: `addNotification/${clientId}`,
+        method: "PUT",
+        body: { reservation: reservationId },
+      }),
+    }),
   }),
 });
 
@@ -69,4 +86,6 @@ export const {
   useCreateHistoriqueMutation,
   useGetHistoriqueQuery,
   useDeleteHistoriqueMutation,
+  useReadNotificationsClientMutation,
+  useCreateNotificationMutation,
 } = clientApi;

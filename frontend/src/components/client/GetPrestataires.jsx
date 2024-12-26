@@ -9,6 +9,8 @@ import { FaRegStar } from "react-icons/fa";
 import { FaHistory } from "react-icons/fa";
 import Loading from "../HomeLoading";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { Input } from "../ui/input";
+import { FaSearch } from "react-icons/fa";
 
 const GetPrestataires = () => {
   const navigate = useNavigate();
@@ -77,8 +79,49 @@ const GetPrestataires = () => {
   return (
     <div className="flex-grow flex mt-4 justify-center items-center ">
       <div className="container mx-auto  space-y-2">
-        <div className="flex justify-between ">
-          <h2 className="text-2xl font-bold mb-4">Prestataires</h2>
+        <div className="flex justify-between gap-32 ">
+          <div className="flex w-full   space-x-2">
+            <Button type="submit">Prestataires</Button>
+            <Input
+              type="email"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="bg-white"
+              placeholder="Search by location service prestataireName... "
+            />
+            <Button type="submit">
+              <FaSearch />
+            </Button>
+          </div>
+          {/* <input
+            type="text"
+            name="q"
+            id="query"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Button, Footer, etc"
+            className="w-full p-3 rounded-md border-2 border-r-white rounded-r-none border-gray-300 placeholder-gray-500 dark:placeholder-gray-300 dark:bg-gray-500dark:text-gray-300 dark:border-none "
+          />
+          <button className="inline-flex items-center gap-2 bg-violet-700 text-white text-lg font-semibold  px-6 rounded-r-md">
+            <span>search</span>
+            <span className="hidden md:block">
+              <svg
+                className="text-gray-200 h-5 w-5 p-0 fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                version="1.1"
+                x="0px"
+                y="0px"
+                viewBox="0 0 56.966 56.966"
+                style={{ enableBackground: "new 0 0 56.966 56.966" }}
+                xmlSpace="preserve"
+                width="512px"
+                height="512px"
+              >
+                <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+              </svg>
+            </span>
+          </button> */}
           <div className="space-x-2 flex ">
             <Link to="/client/favorites">
               <Button>
@@ -95,13 +138,11 @@ const GetPrestataires = () => {
           </div>
         </div>
 
-        <input
+        {/* <input
           type="text"
           placeholder="Search by address, service, or time slots"
           className="w-full p-2 mb-4 border rounded"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+        /> */}
 
         <div className="p-6 ">
           <div className="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10">
@@ -113,16 +154,16 @@ const GetPrestataires = () => {
                     navigate(`${prestataire.nom}`, { state: prestataire });
                   }}
                   key={prestataire._id}
-                  className="hover:bg-gray-900 cursor-pointer bg-gray-100 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg"
+                  className="hover:bg-black cursor-pointer bg-gray-100 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg"
                 >
-                  <div className="py-4 px-8 relative  ">
+                  <div className="py-4 px-8 relative group  ">
                     {/* Outlined Star (Visible by default) */}
                     <FaRegStar
                       onClick={(event) => {
                         event.stopPropagation(); // Prevents click from bubbling to parent
                         handleAddFavorite(prestataire._id);
                       }}
-                      className="absolute top-5 right-5 text-[25px] text-gray-500 group-hover:hidden cursor-pointer"
+                      className="absolute group-hover:text-white top-5 right-5 text-[25px] text-gray-500 cursor-pointer"
                     />
 
                     <div className="flex space-x-2">
@@ -131,7 +172,7 @@ const GetPrestataires = () => {
                         className="rounded-full h-12 w-12 mb-4 "
                       />
                       <div className="">
-                        <h1 className="text-gray-600   font-bold ">
+                        <h1 className="text-black group-hover:text-white font-bold ">
                           {prestataire.prenom} {prestataire.nom}
                         </h1>
                         <p className="text-gray-400">{prestataire.email}</p>

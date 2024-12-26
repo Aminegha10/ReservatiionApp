@@ -15,6 +15,8 @@ import {
   removeHistorique,
   getAllReservations,
   addReservation,
+  createNotification,
+  readNotifications,
 } from "../controllers/client.controller.js";
 
 // Create endpoint to add a new user
@@ -30,7 +32,10 @@ router
   .post("/:clientId/addhistorique", addHistorique)
   .get("/:clientId/gethistorique", getAllHistorique)
   .delete("/:clientId/deletehistorique", removeHistorique)
-  // .post("/:clientId/addreservation", addReservation)
-  // .get("/:clientId/getreservations", getAllReservations);
+  .put("/addNotification/:id", createNotification)
+  .put("/readNotifications/:id", readNotifications);
+
+// .post("/:clientId/addreservation", addReservation)
+// .get("/:clientId/getreservations", getAllReservations);
 
 export default router;

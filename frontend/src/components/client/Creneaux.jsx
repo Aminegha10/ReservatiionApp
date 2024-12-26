@@ -44,8 +44,7 @@ const Creneaux = () => {
   console.log(isSelected);
 
   const Creneaux = location.state.creneaux;
-  const { NamePrestataire, email, telephone } =
-    location.state.prestataireDetails;
+  const { NamePrestataire } = location.state.prestataireDetails;
   // const prestataireId = location.state.id;
   const handleaddReservation = async () => {
     const creneauxIds = isSelected.map((item) => item._id);
@@ -66,8 +65,10 @@ const Creneaux = () => {
         template_id: "template_8vj4lcq",
         user_id: "OKNAn7DCfufMNC6d2",
         template_params: {
+          sender: "client",
+          topic: "Reservation",
           subject: "You have received new reservation",
-          from_name: client.nom+" "+client.prenom,
+          from_name: client.nom + " " + client.prenom,
           from_email: "anasghanim053@gmail.com",
           from_telephone: client.telephone,
           // to_telephone: telephone,
