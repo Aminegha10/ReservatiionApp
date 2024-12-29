@@ -21,15 +21,15 @@ const Services = ({ isEdit }) => {
   }
   const { toast } = useToast();
   const navigate = useNavigate();
-  // Define Zod schema to validate the form
+  // Définir le schéma Zod pour valider le formulaire
   const schema = z.object({
-    name: z.string().min(1, "Name is required"),
+    name: z.string().min(1, "Le nom est requis"),
     description: z.string().optional(),
     category: z.string().optional(),
-    price: z.number().min(0, "Price must be a positive number"),
+    price: z.number().min(0, "Le prix doit être un nombre positif"),
   });
 
-  // Form handling using react-hook-form with Zod resolver
+  // Gestion du formulaire avec react-hook-form et Zod resolver
   const {
     register,
     handleSubmit,
@@ -39,7 +39,7 @@ const Services = ({ isEdit }) => {
   });
   const [editService] = useEditServiceMutation();
   const [addService] = useCreateServiceMutation();
-  // Submit function
+  // Fonction de soumission
   const onSubmit = async (data) => {
     if (isEdit) {
       const serviceId = Service._id;
@@ -47,13 +47,13 @@ const Services = ({ isEdit }) => {
       try {
         await editService({ data, serviceId }).unwrap();
         toast({
-          style: { backgroundColor: "green", color: "white" }, // Custom green styling
-          description: "your data has been submitted",
+          style: { backgroundColor: "green", color: "white" }, // Style personnalisé vert
+          description: "Vos données ont été soumises",
         });
         navigate(-1);
       } catch (error) {
         toast({
-          style: { backgroundColor: "red", color: "white" }, // Custom green styling
+          style: { backgroundColor: "red", color: "white" }, // Style personnalisé rouge
           description: error.message,
         });
       }
@@ -63,13 +63,13 @@ const Services = ({ isEdit }) => {
         const res = await addService(data).unwrap();
         console.log(res);
         toast({
-          style: { backgroundColor: "green", color: "white" }, // Custom green styling
-          description: "your data has been submitted",
+          style: { backgroundColor: "green", color: "white" }, // Style personnalisé vert
+          description: "Vos données ont été soumises",
         });
         navigate(-1);
       } catch (error) {
         toast({
-          style: { backgroundColor: "red", color: "white" }, // Custom green styling
+          style: { backgroundColor: "red", color: "white" }, // Style personnalisé rouge
           description: error.message,
         });
       }
@@ -79,20 +79,20 @@ const Services = ({ isEdit }) => {
   return (
     <div className="w-full max-w-lg mx-auto bg-white p-4 border rounded mt-5">
       <h2 className="text-lg text-center bg-black text-white py-3 rounded-md mb-4">
-        Entrer votre premier Service
+        Entrez votre premier service
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-2">
-          {/* Name of the service */}
+          {/* Nom du service */}
           <div>
-            <Label htmlFor="name">Service Name</Label>
+            <Label htmlFor="name">Nom du service</Label>
             <Input
               id="name"
               {...register("name")}
               type="text"
               defaultValue={isEdit ? Service.name : ""}
-              placeholder="Enter service name"
+              placeholder="Entrez le nom du service"
               required
             />
             {errors.name && (
@@ -108,37 +108,37 @@ const Services = ({ isEdit }) => {
               {...register("description")}
               type="text"
               defaultValue={isEdit ? Service.description : ""}
-              placeholder="Enter service description (optional)"
+              placeholder="Entrez la description du service (facultatif)"
             />
             {errors.description && (
               <span className="text-red-500">{errors.description.message}</span>
             )}
           </div>
 
-          {/* Category */}
+          {/* Catégorie */}
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">Catégorie</Label>
             <Input
               id="category"
               {...register("category")}
               defaultValue={isEdit ? Service.category : ""}
               type="text"
-              placeholder="Enter service category (optional)"
+              placeholder="Entrez la catégorie du service (facultatif)"
             />
             {errors.category && (
               <span className="text-red-500">{errors.category.message}</span>
             )}
           </div>
 
-          {/* Price */}
+          {/* Prix */}
           <div>
-            <Label htmlFor="price">Price</Label>
+            <Label htmlFor="price">Prix</Label>
             <Input
               id="price"
               defaultValue={isEdit ? Service.price : ""}
               {...register("price", { valueAsNumber: true })}
               type="number"
-              placeholder="Enter service price"
+              placeholder="Entrez le prix du service"
               required
             />
             {errors.price && (
@@ -146,9 +146,9 @@ const Services = ({ isEdit }) => {
             )}
           </div>
         </div>
-        {/* Submit button */}
+        {/* Bouton de soumission */}
         <Button type="submit" className="w-full mt-4">
-          Submit
+          Soumettre
         </Button>
       </form>
     </div>

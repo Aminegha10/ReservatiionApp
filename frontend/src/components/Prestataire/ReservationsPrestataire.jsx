@@ -23,7 +23,7 @@ import { FaListCheck } from "react-icons/fa6";
 import { useToast } from "@/hooks/use-toast";
 import { io } from "socket.io-client";
 import { useCreateNotificationMutation } from "@/app/services/clientApi";
-const socket = io("http://localhost:5000"); // Replace with your server's address
+const socket = io("http://localhost:5000"); // Remplacez par l'adresse de votre serveur
 
 const Reservations = () => {
   const {
@@ -37,7 +37,7 @@ const Reservations = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [CreateNotification] = useCreateNotificationMutation();
   const [reservationToConfirm, setReservationToConfirm] = useState(null);
-  const [filter, setFilter] = useState("all"); // State to manage filter
+  const [filter, setFilter] = useState("all"); // État pour gérer le filtre
   const [confirmReservation] = useConfirmReservationMutation();
   if (isLoading) {
     return <HomeLoading />;
@@ -63,7 +63,7 @@ const Reservations = () => {
         template_params: {
           sender: "prestataire",
           topic: "Confirmation",
-          subject: "You have received a Reservation Confirmation ",
+          subject: "Vous avez reçu une confirmation de réservation",
           from_name:
             reservationToConfirm.prestataireId.nom +
             " " +
@@ -74,15 +74,15 @@ const Reservations = () => {
           to_email: "aminogha@gmail.com", //reservationToConfirm.clientId.email
           message:
             reservationToConfirm.prestataireId.nom +
-            " has confirmed your reservation for " +
+            " a confirmé votre réservation pour " +
             reservationToConfirm.serviceId.name +
-            " for " +
+            " pour " +
             reservationToConfirm.creneaux.map(
               (item) =>
                 item.day +
-                " at " +
+                " à " +
                 item.startTime +
-                " to " +
+                " à " +
                 item.endTime +
                 " | "
             ),
@@ -95,17 +95,17 @@ const Reservations = () => {
       );
       socket.emit("new-Confirmation", {
         clientId: reservationToConfirm.clientId._id,
-      }); // Emit new reservation event to server
+      }); // Émettre un événement de nouvelle réservation au serveur
       toast({
-        style: { backgroundColor: "green", color: "white" }, // Custom green styling
-        description: "Your Confirmation has done successfully",
+        style: { backgroundColor: "green", color: "white" }, // Personnalisation verte
+        description: "Votre confirmation a été effectuée avec succès",
       });
     } catch (error) {
-      console.error("Error confirming reservation: ", error);
+      console.error("Erreur lors de la confirmation de la réservation: ", error);
     }
   };
 
-  // Filter Reservations
+  // Filtrer les réservations
   const filteredReservations = reservations.filter((reservation) => {
     if (filter === "all") return true;
     if (filter === "confirmed") return reservation.isConfirmed;
@@ -118,23 +118,23 @@ const Reservations = () => {
       <div className="container mx-auto space-y-2">
         <div className="flex justify-between ">
           <h2 className="text-2xl font-bold mb-4">Creneaux</h2>
-          {/* Filter Buttons */}
+          {/* Boutons de filtre */}
           <div className="space-x-2 flex">
             <Button onClick={() => setFilter("all")}>
               <FaListCheck />
-              All
+              Tout
             </Button>
             <Button onClick={() => setFilter("toConfirm")}>
               <GiSandsOfTime />
-              To Confirm
+              À Confirmer
             </Button>
             <Button onClick={() => setFilter("confirmed")}>
               <GiConfirmed />
-              Confirmed
+              Confirmé
             </Button>
           </div>
         </div>
-        {/* Creneaux List */}
+        {/* Liste des créneaux */}
         <div className="p-6">
           <div className="sm:grid lg:grid-cols-4 sm:grid-cols-2 gap-10">
             {filteredReservations.map((reservation) => (
@@ -142,9 +142,9 @@ const Reservations = () => {
                 <Card key={reservation._id} className="w-full max-w-sm">
                   <CardHeader>
                     <CardTitle className="flex justify-between items-center">
-                      <span>Appointment Slot</span>
+                      <span>Créneau de rendez-vous</span>
                       <Badge variant="secondary">
-                        {reservation.creneaux.length} spots left
+                        {reservation.creneaux.length} places restantes
                       </Badge>
                     </CardTitle>
                   </CardHeader>
@@ -189,7 +189,7 @@ const Reservations = () => {
                           : "bg-green-700 hover:bg-green-400"
                       }`}
                     >
-                      {reservation.isConfirmed ? "Confirmed" : "Confirmer"}
+                      {reservation.isConfirmed ? "Confirmé" : "Confirmer"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -197,7 +197,7 @@ const Reservations = () => {
             ))}
             {showConfirm && (
               <div className="fixed inset-0 z-40 min-h-full overflow-y-auto overflow-x-hidden transition flex items-center">
-                {/* overlay */}
+                {/* Superposition */}
                 <div
                   aria-hidden="true"
                   className="fixed inset-0 w-full h-full bg-black/50  cursor-pointer"
@@ -211,10 +211,10 @@ const Reservations = () => {
                           className="text-xl font-bold tracking-tight"
                           id="page-action.heading"
                         >
-                          Confirm the reservation
+                          Confirmer la réservation
                         </h2>
                         <p className="text-gray-500">
-                          Are you sure you would like to do this?
+                          Êtes-vous sûr de vouloir faire cela?
                         </p>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ const Reservations = () => {
                             className="inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50 focus:ring-primary-600 focus:text-primary-600 focus:bg-primary-50 focus:border-primary-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:text-gray-200 dark:focus:text-primary-400 dark:focus:border-primary-400 dark:focus:bg-gray-800"
                           >
                             <span className="flex items-center gap-1">
-                              <span className="">Cancel</span>
+                              <span className="">Annuler</span>
                             </span>
                           </button>
                           <button
@@ -246,7 +246,7 @@ const Reservations = () => {
                             className="inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-white shadow focus:ring-white border-transparent bg-black hover:bg-black focus:bg-black focus:ring-offset-black"
                           >
                             <span className="flex items-center gap-1">
-                              <span className="">Confirm</span>
+                              <span className="">Confirmer</span>
                             </span>
                           </button>
                         </div>

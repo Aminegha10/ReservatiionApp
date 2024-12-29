@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Prestataire from "../pages/Prestataire/Prestataire";
-import Home from "../pages/home/Home";
-import Client from "../pages/client/Client";
+import Prestataire from "./pages/Prestataire/Prestataire";
+import Home from "./pages/home/Home";
+import Client from "./pages/client/Client";
 import WelcomePrestataire from "@/components/Prestataire/WelcomePrestataire.jsx";
 import AddCreneau from "@/components/Prestataire/AddCreneau";
 import ProtectedRoutes from "@/pages/ProtectedRoutes.jsx";
@@ -24,17 +24,21 @@ import PrestataireDetails from "@/components/client/PrestataireDetails";
 import Creneaux from "@/components/client/Creneaux";
 import Reservations from "@/components/client/Reservations";
 import ReservationsPrestataire from "@/components/Prestataire/ReservationsPrestataire";
+import About from "@/pages/about/About";
+import Work from "@/pages/work/Work";
+import ClientProfile from "@/components/client/ClientProfile";
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const navigate = useNavigate();
   return (
-    <div className="flex bg-[#E2E2E2] flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen ">
       <NavBar />
       <div className="flex-grow px-[40px]">
         <Routes>
-          {/* Presstataire Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/work" element={<Work />} />
 
           {/*-------------------- Prestataire Routes----------------------------------- */}
           <Route path="/prestataire">
@@ -78,7 +82,7 @@ export default function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="MyCalendar" element={<Calendar />} />
               <Route
-                path="reservations"
+                path="reservations"w
                 element={<ReservationsPrestataire />}
               />
               <Route
@@ -115,7 +119,7 @@ export default function App() {
               <Route path="reservations" element={<Reservations />} />
               <Route path="favorites" element={<FavoritesList />} />
               <Route path="historique" element={<Historique />} />
-              <Route path="profile" element={<Profile />} />
+              <Route path="profile" element={<ClientProfile />} />
             </Route>
           </Route>
         </Routes>

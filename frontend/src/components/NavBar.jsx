@@ -1,23 +1,10 @@
-/* eslint-disable no-unused-vars */
-import { Avatar, Badge, Dropdown, Navbar } from "flowbite-react";
-import logo from "@/assets/logo.svg";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LogOut } from "@/app/services/LoginSlice";
-import { LogOutClient } from "@/app/services/ClientLoginSlice.js";
-import {
-  useGetOnePrestataireQuery,
-  useReadNotificationsMutation,
-} from "@/app/services/prestataireApi";
-import NavBarLoading from "./NavBarLoading";
-import {
-  useGetOneClientQuery,
-  useReadNotificationsClientMutation,
-} from "@/app/services/clientApi";
-import { Button } from "@/components/ui/button";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,9 +13,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import { HiCheck, HiClock } from "react-icons/hi";
+import logo from "@/assets/logo.svg";
+import { LogOut } from "@/app/services/LoginSlice";
+import { LogOutClient } from "@/app/services/ClientLoginSlice.js";
+import {
+  useGetOnePrestataireQuery,
+  useReadNotificationsMutation,
+} from "@/app/services/prestataireApi";
+import {
+  useGetOneClientQuery,
+  useReadNotificationsClientMutation,
+} from "@/app/services/clientApi";
+import NavBarLoading from "./NavBarLoading";
+import avatarPicture from "@/assets/avatar.jpg";
+import { FaInfoCircle, FaRegQuestionCircle } from "react-icons/fa";
 
-const socket = io("http://localhost:5000"); // Replace with your server's address
+const socket = io("http://localhost:5000");
 
 export function NavBar() {
   const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -50,10 +52,12 @@ export function NavBar() {
   } = useGetOneClientQuery(clientId, {
     skip: !isClientLoggedIn,
   });
-  // readingNotifications Prestataire
+
   const [readNotifications] = useReadNotificationsMutation();
-  // readingNotifications client
   const [readNotificationsClient] = useReadNotificationsClientMutation();
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (prestataireId) socket.emit("prestataire-join", prestataireId);
@@ -68,18 +72,12 @@ export function NavBar() {
     socket.on("New-Notification-Client", handleNewNotificationClient);
     socket.on("New-Notification", handleNewNotification);
 
-    // Cleanup
     return () => {
       socket.off("New-Notification", handleNewNotification);
       socket.off("New-Notification-Client", handleNewNotificationClient);
     };
-  });
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  }, [prestataireId, clientId, refetch, clientRefetch]);
 
-  // const handlerefetch = () => {
-  //   refetch();
-  // };
   const handleLogOut = () => {
     if (isClientLoggedIn) {
       dispatch(LogOutClient());
@@ -91,16 +89,18 @@ export function NavBar() {
     localStorage.removeItem("token");
     navigate("/");
   };
+
   const handleReadingNotifications = async () => {
     try {
       if (prestataireId) await readNotifications().unwrap();
       else {
-        const res = await readNotificationsClient().unwrap();
+        await readNotificationsClient().unwrap();
       }
     } catch (err) {
       console.log(err);
     }
   };
+
   const renderDropdown = (user, isLoading, type) => {
     if (isLoading) {
       return <NavBarLoading />;
@@ -108,230 +108,179 @@ export function NavBar() {
 
     const profileRoute =
       type === "prestataire" ? "/prestataire/profile" : "/client/profile";
+
     const additionalItems =
       type === "prestataire" ? (
         <>
-          <Link to="/prestataire/services">
-            <Dropdown.Item>Mes Services</Dropdown.Item>
-          </Link>
-          <Link to="/prestataire/reservations">
-            <Dropdown.Item>Mes Reservastions</Dropdown.Item>
-          </Link>
+          <DropdownMenuItem>
+            <Link to="/prestataire/services">Mes Services</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/prestataire/reservations">Mes Reservations</Link>
+          </DropdownMenuItem>
         </>
       ) : (
         <>
-          <Link to={{ pathname: "/client/prestataires", state: client }}>
-            <Dropdown.Item>Prestataires</Dropdown.Item>
-          </Link>
-          <Link to="/client/reservations">
-            <Dropdown.Item>Reservations</Dropdown.Item>
-          </Link>
-          <Link to="/client/historique">
-            <Dropdown.Item>Historique</Dropdown.Item>
-          </Link>
+          <DropdownMenuItem>
+            <Link to={{ pathname: "/client/prestataires", state: client }}>
+              Prestataires
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/client/reservations">Reservations</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/client/historique">Historique</Link>
+          </DropdownMenuItem>
         </>
       );
-    var notiButton = <>d</>;
-    if (type == "prestataire") {
-      const isNotReadNotification = prestataire.notifications.filter(
-        (noti) => noti.isRead == false
-      );
-      notiButton = (
-        <DropdownMenu>
-          {/* Notification Button as Dropdown Trigger */}
-          <DropdownMenuTrigger>
-            <button
-              className="py-3 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
-              aria-label="Notifications"
-            >
-              <IoIosNotificationsOutline className="text-[35px]" />
-              <span className="absolute inset-0 object-right-top -mr-6">
-                {isNotReadNotification.length > 0 && (
-                  <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
-                    {isNotReadNotification.length}
-                  </div>
-                )}
-              </span>
-            </button>
-          </DropdownMenuTrigger>
 
-          {/* Dropdown Content */}
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {isNotReadNotification.length > 0 ? (
-              isNotReadNotification.map((notif, index) => (
-                <DropdownMenuItem key={index} className=" p-4">
-                  {notif.reservation.clientId.nom}{" "}
-                  {notif.reservation.clientId.nom} a reserver{" "}
-                  <Badge color="warning">
-                    {notif.reservation.creneaux.length}
-                  </Badge>
-                  creneaux pour la service
-                  <Badge> {notif.reservation.serviceId.name} </Badge>
-                  <Badge color="gray" icon={HiClock} className="">
-                    {notif.timeAgo}
-                  </Badge>
-                </DropdownMenuItem>
-              ))
-            ) : (
-              <DropdownMenuItem>No new notifications</DropdownMenuItem>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex justify-end ">
-              {isNotReadNotification.length > 0 && (
-                <Button
-                  className=" px-3 text-sm text-white rounded hover:bg-white hover:text-black"
-                  onClick={handleReadingNotifications}
-                >
-                  Read All
-                </Button>
-              )}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    }
-    if (type == "client") {
-      const isNotReadNotification = client.notifications.filter(
-        (noti) => noti.isRead == false
-      );
-      notiButton = (
-        <DropdownMenu>
-          {/* Notification Button as Dropdown Trigger */}
-          <DropdownMenuTrigger>
-            <button
-              className="py-3 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out"
-              aria-label="Notifications"
-            >
-              <IoIosNotificationsOutline className="text-[35px]" />
-              <span className="absolute inset-0 object-right-top -mr-6">
-                {isNotReadNotification.length > 0 && (
-                  <div className="inline-flex items-center px-[4px] border-2 border-white rounded-full text-[10px] font-semibold leading-4 bg-red-500 text-white">
-                    {isNotReadNotification.length}
-                  </div>
-                )}
-              </span>
-            </button>
-          </DropdownMenuTrigger>
+    const notifications =
+      type === "prestataire" ? prestataire.notifications : client.notifications;
+    const unreadNotifications = notifications.filter(
+      (noti) => noti.isRead === false
+    );
 
-          {/* Dropdown Content */}
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {isNotReadNotification.length > 0 ? (
-              isNotReadNotification.map((notif, index) => (
-                <DropdownMenuItem key={index} className=" p-4">
-                  {notif.reservation.prestataireId.nom}{" "}
-                  {notif.reservation.prestataireId.nom} a confirmer votre
-                  reservation pour la service
-                  <Badge> {notif.reservation.serviceId.name} </Badge>
-                  <Badge color="gray" icon={HiClock} className="">
-                    {notif.timeAgo}
-                  </Badge>
-                </DropdownMenuItem>
-              ))
-            ) : (
-              <DropdownMenuItem>No new notifications</DropdownMenuItem>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex justify-end ">
-              {isNotReadNotification.length > 0 && (
-                <Button
-                  className=" px-3 text-sm text-white rounded hover:bg-white hover:text-black"
-                  onClick={handleReadingNotifications}
-                >
-                  Read All
-                </Button>
-              )}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    }
     return (
       <>
-        {notiButton}
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-              rounded
-            />
-          }
-        >
-          <Dropdown.Header>
-            <span className="block text-md">{`${user?.nom} ${user?.prenom}`}</span>
-            <span className="block underline truncate text-sm">
-              {user?.email}
-            </span>
-            {type === "prestataire" && (
-              <span className="block text-blue-500 text-sm font-medium">
-                {user?.Service}
-              </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="relative p-4"
+              aria-label="Notifications"
+            >
+              <IoIosNotificationsOutline className="transform scale-150" />{" "}
+              {unreadNotifications.length > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-1 -right-1 px-1 min-w-[1.25rem] h-5"
+                >
+                  {unreadNotifications.length}
+                </Badge>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {unreadNotifications.length > 0 ? (
+              unreadNotifications.map((notif, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  className="flex flex-col items-start"
+                >
+                  <span>
+                    {type === "prestataire"
+                      ? `${notif.reservation.clientId.nom} ${notif.reservation.clientId.prenom} a réservé`
+                      : `${notif.reservation.prestataireId.nom} ${notif.reservation.prestataireId.prenom} a confirmé votre réservation pour`}
+                  </span>
+                  <Badge variant="secondary" className="mt-1">
+                    {notif.reservation.serviceId.name}
+                  </Badge>
+                  {type === "prestataire" && (
+                    <Badge variant="outline" className="mt-1">
+                      {notif.reservation.creneaux.length} créneaux
+                    </Badge>
+                  )}
+                  <Badge variant="outline" className="mt-1">
+                    <HiClock className="mr-1" />
+                    {notif.timeAgo}
+                  </Badge>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem>
+                Pas de nouvelles notifications
+              </DropdownMenuItem>
             )}
-          </Dropdown.Header>
-          <Link to={profileRoute}>
-            <Dropdown.Item>Profile</Dropdown.Item>
-          </Link>
-          {additionalItems}
-          <Dropdown.Divider />
-          <Dropdown.Item onClick={handleLogOut}>Sign out</Dropdown.Item>
-        </Dropdown>
+            <DropdownMenuSeparator />
+            {unreadNotifications.length > 0 && (
+              <DropdownMenuItem onSelect={handleReadingNotifications}>
+                <HiCheck className="mr-2" />
+                Marquer comme lu
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar>
+              <AvatarImage src={avatarPicture} alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>
+              <span className="block text-sm font-medium">{`${user?.nom} ${user?.prenom}`}</span>
+              <span className="block text-xs text-muted-foreground">
+                {user?.email}
+              </span>
+              {type === "prestataire" && (
+                <span className="block text-xs font-medium text-blue-500">
+                  {user?.Service}
+                </span>
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link to={profileRoute}>Profile</Link>
+            </DropdownMenuItem>
+            {additionalItems}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={handleLogOut}>
+              Se déconnecter
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </>
     );
   };
 
   const renderGuestDropdown = () => (
-    <div className="space-x-2">
-      <Link to={"client/login"}>
-        <Button className="bg-white text-black px-10 hover:bg-gray-100">
-          Client
-        </Button>
-      </Link>
-      <Link to={"prestataire/login"}>
-        <Button className="px-10">Prestataire</Button>
-      </Link>
+    <div className="flex space-x-2">
+      <Button variant="outline">
+        <Link to="client/login">Client</Link>
+      </Button>
+      <Button>
+        <Link to="prestataire/login">Prestataire</Link>
+      </Button>
     </div>
   );
-  // window.addEventListener("scroll", () => {
-  //   const navbar = document.querySelector("nav");
-  //   if (window.scrollY > 0) {
-  //     navbar.classList.add("shadow-md");
-  //   } else {
-  //     navbar.classList.remove("shadow-md");
-  //   }
-  // });
-  return (
-    <>
-      <nav className="sticky shadow-md top-0 p-[35px] bg-[#E2E2E2] z-10  font-HeroText flex justify-between items-center ">
-        <ul className="flex items-center space-x-16">
-          <li>
-            <Link to={"/"}>
-              <img
-                src={logo}
-                className="mr-3 h-6 sm:h-9"
-                alt="Flowbite React Logo"
-              />
-            </Link>
-          </li>
-          <li>About Us</li>
-          <li>How it work</li>
-          <li>Pricing</li>
-          <li>FAQs</li>
-        </ul>
 
-        <div className="flex items-center space-x-4">
-          {isLoggedIn
-            ? renderDropdown(prestataire, isLoadingPrestataire, "prestataire")
-            : isClientLoggedIn
-            ? renderDropdown(client, isLoadingClient, "client")
-            : renderGuestDropdown()}
+  return (
+    <nav className="sticky top-0 z-10 bg-background shadow-md">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <Link to="/">
+              <img src={logo} className="h-16 py-2 mx-3 w-auto" alt="Logo" />
+            </Link>
+            <div className="hidden md:flex space-x-4">
+              <Link to="/work">
+                <Button variant="ghost" className="flex items-center">
+                  <FaRegQuestionCircle className="mr-1" />{" "}
+                  Comment ça marche
+                </Button>
+              </Link>
+
+              <Link to="/about">
+                <Button variant="ghost" className="flex items-center">
+                  <FaInfoCircle className="mr-1" />
+                  À propos
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            {isLoggedIn
+              ? renderDropdown(prestataire, isLoadingPrestataire, "prestataire")
+              : isClientLoggedIn
+              ? renderDropdown(client, isLoadingClient, "client")
+              : renderGuestDropdown()}
+          </div>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }

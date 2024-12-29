@@ -2,23 +2,16 @@ import { useState } from "react";
 import { useGetPrestatairesQuery } from "@/app/services/prestataireApi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAddFavoriteMutation } from "@/app/services/favorites";
-import {} from "@/app/services/clientApi"; // Import historique creation
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
-import { FaRegStar } from "react-icons/fa";
-import { FaHistory } from "react-icons/fa";
 import Loading from "../HomeLoading";
-import { FaMapLocationDot } from "react-icons/fa6";
 import { Input } from "../ui/input";
-import { FaSearch } from "react-icons/fa";
+import { FaHistory, FaSearch } from "react-icons/fa";
+import { FaMapLocationDot, FaRegStar } from "react-icons/fa6";
 
 const GetPrestataires = () => {
   const navigate = useNavigate();
-  const {
-    data: prestataires,
-    isLoading,
-    error,
-  } = useGetPrestatairesQuery(localStorage.getItem("prestataireId"));
+  const { data: prestataires, isLoading, error } = useGetPrestatairesQuery(localStorage.getItem("prestataireId"));
   const [searchQuery, setSearchQuery] = useState("");
   const [addFavorite] = useAddFavoriteMutation();
   const { toast } = useToast();
@@ -26,7 +19,7 @@ const GetPrestataires = () => {
   const clientId = localStorage.getItem("clientId");
   if (isLoading)
     return (
-      <div className="bg-white ">
+      <div className="bg-white">
         <Loading />
       </div>
     );
@@ -43,231 +36,131 @@ const GetPrestataires = () => {
         .then(() => {
           toast({
             style: { backgroundColor: "green", color: "white" },
-            description: "Added to favorites successfully!",
+            description: "Ajouté aux favoris avec succès !",
           });
         })
         .catch(() => {
           toast({
             style: { backgroundColor: "red", color: "white" },
-            description: "Error adding to favorites.",
+            description: "Erreur lors de l'ajout aux favoris.",
           });
         });
     } else {
       toast({
         style: { backgroundColor: "red", color: "white" },
-        description: "Client ID not found.",
+        description: "ID client non trouvé.",
       });
     }
   };
 
   const filteredPrestataires = prestataires?.filter((prestataire) => {
-    const addressMatch = prestataire.adresse
-      ?.toLowerCase()
-      .includes(searchQuery);
+    const addressMatch = prestataire.adresse?.toLowerCase().includes(searchQuery);
     const serviceMatch = prestataire.services?.some((service) =>
       service.name?.toLowerCase().includes(searchQuery)
     );
     const creneauxMatch = prestataire.services?.some((service) =>
       service.creneaux?.some((creneau) =>
-        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`
-          .toLowerCase()
-          .includes(searchQuery)
+        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`.toLowerCase().includes(searchQuery)
       )
     );
     return addressMatch || serviceMatch || creneauxMatch;
   });
+
   return (
-    <div className="flex-grow flex mt-4 justify-center items-center ">
-      <div className="container mx-auto  space-y-2">
-        <div className="flex justify-between gap-32 ">
-          <div className="flex w-full   space-x-2">
+    <div className="flex-grow flex mt-4 justify-center items-center">
+      <div className="container mx-auto space-y-2">
+        <div className="flex justify-between gap-4 md:gap-16">
+          <div className="flex w-full space-x-2">
             <Button type="submit">Prestataires</Button>
             <Input
-              type="email"
+              type="text"
               value={searchQuery}
               onChange={handleSearch}
               className="bg-white"
-              placeholder="Search by location service prestataireName... "
+              placeholder="Rechercher par localisation, service, ou nom..."
             />
             <Button type="submit">
               <FaSearch />
             </Button>
           </div>
-          {/* <input
-            type="text"
-            name="q"
-            id="query"
-            value={searchQuery}
-            onChange={handleSearch}
-            placeholder="Button, Footer, etc"
-            className="w-full p-3 rounded-md border-2 border-r-white rounded-r-none border-gray-300 placeholder-gray-500 dark:placeholder-gray-300 dark:bg-gray-500dark:text-gray-300 dark:border-none "
-          />
-          <button className="inline-flex items-center gap-2 bg-violet-700 text-white text-lg font-semibold  px-6 rounded-r-md">
-            <span>search</span>
-            <span className="hidden md:block">
-              <svg
-                className="text-gray-200 h-5 w-5 p-0 fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                x="0px"
-                y="0px"
-                viewBox="0 0 56.966 56.966"
-                style={{ enableBackground: "new 0 0 56.966 56.966" }}
-                xmlSpace="preserve"
-                width="512px"
-                height="512px"
-              >
-                <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
-              </svg>
-            </span>
-          </button> */}
-          <div className="space-x-2 flex ">
+          <div className="space-x-2 flex">
             <Link to="/client/favorites">
               <Button>
                 <FaRegStar />
-                My Favorites
+                Mes favoris
               </Button>
             </Link>
             <Link to="/client/historique">
               <Button>
                 <FaHistory />
-                My historique
+                Mon historique
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* <input
-          type="text"
-          placeholder="Search by address, service, or time slots"
-          className="w-full p-2 mb-4 border rounded"
-        /> */}
-
-        <div className="p-6 ">
-          <div className="sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-10">
+        <div className="p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPrestataires.map((prestataire) => (
-              <>
-                <div
-                  onClick={() => {
-                    console.log(prestataire);
-                    navigate(`${prestataire.nom}`, { state: prestataire });
-                  }}
-                  key={prestataire._id}
-                  className="hover:bg-black cursor-pointer bg-gray-100 hover:text-white transition duration-300 max-w-sm rounded overflow-hidden shadow-lg"
-                >
-                  <div className="py-4 px-8 relative group  ">
-                    {/* Outlined Star (Visible by default) */}
-                    <FaRegStar
-                      onClick={(event) => {
-                        event.stopPropagation(); // Prevents click from bubbling to parent
-                        handleAddFavorite(prestataire._id);
-                      }}
-                      className="absolute group-hover:text-white top-5 right-5 text-[25px] text-gray-500 cursor-pointer"
-                    />
-
-                    <div className="flex space-x-2">
+              <div
+                onClick={() => {
+                  navigate(`${prestataire.nom}`, { state: prestataire });
+                }}
+                key={prestataire._id}
+                className="transition-transform transform hover:scale-105 bg-white rounded-lg shadow-md overflow-hidden group"
+              >
+                <div className="relative">
+                  <FaRegStar
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleAddFavorite(prestataire._id);
+                    }}
+                    className="absolute top-4 right-4 text-gray-500 hover:text-yellow-500 cursor-pointer transition-colors"
+                  />
+                  <div className="p-4">
+                    <div className="flex items-center space-x-3">
                       <img
                         src="https://tailwindcss.com/img/jonathan.jpg"
-                        className="rounded-full h-12 w-12 mb-4 "
+                        alt={prestataire.prenom}
+                        className="rounded-full w-16 h-16 object-cover"
                       />
-                      <div className="">
-                        <h1 className="text-black group-hover:text-white font-bold ">
+                      <div>
+                        <h2 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600">
                           {prestataire.prenom} {prestataire.nom}
-                        </h1>
-                        <p className="text-gray-400">{prestataire.email}</p>
+                        </h2>
+                        <p className="text-sm text-gray-500">{prestataire.email}</p>
                       </div>
                     </div>
-                    <p className="flex items-center gap-1 mb-3">
-                      <FaMapLocationDot />
+                    <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
+                      <FaMapLocationDot className="text-gray-400" />
                       {prestataire.adresse}
                     </p>
 
-                    <h4 className="text-lg mb-3 font-semibold">
-                      How to be effective at working remotely?
-                    </h4>
-
-                    <p className="mb-2 text-sm text-gray-600">
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has been the industrys
-                      standard dummy text ever since the 1500s
-                    </p>
-                    <div className="space-x-2">
-                      <span className="text-xs ">SERVICES</span>
-                      {prestataire.services &&
-                        prestataire.services.map((service) => (
-                          <>
-                            <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-800/30 dark:text-teal-500">
-                              {service.name}
-                            </span>
-                          </>
-                        ))}
+                    <div className="mt-4 space-x-2">
+                      <span className="text-xs font-medium text-gray-700">Services</span>
+                      {prestataire.services?.map((service) => (
+                        <span
+                          key={service._id}
+                          className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-100 text-teal-800"
+                        >
+                          {service.name}
+                        </span>
+                      ))}
                     </div>
-                    <div className="mt-2  flex  justify-center items-center gap-4">
-                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
-                        <div className="flex flex-row items-center justify-center">
-                          <svg
-                            className="mr-3 fill-gray-500/95"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink"
-                            version="1.1"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12,23A1,1 0 0,1 11,22V19H7A2,2 0 0,1 5,17V7A2,2 0 0,1 7,5H21A2,2 0 0,1 23,7V17A2,2 0 0,1 21,19H16.9L13.2,22.71C13,22.89 12.76,23 12.5,23H12M13,17V20.08L16.08,17H21V7H7V17H13M3,15H1V3A2,2 0 0,1 3,1H19V3H3V15M9,9H19V11H9V9M9,13H17V15H9V13Z" />
-                          </svg>
-                          <span className="font-bold text-gray-600">
-                            {" "}
-                            4.6K{" "}
-                          </span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-400">
-                          Comments
-                        </div>
+
+                    <div className="mt-4 flex space-x-4">
+                      <span className="flex flex-col items-center justify-center">
+                        <span className="text-lg font-semibold text-gray-700">4.6K</span>
+                        <span className="text-sm text-gray-500">Commentaires</span>
                       </span>
-                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
-                        <div className="flex flex-row items-center justify-center">
-                          <svg
-                            className="mr-3 fill-gray-500/95"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink"
-                            version="1.1"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M2.5 19.6L3.8 20.2V11.2L1.4 17C1 18.1 1.5 19.2 2.5 19.6M15.2 4.8L20.2 16.8L12.9 19.8L7.9 7.9V7.8L15.2 4.8M15.3 2.8C15 2.8 14.8 2.8 14.5 2.9L7.1 6C6.4 6.3 5.9 7 5.9 7.8C5.9 8 5.9 8.3 6 8.6L11 20.5C11.3 21.3 12 21.7 12.8 21.7C13.1 21.7 13.3 21.7 13.6 21.6L21 18.5C22 18.1 22.5 16.9 22.1 15.9L17.1 4C16.8 3.2 16 2.8 15.3 2.8M10.5 9.9C9.9 9.9 9.5 9.5 9.5 8.9S9.9 7.9 10.5 7.9C11.1 7.9 11.5 8.4 11.5 8.9S11.1 9.9 10.5 9.9M5.9 19.8C5.9 20.9 6.8 21.8 7.9 21.8H9.3L5.9 13.5V19.8Z" />
-                          </svg>
-                          <span className="font-bold text-gray-600"> 45 </span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-400">
-                          Projects
-                        </div>
-                      </span>
-                      <span className="flex h-20 w-40 flex-col items-center justify-center rounded-md border border-dashed border-gray-200 transition-colors duration-100 ease-in-out hover:border-gray-400/80">
-                        <div className="flex flex-row items-center justify-center">
-                          <svg
-                            className="mr-3 fill-gray-500/95"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink"
-                            version="1.1"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M5.68,19.74C7.16,20.95 9,21.75 11,21.95V19.93C9.54,19.75 8.21,19.17 7.1,18.31M13,19.93V21.95C15,21.75 16.84,20.95 18.32,19.74L16.89,18.31C15.79,19.17 14.46,19.75 13,19.93M18.31,16.9L19.74,18.33C20.95,16.85 21.75,15 21.95,13H19.93C19.75,14.46 19.17,15.79 18.31,16.9M15,12A3,3 0 0,0 12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12M4.07,13H2.05C2.25,15 3.05,16.84 4.26,18.32L5.69,16.89C4.83,15.79 4.25,14.46 4.07,13M5.69,7.1L4.26,5.68C3.05,7.16 2.25,9 2.05,11H4.07C4.25,9.54 4.83,8.21 5.69,7.1M19.93,11H21.95C21.75,9 20.95,7.16 19.74,5.68L18.31,7.1C19.17,8.21 19.75,9.54 19.93,11M18.32,4.26C16.84,3.05 15,2.25 13,2.05V4.07C14.46,4.25 15.79,4.83 16.9,5.69M11,4.07V2.05C9,2.25 7.16,3.05 5.68,4.26L7.1,5.69C8.21,4.83 9.54,4.25 11,4.07Z" />
-                          </svg>
-                          <span className="font-bold text-gray-600">120K</span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-400">
-                          Downloads
-                        </div>
+                      <span className="flex flex-col items-center justify-center">
+                        <span className="text-lg font-semibold text-gray-700">1.2K</span>
+                        <span className="text-sm text-gray-500">Partages</span>
                       </span>
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             ))}
           </div>
         </div>
