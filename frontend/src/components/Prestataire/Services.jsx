@@ -120,7 +120,7 @@ const Services = () => {
                             className="text-green-600 hover:text-green-800 mx-1"
                             title="Voir"
                           >
-                            <FaEyeDropper className="inline-block h-5 w-5" />
+                            <FaEye className="inline-block h-5 w-5" />
                           </button>
                           <button
                             onClick={() => handleEditService(item)}

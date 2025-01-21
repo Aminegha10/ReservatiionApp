@@ -12,6 +12,7 @@ export const createReservation = async (req, res) => {
     return res.status(500).send(error.message);
   }
 };
+
 // Get Client Reservation
 export const getReservationsClient = async (req, res) => {
   const clientId = req.params.id;
@@ -30,9 +31,9 @@ export const getReservationsClient = async (req, res) => {
     res.status(500).send("Server Errors" + error.message);
   }
 };
+
+
 // Get Prestataire Reservation
-
-
 export const getReservationPrestataire = async (req, res) => {
   const prestataireId = req.params.id;
   try {

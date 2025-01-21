@@ -6,6 +6,8 @@ export const reservationApi = createApi({
     baseUrl: "http://localhost:5000/api/reservationRoute", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
+
+    //get client reservation
     getClientReservations: builder.query({
       query: (clientId) => ({
         url: `/getClientReservation/${clientId}`,
@@ -13,7 +15,8 @@ export const reservationApi = createApi({
       }),
       providesTags: ["Reservation"], // Provides Reservation cache
     }),
-    //
+
+    //get prestataire reservation
     getPrestataireReservations: builder.query({
       query: (prestataireId) => ({
         url: `/getReservationPrestataire/${prestataireId}`,
@@ -21,7 +24,8 @@ export const reservationApi = createApi({
       }),
       providesTags: ["Reservation"], // Provides Reservation cache
     }),
-    //
+
+    //create
     createReservation: builder.mutation({
       query: (data) => ({
         url: "/createReservation",
@@ -30,7 +34,8 @@ export const reservationApi = createApi({
       }),
       invalidatesTags: ["Reservation"], // Provides Reservation cache
     }),
-    //
+
+    //confirmation
     confirmReservation: builder.mutation({
       query: (reservationId) => ({
         url: `/confirmReservation/${reservationId}`,

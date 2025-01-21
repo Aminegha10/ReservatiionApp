@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Prestataire from "./pages/Prestataire/Prestataire";
 import Home from "./pages/home/Home";
 import Client from "./pages/client/Client";
-import WelcomePrestataire from "@/components/Prestataire/WelcomePrestataire.jsx";
+
 import AddCreneau from "@/components/Prestataire/AddCreneau";
 import ProtectedRoutes from "@/pages/ProtectedRoutes.jsx";
 import { NavBar } from "@/components/NavBar";
@@ -27,10 +27,13 @@ import ReservationsPrestataire from "@/components/Prestataire/ReservationsPresta
 import About from "@/pages/about/About";
 import Work from "@/pages/work/Work";
 import ClientProfile from "@/components/client/ClientProfile";
+import WelcomePrestataire from "./components/Prestataire/WelcomePrestataire";
+
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
   const navigate = useNavigate();
+
   return (
     <div className="flex flex-col min-h-screen ">
       <NavBar />
@@ -46,20 +49,18 @@ export default function App() {
               path="login"
               element={
                 isPrestataireLoggedIn ? (
-                  <WelcomePrestataire isPrestataire={true} />
+                  <Navigate to="/prestataire/welcome" /> // Redirect to the Welcome page
                 ) : (
                   <Prestataire />
                 )
               }
             />
+            {/* Add the route for WelcomePrestataire */}
+            <Route path="welcome" element={<WelcomePrestataire isPrestataire={true} />} />
+            
             {/* Protected Routes */}
             <Route
-              element={
-                <ProtectedRoutes
-                  User="prestataire"
-                  isLoggedIn={isPrestataireLoggedIn}
-                />
-              }
+              element={<ProtectedRoutes User="prestataire" isLoggedIn={isPrestataireLoggedIn} />}
             >
               <Route path="addCreneau" element={<AddCreneau />} />
               <Route path="services">
@@ -69,10 +70,6 @@ export default function App() {
                   element={<AddService isEdit={true} />}
                 />
                 <Route path="" element={<Services />} />
-                {/* <Route
-                  path=":name/EditService"
-                  element={<EditService isEdit={true} />}
-                /> */}
                 <Route path=":name/:id/creneaux" element={<Crenaux />} />
                 <Route
                   path=":name/:id/creneaux/CreateCreneau"
@@ -82,7 +79,7 @@ export default function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="MyCalendar" element={<Calendar />} />
               <Route
-                path="reservations"w
+                path="reservations"
                 element={<ReservationsPrestataire />}
               />
               <Route
@@ -98,18 +95,18 @@ export default function App() {
               path="login"
               element={
                 isClientLoggedIn ? (
-                  <WelcomePrestataire isPrestataire={false} />
+                  <Navigate to="/client/welcome" /> // Redirect to the Welcome page for clients
                 ) : (
                   <Client />
                 )
               }
             />
-
+            {/* Add the route for WelcomePrestataire for client */}
+            <Route path="welcome" element={<WelcomePrestataire isPrestataire={false} />} />
+            
             {/* Protected Routes */}
             <Route
-              element={
-                <ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />
-              }
+              element={<ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />}
             >
               <Route path="prestataires">
                 <Route path="" element={<GetPrestataires />} />

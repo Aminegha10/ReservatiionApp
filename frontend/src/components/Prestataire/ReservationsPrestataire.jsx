@@ -32,6 +32,10 @@ const Reservations = () => {
     isError,
     error,
   } = useGetPrestataireReservationsQuery(localStorage.getItem("prestataireId"));
+  const prestataireId = localStorage.getItem("prestataireId");
+  console.log("prestataireId",prestataireId);
+  
+  
   const { toast } = useToast();
 
   const [showConfirm, setShowConfirm] = useState(false);

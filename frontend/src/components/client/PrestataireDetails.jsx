@@ -76,26 +76,12 @@ const PrestataireDetails = () => {
                       <p className="text-muted-foreground mb-4">
                         {service.description}
                       </p>
-                      <ul className="space-y-2 mb-6">
-                        <li className="flex items-center">
-                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
-                          Responsive Design
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
-                          SEO Optimization
-                        </li>
-                        <li className="flex items-center">
-                          <CheckCircle className="w-5 h-5 text-primary mr-2" />
-                          24/7 Support
-                        </li>
-                      </ul>
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <p className="text-2xl font-bold text-primary">
                             {service.price}dh
                             <span className="text-sm font-normal text-muted-foreground">
-                              /month
+                              /heur
                             </span>
                           </p>
                         </div>

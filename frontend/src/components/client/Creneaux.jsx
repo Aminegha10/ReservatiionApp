@@ -17,7 +17,7 @@ import { io } from "socket.io-client";
 import { useCreateNotificationMutation } from "@/app/services/prestataireApi";
 import axios from "axios";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
-const socket = io("http://localhost:5000"); // Replace with your server's address
+const socket = io("http://localhost:5000"); // Remplacer par l'adresse de votre serveur
 
 const Creneaux = () => {
   // emailJs
@@ -36,8 +36,8 @@ const Creneaux = () => {
     const creneau = Creneaux.find((cardId) => cardId._id === creneauId);
     setIsSelected(
       isSelected.some((item) => item._id === creneauId)
-        ? isSelected.filter((cardId) => cardId._id !== creneauId) // Remove if selected
-        : [...isSelected, creneau] // Add if not selected
+        ? isSelected.filter((cardId) => cardId._id !== creneauId) // Supprimer si sélectionné
+        : [...isSelected, creneau] // Ajouter si non sélectionné
     );
   };
   const location = useLocation();
@@ -66,25 +66,25 @@ const Creneaux = () => {
         user_id: "OKNAn7DCfufMNC6d2",
         template_params: {
           sender: "client",
-          topic: "Reservation",
-          subject: "You have received new reservation",
+          topic: "Réservation",
+          subject: "Vous avez reçu une nouvelle réservation",
           from_name: client.nom + " " + client.prenom,
           from_email: "anasghanim053@gmail.com",
           from_telephone: client.telephone,
-          // to_telephone: telephone,
+          // to_telephone: téléphone,
           to_name: NamePrestataire,
           to_email: "aminogha@gmail.com",
           message:
             "aminegha" +
-            " has reserved you service " +
+            " a réservé votre service " +
             location.state.serviceName +
-            " for " +
+            " pour " +
             isSelected.map(
               (item) =>
                 item.day +
-                " at " +
+                " à " +
                 item.startTime +
-                " to " +
+                " jusqu'à " +
                 item.endTime +
                 " | "
             ),
@@ -98,10 +98,10 @@ const Creneaux = () => {
       console.log(response);
       socket.emit("new-reservation", {
         prestataireId: location.state.id,
-      }); // Emit new reservation event to server
+      }); // Émettre un événement de nouvelle réservation au serveur
       toast({
         style: { backgroundColor: "green", color: "white" },
-        description: "Added to Reservations successfully!",
+        description: "Ajouté aux réservations avec succès!",
       });
       navigate(`/client/reservations`);
     } catch (error) {
@@ -118,30 +118,30 @@ const Creneaux = () => {
           onClick={handleaddReservation}
           className={`absolute bottom-0 bg-green-500 hover:bg-green-400 right-0`}
         >
-          Submit reservations
+          Soumettre les réservations
         </Button>
       )}
       <div className="flex-grow flex mt-4 justify-center items-center ">
         <div className="container mx-auto  space-y-2">
           <div className="flex justify-between ">
-            <h2 className="text-2xl font-bold mb-4">Creneaux</h2>
-            {/* Title & Buttons */}
+            <h2 className="text-2xl font-bold mb-4">Créneaux</h2>
+            {/* Titre et Boutons */}
             <div className="space-x-2 flex ">
               <Link to="/client/favorites">
                 <Button>
                   <FaRegStar />
-                  My Favorites
+                  Mes favoris
                 </Button>
               </Link>
               <Link to="/client/historique">
                 <Button>
                   <FaHistory />
-                  My historique
+                  Mon historique
                 </Button>
               </Link>
             </div>
           </div>
-          {/* Creneaux List */}
+          {/* Liste des créneaux */}
           <div className="p-6 ">
             <div className="sm:grid lg:grid-cols-4 sm:grid-cols-2 gap-10">
               {Creneaux.map((creneau) => (
@@ -149,8 +149,8 @@ const Creneaux = () => {
                   <Card className="w-full max-w-sm">
                     <CardHeader>
                       <CardTitle className="flex justify-between items-center">
-                        <span>Appointment Slot</span>
-                        <Badge variant="secondary">3 spots left</Badge>
+                        <span>Créneau de rendez-vous</span>
+                        <Badge variant="secondary">3 places restantes</Badge>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -167,7 +167,7 @@ const Creneaux = () => {
                         </div>
                         <div className="flex items-center">
                           <User className="mr-2 h-4 w-4" />
-                          <span>3 available</span>
+                          <span>3 disponibles</span>
                         </div>
                       </div>
                     </CardContent>
@@ -197,15 +197,15 @@ const Creneaux = () => {
                           )}
                           <span>
                             {isSelected.find((item) => item._id === creneau._id)
-                              ? "Selected"
-                              : "Select"}
+                              ? "Sélectionné"
+                              : "Sélectionner"}
                           </span>
                         </span>
                       </Button>
                     </CardFooter>
                   </Card>
 
-                  {/* Confirmation Dialogue */}
+                  {/* Dialogue de confirmation */}
                   {showConfirm && (
                     <div className="fixed inset-0 z-40 min-h-full overflow-y-auto overflow-x-hidden transition flex items-center">
                       {/* overlay */}
@@ -222,10 +222,10 @@ const Creneaux = () => {
                                 className="text-xl font-bold tracking-tight"
                                 id="page-action.heading"
                               >
-                                Delete John Doe
+                                Supprimer John Doe
                               </h2>
                               <p className="text-gray-500">
-                                Are you sure you would like to do this?
+                                Êtes-vous sûr de vouloir faire cela ?
                               </p>
                             </div>
                           </div>
@@ -244,7 +244,7 @@ const Creneaux = () => {
                                   className="inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50 focus:ring-primary-600 focus:text-primary-600 focus:bg-primary-50 focus:border-primary-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:text-gray-200 dark:focus:text-primary-400 dark:focus:border-primary-400 dark:focus:bg-gray-800"
                                 >
                                   <span className="flex items-center gap-1">
-                                    <span className="">Cancel</span>
+                                    <span className="">Annuler</span>
                                   </span>
                                 </button>
                                 <button
@@ -257,7 +257,7 @@ const Creneaux = () => {
                                   className="inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2.25rem] px-4 text-sm text-white shadow focus:ring-white border-transparent bg-black hover:bg-black focus:bg-black focus:ring-offset-black"
                                 >
                                   <span className="flex items-center gap-1">
-                                    <span className="">Confirm</span>
+                                    <span className="">Confirmer</span>
                                   </span>
                                 </button>
                               </div>

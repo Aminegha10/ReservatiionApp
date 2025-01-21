@@ -70,7 +70,7 @@ const ConsultingHistoryList = () => {
             <Button onClick={handleClearAll}> clear All</Button>
           </div>
           <div className="space-y-4 h-[450px] overflow-auto p-2 ">
-            {historique.map((consultation) => (
+            {historique?.map((consultation) => (
               <div
                 key={consultation._id}
                 className="bg-white mr-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -85,14 +85,16 @@ const ConsultingHistoryList = () => {
                 <div className="p-4 flex gap-24 items-center justify-between cursor-pointer">
                   <div className="flex items-center space-x-4">
                     <MdHomeRepairService className="text-gray-400" />
-                    <div className="">{consultation.service.name} </div>
+                    <div className="">{consultation.service?.name}</div>
                   </div>
                   <div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <FaUser className="text-gray-400" />
                       <span>
-                        {consultation.service.prestataire.nom}{" "}
-                        {consultation.service.prestataire.prenom}
+                        <span>
+                          {consultation.service?.prestataire?.nom}{" "}
+                          {consultation.service?.prestataire?.prenom}
+                        </span>
                       </span>
                     </div>
                   </div>
