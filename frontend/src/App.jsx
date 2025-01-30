@@ -28,6 +28,7 @@ import About from "@/pages/about/About";
 import Work from "@/pages/work/Work";
 import ClientProfile from "@/components/client/ClientProfile";
 import WelcomePrestataire from "./components/Prestataire/WelcomePrestataire";
+import Footer from "./components/Footer";
 
 export default function App() {
   const isPrestataireLoggedIn = useSelector((state) => state.Login.isLoggedIn);
@@ -35,7 +36,7 @@ export default function App() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen font-HeroText">
       <NavBar />
       <div className="flex-grow px-[40px]">
         <Routes>
@@ -121,6 +122,7 @@ export default function App() {
           </Route>
         </Routes>
       </div>
+      <Footer/>
     </div>
   );
 }
