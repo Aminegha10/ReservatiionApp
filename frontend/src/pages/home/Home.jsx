@@ -13,26 +13,27 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Home = () => {
-AOS.init({
-  // Global settings:
-  disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
-  startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
-  initClassName: "aos-init", // class applied after initialization
-  animatedClassName: "aos-animate", // class applied on animation
-  useClassNames: false, // if true, will add content of `data-aos` as classes on scroll
-  disableMutationObserver: false, // disables automatic mutations' detections (advanced)
-  debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
-  throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+  AOS.init({
+    // Global settings:
+    disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
+    startEvent: "DOMContentLoaded", // name of the event dispatched on the document, that AOS should initialize on
+    initClassName: "aos-init", // class applied after initialization
+    animatedClassName: "aos-animate", // class applied on animation
+    useClassNames: false, // if true, will add content of `data-aos` as classes on scroll
+    disableMutationObserver: false, // disables automatic mutations' detections (advanced)
+    debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+    throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
 
-  // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
-  offset: 120, // offset (in px) from the original trigger point
-  delay: 0, // values from 0 to 3000, with step 50ms
-  duration: 1500, // values from 0 to 3000, with step 50ms
-  easing: "ease", // default easing for AOS animations
-  once: false, // whether animation should happen only once - while scrolling down
-  mirror: false, // whether elements should animate out while scrolling past them
-  anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
-});
+    // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+    offset: 260, // offset (in px) from the original trigger point
+    delay: 0, // values from 0 to 3000, with step 50ms
+    duration: 2000, // values from 0 to 3000, with step 50ms
+    easing: "ease", // default easing for AOS animations
+    once: false, // whether animation should happen only once - while scrolling down
+    mirror: false, // whether elements should animate out while scrolling past them
+    anchorPlacement: "top-bottom", // defines which position of the element regarding to window should trigger the animation
+  });
+
   return (
     <>
       {/* -----------------Header Section-------------------------- */}
@@ -40,7 +41,7 @@ AOS.init({
       {/* Hero Section  */}
       <section
         data-aos="zoom-in"
-        className="flex  font-HeroText items-center gap-10 space-x-2"
+        className="flex container mx-auto font-HeroText items-center gap-10 space-x-2"
       >
         {/* HeroText */}
         <div className="space-y-4  ">
@@ -66,7 +67,7 @@ AOS.init({
         </div>
         {/* HeroPicture */}
         <div>
-          <img src={HeroPicture} alt="" />
+          <img src={HeroPicture} alt="" className="max-w-full h-auto" />
         </div>
       </section>
 
@@ -120,7 +121,7 @@ AOS.init({
       </div>
       {/*  */}
       <div
-        className="bg-white text-gray-900 flex justify-between items-center  py-8"
+        className="bg-white text-gray-900 flex justify-between items-center py-8"
         data-aos="fade-left"
       >
         <div className="w-[700px]">
@@ -191,12 +192,12 @@ AOS.init({
             </div>
           </div>
         </div>
-        <div className=" flex justify-end">
-          <img src={How} alt="Illustration" className="w-full max-w-sm" />
+        <div className="w-[700px]">
+          <img src={How} alt="Illustration" />
         </div>
       </div>
       {/* FAQ QUESTIONS */}
-      <div className="bg-white min-h-screen   p-10" data-aos="fade-up">
+      <div className="bg-white min-h-screen p-10" data-aos="fade-up">
         <div className=" w-full flex justify-between  items-center">
           <div>
             <img src={FAQ} alt="FAQ Illustration" className="w-full mb-6" />

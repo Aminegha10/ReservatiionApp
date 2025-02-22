@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 const Footer = () => {
-  AOS.init();
   return (
     <footer
       className="bg-black text-white py-10 font-HeroText"
