@@ -43,6 +43,9 @@ const Reservations = () => {
   const [reservationToConfirm, setReservationToConfirm] = useState(null);
   const [filter, setFilter] = useState("all"); // État pour gérer le filtre
   const [confirmReservation] = useConfirmReservationMutation();
+  if (reservations==null) {
+    return " There is no reservation yet" ;
+  }
   if (isLoading) {
     return <HomeLoading />;
   }

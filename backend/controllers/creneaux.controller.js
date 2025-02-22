@@ -4,7 +4,7 @@ import Services_Model from "../models/services.js";
 // Create a new Creneaux
 export const addCreneau = async (req, res) => {
   const creneau = req.body;
-  console.log(req.params.service);
+  console.log(req.body);
 
   // if (!creneau.date || !creneau.debutHeure || !creneau.finHeure) {
   //   return res

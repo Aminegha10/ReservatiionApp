@@ -60,6 +60,7 @@ const Services = ({ isEdit }) => {
     } else {
       data.prestataire = localStorage.getItem("prestataireId");
       try {
+            console.log(data);
         const res = await addService(data).unwrap();
         console.log(res);
         toast({

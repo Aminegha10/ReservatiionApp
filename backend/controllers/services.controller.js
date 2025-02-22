@@ -2,6 +2,7 @@ import Services_Model from "../models/services.js";
 import providers_Model from "../models/prestataire.model.js";
 // Create a new Service
 export const addService = async (req, res) => {
+  console.log(req.body);
   const service = req.body;
   const { prestataire } = req.body;
   if (!service.name) {
@@ -11,9 +12,10 @@ export const addService = async (req, res) => {
   }
   try {
     const newService = await Services_Model.create(service);
+    console.log(newService);
     // 2. Find the provider (prestataire) by ID
     const provider = await providers_Model.findById(prestataire);
-
+    console.log(provider);
     // 3. If provider is found, add the new service to their services array
     if (provider) {
       provider.services.push(newService._id);
