@@ -38,9 +38,9 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen font-HeroText">
       <NavBar />
-      <div className="flex-grow px-[40px]">
-        <Routes>
-          <Route path="/" element={<Home />} />
+      <div className="flex-grow md:px-[40px] px-4">
+        <Routes path="/">
+          <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/work" element={<Work />} />
 
@@ -57,11 +57,19 @@ export default function App() {
               }
             />
             {/* Add the route for WelcomePrestataire */}
-            <Route path="welcome" element={<WelcomePrestataire isPrestataire={true} />} />
-            
+            <Route
+              path="welcome"
+              element={<WelcomePrestataire isPrestataire={true} />}
+            />
+
             {/* Protected Routes */}
             <Route
-              element={<ProtectedRoutes User="prestataire" isLoggedIn={isPrestataireLoggedIn} />}
+              element={
+                <ProtectedRoutes
+                  User="prestataire"
+                  isLoggedIn={isPrestataireLoggedIn}
+                />
+              }
             >
               <Route path="addCreneau" element={<AddCreneau />} />
               <Route path="services">
@@ -103,11 +111,16 @@ export default function App() {
               }
             />
             {/* Add the route for WelcomePrestataire for client */}
-            <Route path="welcome" element={<WelcomePrestataire isPrestataire={false} />} />
-            
+            <Route
+              path="welcome"
+              element={<WelcomePrestataire isPrestataire={false} />}
+            />
+
             {/* Protected Routes */}
             <Route
-              element={<ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />}
+              element={
+                <ProtectedRoutes isLoggedIn={isClientLoggedIn} User="client" />
+              }
             >
               <Route path="prestataires">
                 <Route path="" element={<GetPrestataires />} />
@@ -122,7 +135,7 @@ export default function App() {
           </Route>
         </Routes>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

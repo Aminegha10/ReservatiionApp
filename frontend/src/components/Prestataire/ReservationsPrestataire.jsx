@@ -33,9 +33,8 @@ const Reservations = () => {
     error,
   } = useGetPrestataireReservationsQuery(localStorage.getItem("prestataireId"));
   const prestataireId = localStorage.getItem("prestataireId");
-  console.log("prestataireId",prestataireId);
-  
-  
+  console.log("prestataireId", prestataireId);
+
   const { toast } = useToast();
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -43,8 +42,8 @@ const Reservations = () => {
   const [reservationToConfirm, setReservationToConfirm] = useState(null);
   const [filter, setFilter] = useState("all"); // État pour gérer le filtre
   const [confirmReservation] = useConfirmReservationMutation();
-  if (reservations==null) {
-    return " There is no reservation yet" ;
+  if (reservations == null) {
+    return " There is no reservation yet";
   }
   if (isLoading) {
     return <HomeLoading />;
@@ -86,12 +85,7 @@ const Reservations = () => {
             " pour " +
             reservationToConfirm.creneaux.map(
               (item) =>
-                item.day +
-                " à " +
-                item.startTime +
-                " à " +
-                item.endTime +
-                " | "
+                item.day + " à " + item.startTime + " à " + item.endTime + " | "
             ),
         },
       };
@@ -108,7 +102,10 @@ const Reservations = () => {
         description: "Votre confirmation a été effectuée avec succès",
       });
     } catch (error) {
-      console.error("Erreur lors de la confirmation de la réservation: ", error);
+      console.error(
+        "Erreur lors de la confirmation de la réservation: ",
+        error
+      );
     }
   };
 
@@ -132,8 +129,7 @@ const Reservations = () => {
               Tout
             </Button>
             <Button onClick={() => setFilter("toConfirm")}>
-              <GiSandsOfTime />
-              À Confirmer
+              <GiSandsOfTime />À Confirmer
             </Button>
             <Button onClick={() => setFilter("confirmed")}>
               <GiConfirmed />

@@ -60,6 +60,9 @@ app.use("/api/prestataires", prestataireRoute);
 app.use("/api/services", servicesRoute);
 app.use("/api/creneaux", creneauxRoute);
 app.use("/api/reservationRoute", reservationRoute);
+app.get("api/getHello", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
 
 //client routes middleware
 app.use("/api/clients", clientRoute);
