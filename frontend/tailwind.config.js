@@ -62,7 +62,6 @@ module.exports = {
   },
   plugins: [
     require("tailwindcss-animate"),
-
     flowbite.plugin(),
   ],
   purge: { enabled: true }, // Ensure purge is active for production

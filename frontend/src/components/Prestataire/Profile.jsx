@@ -47,8 +47,8 @@ function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 sm:p-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="flex-1 flex items-center  p-6 sm:p-8">
+      <div className="w-[40%] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="flex items-center justify-center bg-black text-white py-6">
           <FaUserCircle className="text-6xl mr-4" />
           <h2 className="text-3xl font-semibold">Profil Prestataire</h2>

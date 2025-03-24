@@ -44,8 +44,8 @@ const Reservations = () => {
   });
 
   return (
-    <div className="flex-grow flex mt-4 justify-center items-center">
-      <div className="container mx-auto space-y-2">
+    <div className="pt-10 flex-1">
+      <div className=" mx-auto space-y-2">
         <div className="flex justify-between">
           <h2 className="text-2xl font-bold mb-4">Creneaux</h2>
           {/* Filter Buttons */}

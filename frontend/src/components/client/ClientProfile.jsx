@@ -2,13 +2,26 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
 import { Link } from "react-router-dom";
-import { FaChevronDown, FaChevronUp, FaUser, FaUserCircle, FaPhone, FaEnvelope, FaBriefcase, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaChevronUp,
+  FaUser,
+  FaUserCircle,
+  FaPhone,
+  FaEnvelope,
+  FaBriefcase,
+  FaCalendarAlt,
+} from "react-icons/fa";
 
 function ClientProfile() {
   const [openSection, setOpenSection] = useState(null);
   const clientId = localStorage.getItem("clientId");
   const isClientLoggedIn = useSelector((state) => state.ClientLogin.isLoggedIn);
-  const { data: client, isLoading, error } = useGetOneClientQuery(clientId, {
+  const {
+    data: client,
+    isLoading,
+    error,
+  } = useGetOneClientQuery(clientId, {
     skip: !isClientLoggedIn,
   });
 
@@ -40,15 +53,16 @@ function ClientProfile() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <p className="text-lg font-medium text-black">
-          Erreur lors de la récupération des informations client : {error.message}
+          Erreur lors de la récupération des informations client :{" "}
+          {error.message}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 sm:p-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="flex-1 flex justify-center items-center w-[80%] p-6 sm:p-8">
+      <div className="max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="flex items-center justify-center bg-black text-white py-6">
           {/* Icon and Title */}
           <FaUserCircle className="text-6xl mr-4" />
@@ -60,14 +74,18 @@ function ClientProfile() {
             <button
               onClick={() => toggleSection("info")}
               className={`w-full text-left px-6 py-4 flex justify-between items-center transition-colors duration-300 ${
-                openSection === "info" ? "bg-black text-white" : "bg-gray-50 hover:bg-gray-200"
+                openSection === "info"
+                  ? "bg-black text-white"
+                  : "bg-gray-50 hover:bg-gray-200"
               }`}
             >
               <span className="font-medium text-lg flex items-center space-x-2">
                 <FaUser />
                 <span>Informations de base</span>
               </span>
-              <span>{openSection === "info" ? <FaChevronUp /> : <FaChevronDown />}</span>
+              <span>
+                {openSection === "info" ? <FaChevronUp /> : <FaChevronDown />}
+              </span>
             </button>
             {openSection === "info" && (
               <div className="px-6 py-4 bg-gray-100">
@@ -96,14 +114,22 @@ function ClientProfile() {
             <button
               onClick={() => toggleSection("additional")}
               className={`w-full text-left px-6 py-4 flex justify-between items-center transition-colors duration-300 ${
-                openSection === "additional" ? "bg-black text-white" : "bg-gray-50 hover:bg-gray-200"
+                openSection === "additional"
+                  ? "bg-black text-white"
+                  : "bg-gray-50 hover:bg-gray-200"
               }`}
             >
               <span className="font-medium text-lg flex items-center space-x-2">
                 <FaBriefcase />
                 <span>Informations supplémentaires</span>
               </span>
-              <span>{openSection === "additional" ? <FaChevronUp /> : <FaChevronDown />}</span>
+              <span>
+                {openSection === "additional" ? (
+                  <FaChevronUp />
+                ) : (
+                  <FaChevronDown />
+                )}
+              </span>
             </button>
             {openSection === "additional" && (
               <div className="px-6 py-4 bg-gray-100">

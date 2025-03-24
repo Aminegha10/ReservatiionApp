@@ -6,8 +6,6 @@ const Footer = () => {
   return (
     <footer
       className="bg-black text-white py-10 font-HeroText"
-      data-aos="fade-up"
-      data-aos-duration="1500"
     >
       <div className="max-w-7xl px-[40px]">
         {/* Logo Section */}

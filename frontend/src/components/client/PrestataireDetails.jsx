@@ -39,7 +39,7 @@ const PrestataireDetails = () => {
   };
   return (
     <>
-      <div className="flex-grow flex mt-4 justify-center items-center ">
+      <div className="flex-1 flex pt-10 justify-center  ">
         <div className="container mx-auto  space-y-2">
           <div className="flex justify-between ">
             <h2 className="text-2xl font-bold mb-4">

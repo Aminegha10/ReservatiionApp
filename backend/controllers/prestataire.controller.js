@@ -1,6 +1,5 @@
 import provider_Model from "../models/prestataire.model.js";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
 // Get One Provider
@@ -110,14 +109,20 @@ export const addProvider = async (req, res) => {
       .json({ successs: false, message: "Complete your from please" });
   }
   try {
+    const providerExist = await provider_Model.findOne({
+      email: req.body.email,
+    });
+    if (providerExist)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email existe déjà" });
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     provider = await provider_Model.create({
       password: hashPassword,
       ...provider,
     });
-    if (provider)
-      return res.status(200).json({ success: true, data: provider });
+    return res.status(200).json({ success: true, data: provider });
     return res
       .status(404)
       .json({ success: true, message: "provider not found" });
@@ -129,18 +134,21 @@ export const addProvider = async (req, res) => {
 //login
 export const loginProvider = async (req, res) => {
   try {
+    //  verificatio n of user in database
     const provider = await provider_Model.findOne({ email: req.body.email });
     if (!provider)
-      return res
-        .status(404)
-        .json({ success: false, message: "Provider not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Email not found. Please check and try again.",
+      });
     const isMatch = await bcrypt.compare(req.body.password, provider.password);
     if (!isMatch)
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid password" });
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect password. Please try again.",
+      });
+    //
     const accesstoken = jwt.sign(req.body, process.env.ACCESS_TOKEN_SECRET);
-    console.log(accesstoken);
     return res.status(200).json({ accesstoken, id: provider._id });
   } catch (error) {
     res.status(500).send(error.message);

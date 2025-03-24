@@ -185,68 +185,70 @@ const CreateCreneau = () => {
   };
 
   return (
-    <div className="border rounded-md p-4 w-full mx-auto max-w-2xl bg-white">
-      <h4 className="text-xl lg:text-2xl font-semibold">Select Your Days</h4>
-      <div>
-        <form onSubmit={handleSubmit}>
-          {daysOfWeekOptions.map((day, index) => (
-            <div
-              key={index}
-              className="flex items-center bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3 hover:bg-indigo-300"
-            >
-              <input
-                type="checkbox"
-                name="days"
-                checked={selectedDays.some((item) => item.day === day)}
-                onChange={() => handleCheckboxChange(day)}
-                className="mr-2"
-              />
-              <i className="mr-4">{day}</i>
-              {selectedDays.some((item) => item.day === day) && (
-                <div className="flex items-center space-x-2 ml-auto">
-                  <input
-                    type="time"
-                    required
-                    value={
-                      selectedDays.find((item) => item.day === day)
-                        ?.startTime || ""
-                    }
-                    onChange={(e) =>
-                      handleTimeChange(day, "startTime", e.target.value)
-                    }
-                    className="border rounded px-2 py-1"
-                  />
-                  <span>to</span>
-                  <input
-                    type="time"
-                    required
-                    value={
-                      selectedDays.find((item) => item.day === day)?.endTime ||
-                      ""
-                    }
-                    onChange={(e) =>
-                      handleTimeChange(day, "endTime", e.target.value)
-                    }
-                    className="border rounded px-2 py-1"
-                    min={
-                      selectedDays.find((item) => item.day === day)
-                        ?.startTime || ""
-                    }
-                  />
-                </div>
-              )}
+    <div className="flex justify-center flex-1 items-center">
+      <div className="border rounded-md p-4  w-[40%] bg-white">
+        <h4 className="text-xl lg:text-2xl font-semibold">Select Your Days</h4>
+        <div>
+          <form onSubmit={handleSubmit}>
+            {daysOfWeekOptions.map((day, index) => (
+              <div
+                key={index}
+                className="flex items-center bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3 hover:bg-indigo-300"
+              >
+                <input
+                  type="checkbox"
+                  name="days"
+                  checked={selectedDays.some((item) => item.day === day)}
+                  onChange={() => handleCheckboxChange(day)}
+                  className="mr-2"
+                />
+                <i className="mr-4">{day}</i>
+                {selectedDays.some((item) => item.day === day) && (
+                  <div className="flex items-center space-x-2 ml-auto">
+                    <input
+                      type="time"
+                      required
+                      value={
+                        selectedDays.find((item) => item.day === day)
+                          ?.startTime || ""
+                      }
+                      onChange={(e) =>
+                        handleTimeChange(day, "startTime", e.target.value)
+                      }
+                      className="border rounded px-2 py-1"
+                    />
+                    <span>to</span>
+                    <input
+                      type="time"
+                      required
+                      value={
+                        selectedDays.find((item) => item.day === day)
+                          ?.endTime || ""
+                      }
+                      onChange={(e) =>
+                        handleTimeChange(day, "endTime", e.target.value)
+                      }
+                      className="border rounded px-2 py-1"
+                      min={
+                        selectedDays.find((item) => item.day === day)
+                          ?.startTime || ""
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="mt-4">
+              <Button type="submit">Create Creneau</Button>
             </div>
-          ))}
-          <div className="mt-4">
-            <Button type="submit">Create Creneau</Button>
-          </div>
-        </form>
-      </div>
-      <div className="mt-4">
+          </form>
+        </div>
+        {/* <div className="mt-4">
         <h5 className="font-semibold">Selected Days and Times:</h5>
         <pre className="bg-gray-100 p-2 rounded">
           {JSON.stringify(selectedDays, null, 2)}
         </pre>
+      </div> */}
       </div>
     </div>
   );

@@ -7,10 +7,8 @@ import {
   useGetAllServicesQuery,
 } from "@/app/services/servicesApi.js";
 import { FaEdit, FaEye, FaEyeDropper, FaTrashAlt } from "react-icons/fa";
-import { useToast } from "@/hooks/use-toast";
-
+import { toast } from "react-toastify";
 const Services = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const prestataireId = localStorage.getItem("prestataireId");
 
@@ -26,14 +24,12 @@ const Services = () => {
   const handleDeleteService = async (id) => {
     try {
       await deleteService(id).unwrap();
-      toast({
-        style: { backgroundColor: "red", color: "white" },
-        description: "Votre service a été supprimé",
+      toast.success("Service supprimé avec succès ! 🗑️", {
+        position: "bottom-right",
       });
     } catch (err) {
-      toast({
-        style: { backgroundColor: "red", color: "white" },
-        description: err.message,
+      toast.error(err.data.message, {
+        position: "bottom-right",
       });
     }
   };
@@ -47,15 +43,17 @@ const Services = () => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5 w-full ">
       {isLoading ? (
         <HomeLoading />
       ) : isError ? (
         <div className="text-center text-red-600">Erreur : {error.message}</div>
       ) : (
-        <div className="overflow-hidden rounded-lg bg-white shadow-md">
+        <div className="overflow-hidden w-4xl rounded-lg bg-white shadow-md">
           <div className="flex flex-col md:flex-row justify-between items-center py-4 px-5 border-b border-gray-200">
-            <h5 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Services</h5>
+            <h5 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">
+              Services
+            </h5>
             <div className="flex flex-col md:flex-row gap-2">
               <Button
                 onClick={handleAddService}
@@ -63,10 +61,12 @@ const Services = () => {
               >
                 Ajouter un service
               </Button>
-              <Button className="bg-gray-300 text-gray-800 w-full md:w-auto">Voir tout</Button>
+              <Button className="bg-gray-300 text-gray-800 hover:text-white w-full md:w-auto">
+                Voir tout
+              </Button>
             </div>
           </div>
-          
+
           <div className="hidden md:block">
             <table className="w-full text-sm text-gray-600">
               <thead className="bg-gray-50">
@@ -117,21 +117,21 @@ const Services = () => {
                             onClick={() =>
                               navigate(`${item.name}/${item._id}/creneaux`)
                             }
-                            className="text-green-600 hover:text-green-800 mx-1"
+                            className="text-green-600 hover:text-green-800 mx-2"
                             title="Voir"
                           >
                             <FaEye className="inline-block h-5 w-5" />
                           </button>
                           <button
                             onClick={() => handleEditService(item)}
-                            className="text-blue-600 hover:text-blue-800 mx-1"
+                            className="text-blue-600 hover:text-blue-800 mx-2"
                             title="Modifier"
                           >
                             <FaEdit className="inline-block h-5 w-5" />
                           </button>
                           <button
                             onClick={() => handleDeleteService(item._id)}
-                            className="text-red-600 hover:text-red-800 mx-1"
+                            className="text-red-600 hover:text-red-800 mx-2"
                             title="Supprimer"
                           >
                             <FaTrashAlt className="inline-block h-5 w-5" />
@@ -156,19 +156,27 @@ const Services = () => {
               services.map((item) => (
                 <div key={item._id} className="border-b border-gray-200 p-4">
                   <div className="mb-2">
-                    <th className="text-left font-semibold text-gray-600">Nom:</th>
+                    <th className="text-left font-semibold text-gray-600">
+                      Nom:
+                    </th>
                     <td className="pl-2">{item.name || "vide"}</td>
                   </div>
                   <div className="mb-2">
-                    <th className="text-left font-semibold text-gray-600">Description:</th>
+                    <th className="text-left font-semibold text-gray-600">
+                      Description:
+                    </th>
                     <td className="pl-2">{item.description || "vide"}</td>
                   </div>
                   <div className="mb-2">
-                    <th className="text-left font-semibold text-gray-600">Catégorie:</th>
+                    <th className="text-left font-semibold text-gray-600">
+                      Catégorie:
+                    </th>
                     <td className="pl-2">{item.category || "vide"}</td>
                   </div>
                   <div className="mb-2">
-                    <th className="text-left font-semibold text-gray-600">Prix:</th>
+                    <th className="text-left font-semibold text-gray-600">
+                      Prix:
+                    </th>
                     <td className="pl-2">{item.price || "vide"}</td>
                   </div>
                   <div className="flex justify-end mt-2">

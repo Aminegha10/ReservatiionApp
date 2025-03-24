@@ -105,10 +105,10 @@ export function NavBar() {
     if (isLoading) {
       return <NavBarLoading />;
     }
-  
+
     const profileRoute =
       type === "prestataire" ? "/prestataire/profile" : "/client/profile";
-  
+
     const additionalItems =
       type === "prestataire" ? (
         <>
@@ -134,12 +134,12 @@ export function NavBar() {
           </DropdownMenuItem>
         </>
       );
-  
+
     const notifications = user?.notifications || [];
     const unreadNotifications = notifications.filter(
       (noti) => noti.isRead === false
     );
-  
+
     return (
       <>
         <DropdownMenu>
@@ -171,11 +171,15 @@ export function NavBar() {
                 >
                   <span>
                     {type === "prestataire"
-                      ? `${notif.reservation?.clientId?.nom || ''} ${notif.reservation?.clientId?.prenom || ''} a réservé`
-                      : `${notif.reservation?.prestataireId?.nom || ''} ${notif.reservation?.prestataireId?.prenom || ''} a confirmé votre réservation pour`}
+                      ? `${notif.reservation?.clientId?.nom || ""} ${
+                          notif.reservation?.clientId?.prenom || ""
+                        } a réservé`
+                      : `${notif.reservation?.prestataireId?.nom || ""} ${
+                          notif.reservation?.prestataireId?.prenom || ""
+                        } a confirmé votre réservation pour`}
                   </span>
                   <Badge variant="secondary" className="mt-1">
-                    {notif.reservation?.serviceId?.name || 'Service inconnu'}
+                    {notif.reservation?.serviceId?.name || "Service inconnu"}
                   </Badge>
                   {type === "prestataire" && (
                     <Badge variant="outline" className="mt-1">
@@ -184,7 +188,7 @@ export function NavBar() {
                   )}
                   <Badge variant="outline" className="mt-1">
                     <HiClock className="mr-1" />
-                    {notif.timeAgo || ''}
+                    {notif.timeAgo || ""}
                   </Badge>
                 </DropdownMenuItem>
               ))
@@ -205,19 +209,21 @@ export function NavBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
-              <AvatarImage src={avatarPicture} alt="@shadcn" />
+              <AvatarImage src={user.imageProfile} alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              <span className="block text-sm font-medium">{`${user?.nom || ''} ${user?.prenom || ''}`}</span>
+              <span className="block text-sm font-medium">{`${
+                user?.nom || ""
+              } ${user?.prenom || ""}`}</span>
               <span className="block text-xs text-muted-foreground">
-                {user?.email || ''}
+                {user?.email || ""}
               </span>
               {type === "prestataire" && (
                 <span className="block text-xs font-medium text-blue-500">
-                  {user?.Service || ''}
+                  {user?.Service || ""}
                 </span>
               )}
             </DropdownMenuLabel>
@@ -235,16 +241,15 @@ export function NavBar() {
       </>
     );
   };
-  
 
   const renderGuestDropdown = () => (
     <div className="flex space-x-2">
-      <Button variant="outline">
-        <Link to="client/login">Client</Link>
-      </Button>
-      <Button>
-        <Link to="prestataire/login">Prestataire</Link>
-      </Button>
+      <Link to="client/login">
+        <Button variant="outline">Client</Button>
+      </Link>
+      <Link to="prestataire/login">
+        <Button>Prestataire</Button>
+      </Link>
     </div>
   );
 
@@ -259,15 +264,13 @@ export function NavBar() {
             <div className="hidden md:flex space-x-4">
               <Link to="/work">
                 <Button variant="ghost" className="flex items-center">
-                  <FaRegQuestionCircle className="mr-1" />{" "}
-                  Comment ça marche
+                  <FaRegQuestionCircle className="mr-1" /> Comment ça marche
                 </Button>
               </Link>
 
               <Link to="/about">
                 <Button variant="ghost" className="flex items-center">
-                  <FaInfoCircle className="mr-1" />
-                  À propos
+                  <FaInfoCircle className="mr-1" />À propos
                 </Button>
               </Link>
             </div>

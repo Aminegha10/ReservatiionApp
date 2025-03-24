@@ -11,8 +11,12 @@ export const addService = async (req, res) => {
       .json({ success: false, message: "Veuillez remplir tous les champs" });
   }
   try {
+    const serviceExisted = await Services_Model.findOne({ name: service.name });
+    if (serviceExisted)
+      return res
+        .status(400)
+        .json({ success: true, message: "Service deja existé" });
     const newService = await Services_Model.create(service);
-    console.log(newService);
     // 2. Find the provider (prestataire) by ID
     const provider = await providers_Model.findById(prestataire);
     console.log(provider);
@@ -62,11 +66,18 @@ export const getAllServices = async (req, res) => {
     res.status(500).send({ success: false, message: error.message });
   }
 };
-// Delete all services
+// Delete Service
 export const DeleteService = async (req, res) => {
   try {
     const service = await Services_Model.findByIdAndDelete(req.params.id);
-    if (service) return res.status(200).json(service);
+    if (service)
+      console.log(service)
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Service" + service.name + " supprimé avec succès ! 🗑️",
+        });
     return res
       .status(404)
       .json({ success: true, message: "services is Empty" });
@@ -74,9 +85,18 @@ export const DeleteService = async (req, res) => {
     res.status(500).send({ success: false, message: error.message });
   }
 };
-// Delete all services
+// Edit Service
 export const editService = async (req, res) => {
   try {
+    const serviceExisted = await Services_Model.findOne({
+      name: req.body.name,
+    });
+    if (serviceExisted)
+      if (serviceExisted.description != req.body.description) {
+        return res
+          .status(400)
+          .json({ success: true, message: "Service deja existé" });
+      }
     const serviceUpdated = await Services_Model.findByIdAndUpdate(
       req.params.serviceId,
       req.body,
@@ -87,7 +107,7 @@ export const editService = async (req, res) => {
     if (serviceUpdated) return res.status(200).json(serviceUpdated);
     return res
       .status(404)
-      .json({ success: true, message: "services is not found" });
+      .json({ success: true, message: "Service n'exite pas" });
   } catch (error) {
     res.status(500).send({ success: false, message: error.message });
   }

@@ -16,7 +16,7 @@ import {
 // Create endpoint to add a new user
 router
   .post("/login", loginProvider)
-  .get("/:id", getOneProvider)
+  .get("/:id",getOneProvider)
   .post("/create", addProvider)
   .delete("/:id", DeleteProvider)
   .get("/", getAllProviders)

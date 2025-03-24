@@ -10,6 +10,12 @@ const clientShema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageProfile: {
+      type: String,
+      required: true,
+      default:
+        "https://res.cloudinary.com/dkt1t22qc/image/upload/v1742640436/chkcosteswyux6y6zgk8.jpg",
+    },
     password: {
       type: String,
       required: true,

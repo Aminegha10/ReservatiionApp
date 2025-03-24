@@ -61,7 +61,7 @@ const Crenaux = () => {
         <div>Error: {error.data}</div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-lg bg-white border  border-gray-200 shadow-md m-5">
+          <div className="flex-1 h-full overflow-hidden rounded-lg bg-white border  border-gray-200 shadow-md m-5">
             <div className="flex justify-between py-3 px-3">
               <h5 className="text-2xl font-medium pl-5 text-gray-900">
                 Crenaux de travail
@@ -118,19 +118,19 @@ const Crenaux = () => {
                           <th className=" text-center gap-3 px-20 py-4 font-normal text-gray-900">
                             {item.day}
                           </th>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-20 py-1 text-xs font-semibold text-green-600">
+                          <td className="px-6 py-4 text-center">
+                            <span className="inline-flex items-center justify-center gap-1 rounded-full bg-green-50 px-20 py-1 text-xs font-semibold text-green-600">
                               <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
                               {item.startTime}
                             </span>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-20 py-1 text-xs font-semibold text-red-600">
                               {item.endTime}
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex justify-end gap-4">
+                            <div className="flex justify-center gap-4">
                               <span
                                 onClick={() => handlDeleteCrenau(item._id)}
                                 className="text-red-600 cursor-pointer"
@@ -185,8 +185,8 @@ const Crenaux = () => {
                   })
                 ) : (
                   <>
-                    <tr className="hover:bg-gray-50 ">
-                      There is No Creneau Here
+                    <tr className="hover:bg-gray-50  h-48 flex justify-center items-center ">
+                      <td className="row-span-3"> There is No Creneau Here</td>
                     </tr>
                   </>
                 )}

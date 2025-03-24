@@ -112,11 +112,11 @@ const Creneaux = () => {
     }
   };
   return (
-    <div className="pb-8 relative">
+    <div className="pb-8 pt-10 relative">
       {isSelected.length > 0 && (
         <Button
           onClick={handleaddReservation}
-          className={`absolute bottom-0 bg-green-500 hover:bg-green-400 right-0`}
+          className={`absolute bottom-20 bg-green-500 hover:bg-green-400 right-0`}
         >
           Soumettre les réservations
         </Button>
@@ -222,10 +222,11 @@ const Creneaux = () => {
                                 className="text-xl font-bold tracking-tight"
                                 id="page-action.heading"
                               >
-                                Supprimer John Doe
+                                Confirmer le rendez-vous
                               </h2>
                               <p className="text-gray-500">
-                                Êtes-vous sûr de vouloir faire cela ?
+                                Êtes-vous sûr de vouloir confirmer ce
+                                rendez-vous ?
                               </p>
                             </div>
                           </div>

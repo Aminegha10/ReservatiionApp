@@ -52,27 +52,31 @@ export const Welcome = ({ isPrestataire }) => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-md">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>{steps[currentStep].title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">{steps[currentStep].content}</p>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button
-            onClick={handlePrevious}
-            disabled={currentStep === 0}
-            variant="outline"
-          >
-            Précédent
-          </Button>
-          <Button onClick={handleNext}>
-            {currentStep === steps.length - 1 ? "Terminer" : "Suivant"}
-          </Button>
-        </CardFooter>
-      </Card>
+    <div className="flex-1 flex items-center justify-center">
+      <div className="container  py-4 max-w-md ">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>{steps[currentStep].title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {steps[currentStep].content}
+            </p>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button
+              onClick={handlePrevious}
+              disabled={currentStep === 0}
+              variant="outline"
+            >
+              Précédent
+            </Button>
+            <Button onClick={handleNext}>
+              {currentStep === steps.length - 1 ? "Terminer" : "Suivant"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 };

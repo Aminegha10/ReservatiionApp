@@ -8,6 +8,11 @@ const providers_Schema = new mongoose.Schema(
       required: true,
     },
     password: { type: String, required: true },
+    imageProfile: {
+      type: String,
+      required: true,
+      default: "https://commons.wikimedia.org/wiki/File:Default_pfp.jpg",
+    },
     prenom: {
       type: String,
       required: true,

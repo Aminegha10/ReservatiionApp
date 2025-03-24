@@ -11,7 +11,11 @@ import { FaMapLocationDot, FaRegStar } from "react-icons/fa6";
 
 const GetPrestataires = () => {
   const navigate = useNavigate();
-  const { data: prestataires, isLoading, error } = useGetPrestatairesQuery(localStorage.getItem("prestataireId"));
+  const {
+    data: prestataires,
+    isLoading,
+    error,
+  } = useGetPrestatairesQuery(localStorage.getItem("prestataireId"));
   const [searchQuery, setSearchQuery] = useState("");
   const [addFavorite] = useAddFavoriteMutation();
   const { toast } = useToast();
@@ -54,21 +58,25 @@ const GetPrestataires = () => {
   };
 
   const filteredPrestataires = prestataires?.filter((prestataire) => {
-    const addressMatch = prestataire.adresse?.toLowerCase().includes(searchQuery);
+    const addressMatch = prestataire.adresse
+      ?.toLowerCase()
+      .includes(searchQuery);
     const serviceMatch = prestataire.services?.some((service) =>
       service.name?.toLowerCase().includes(searchQuery)
     );
     const creneauxMatch = prestataire.services?.some((service) =>
       service.creneaux?.some((creneau) =>
-        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`.toLowerCase().includes(searchQuery)
+        `${creneau.date} ${creneau.debutHeure} ${creneau.finHeure}`
+          .toLowerCase()
+          .includes(searchQuery)
       )
     );
     return addressMatch || serviceMatch || creneauxMatch;
   });
 
   return (
-    <div className="flex-grow flex mt-4 justify-center items-center">
-      <div className="container mx-auto space-y-2">
+    <div className="pt-10 flex-1">
+      <div className="container  mx-auto space-y-2">
         <div className="flex justify-between gap-4 md:gap-16">
           <div className="flex w-full space-x-2">
             <Button type="submit">Prestataires</Button>
@@ -107,7 +115,7 @@ const GetPrestataires = () => {
                   navigate(`${prestataire.nom}`, { state: prestataire });
                 }}
                 key={prestataire._id}
-                className="transition-transform transform hover:scale-105 bg-white rounded-lg shadow-md overflow-hidden group"
+                className="transition-all transform hover:scale-105 cursor-pointer bg-white rounded-lg shadow-md overflow-hidden group"
               >
                 <div className="relative">
                   <FaRegStar
@@ -120,7 +128,7 @@ const GetPrestataires = () => {
                   <div className="p-4">
                     <div className="flex items-center space-x-3">
                       <img
-                        src="https://tailwindcss.com/img/jonathan.jpg"
+                        src={prestataire.imageProfile}
                         alt={prestataire.prenom}
                         className="rounded-full w-16 h-16 object-cover"
                       />
@@ -128,7 +136,9 @@ const GetPrestataires = () => {
                         <h2 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600">
                           {prestataire.prenom} {prestataire.nom}
                         </h2>
-                        <p className="text-sm text-gray-500">{prestataire.email}</p>
+                        <p className="text-sm text-gray-500">
+                          {prestataire.email}
+                        </p>
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
@@ -137,7 +147,9 @@ const GetPrestataires = () => {
                     </p>
 
                     <div className="mt-4 space-x-2">
-                      <span className="text-xs font-medium text-gray-700">Services</span>
+                      <span className="text-xs font-medium text-gray-700">
+                        Services
+                      </span>
                       {prestataire.services?.map((service) => (
                         <span
                           key={service._id}
@@ -150,11 +162,17 @@ const GetPrestataires = () => {
 
                     <div className="mt-4 flex space-x-4">
                       <span className="flex flex-col items-center justify-center">
-                        <span className="text-lg font-semibold text-gray-700">4.6K</span>
-                        <span className="text-sm text-gray-500">Commentaires</span>
+                        <span className="text-lg font-semibold text-gray-700">
+                          4.6K
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          Commentaires
+                        </span>
                       </span>
                       <span className="flex flex-col items-center justify-center">
-                        <span className="text-lg font-semibold text-gray-700">1.2K</span>
+                        <span className="text-lg font-semibold text-gray-700">
+                          1.2K
+                        </span>
                         <span className="text-sm text-gray-500">Partages</span>
                       </span>
                     </div>
