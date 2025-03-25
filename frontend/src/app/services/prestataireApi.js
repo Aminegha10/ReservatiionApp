@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const prestataireApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/prestataires", // Ensure this is correct for your environment
+    baseUrl: "https://reservatiion-app-vhze.vercel.app/", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
     getPrestataires: builder.query({
