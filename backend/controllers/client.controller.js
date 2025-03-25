@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ClientModel from "../models/client.model.js";
 const secret_key = process.env.ACCESS_TOKEN_SECRET;
