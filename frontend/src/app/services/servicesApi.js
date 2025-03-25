@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const servicesApi = createApi({
   reducerPath: "servicesApi", // Unique reducer path
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/", // Ensure this is correct
+    baseUrl: "https://reservatiion-app-vhze.vercel.app/", // Ensure this is correct
   }),
   tagTypes: ["Service", "Prestataire"], // Shared tag types
   endpoints: (builder) => ({
