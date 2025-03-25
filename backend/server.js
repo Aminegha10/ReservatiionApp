@@ -18,7 +18,7 @@ const server = http.createServer(app); // Create HTTP server
 
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow all origins or restrict to specific ones
+    origin: "https://reservatiionappfront.vercel.app/", // Allow all origins or restrict to specific ones
     methods: ["GET", "POST"],
   },
 }); 
