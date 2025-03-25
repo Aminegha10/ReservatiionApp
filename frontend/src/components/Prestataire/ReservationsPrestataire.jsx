@@ -23,7 +23,7 @@ import { FaListCheck } from "react-icons/fa6";
 import { useToast } from "@/hooks/use-toast";
 import { io } from "socket.io-client";
 import { useCreateNotificationMutation } from "@/app/services/clientApi";
-const socket = io("http://localhost:5000"); // Remplacez par l'adresse de votre serveur
+const socket = io("https://reservatiion-app-vhze.vercel.app/"); // Remplacez par l'adresse de votre serveur
 
 const Reservations = () => {
   const {
