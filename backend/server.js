@@ -21,7 +21,7 @@ const io = new Server(server, {
     origin: "*", // Allow all origins or restrict to specific ones
     methods: ["GET", "POST"],
   },
-});
+}); 
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
@@ -60,7 +60,7 @@ app.use("/api/prestataires", prestataireRoute);
 app.use("/api/services", servicesRoute);
 app.use("/api/creneaux", creneauxRoute);
 app.use("/api/reservationRoute", reservationRoute);
-app.get("api/getHello", (req, res) => {
+app.get("/api/getHello", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
