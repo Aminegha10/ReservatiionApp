@@ -30,7 +30,7 @@ import NavBarLoading from "./NavBarLoading";
 import avatarPicture from "@/assets/avatar.jpg";
 import { FaInfoCircle, FaRegQuestionCircle } from "react-icons/fa";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://reservatiion-app-vhze.vercel.app/");
 
 export function NavBar() {
   const isLoggedIn = useSelector((state) => state.Login.isLoggedIn);
