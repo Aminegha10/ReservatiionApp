@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const favoritesApi = createApi({
   reducerPath: "favoritesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/",
+    baseUrl: "https://reservatiion-app-vhze.vercel.app/",
   }),
   endpoints: (builder) => ({
     // Add favorite
