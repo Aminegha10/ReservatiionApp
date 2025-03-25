@@ -16,6 +16,7 @@ const PORT = process.env.PORT;
 const app = express();
 const server = http.createServer(app); // Create HTTP server
 
+app.use(cors({ origin: "https://reservatiionappfront.vercel.app", credentials: true }));
 const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins or restrict to specific ones
