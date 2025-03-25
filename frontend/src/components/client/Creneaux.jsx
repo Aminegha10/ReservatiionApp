@@ -17,7 +17,7 @@ import { io } from "socket.io-client";
 import { useCreateNotificationMutation } from "@/app/services/prestataireApi";
 import axios from "axios";
 import { useGetOneClientQuery } from "@/app/services/clientApi";
-const socket = io("http://localhost:5000"); // Remplacer par l'adresse de votre serveur
+const socket = io("https://reservatiion-app-vhze.vercel.app/"); // Remplacer par l'adresse de votre serveur
 
 const Creneaux = () => {
   // emailJs
