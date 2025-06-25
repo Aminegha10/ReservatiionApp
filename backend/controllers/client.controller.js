@@ -105,6 +105,40 @@ export const addClient = async (req, res) => {
   }
 };
 
+//update a client
+export const editClient = async (req, res) => {
+  console.log(req.body);
+  const { clientId } = req.params;
+  const updatedFields = req.body;
+  try {
+    const existingClient = await ClientModel.findById(clientId);
+
+    if (!existingClient) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Client introuvable" });
+    }
+
+    const updatedClient = await ClientModel.findByIdAndUpdate(
+      clientId,
+      { $set: updatedFields },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Client mis à jour avec succès",
+      data: updatedClient,
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur : " + error.message,
+    });
+  }
+};
+
 //login client
 export const loginClient = async (req, res) => {
   try {

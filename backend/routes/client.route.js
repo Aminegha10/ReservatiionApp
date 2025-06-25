@@ -17,6 +17,7 @@ import {
   addReservation,
   createNotification,
   readNotifications,
+  editClient,
 } from "../controllers/client.controller.js";
 
 // Create endpoint to add a new user
@@ -26,6 +27,7 @@ router
   .get("/:id", getOneClient)
   .post("/create", addClient)
   .delete("/:id", deleteClient)
+  .put("/Edit/:clientId", editClient)
   .post("/:clientId/favorites", addFavorite)
   .get("/:clientId/favorites", getAllFavorite)
   .delete("/:clientId/favorites", removeFavorite)

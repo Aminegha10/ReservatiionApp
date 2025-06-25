@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Prestataire from "./pages/Prestataire/Prestataire";
 import Home from "./pages/home/Home";
 import Client from "./pages/client/Client";
-
 import AddCreneau from "@/components/Prestataire/AddCreneau";
 import ProtectedRoutes from "@/pages/ProtectedRoutes.jsx";
 import { NavBar } from "@/components/NavBar";
@@ -17,7 +16,6 @@ import Services from "@/components/Prestataire/Services";
 import CreateCreneau from "@/components/Prestataire/CreateCreneau";
 import GetPrestataires from "@/components/client/GetPrestataires";
 import Historique from "@/components/client/Historique";
-import FavoritesList from "@/components/client/FavoriteList";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import PrestataireDetails from "@/components/client/PrestataireDetails";
@@ -67,7 +65,7 @@ export default function App() {
       <div className="font-HeroText flex flex-col min-h-screen">
         <NavBar className="" />
 
-        <div className="flex flex-1 md:px-[40px] px-4">
+        <div className="flex flex-1 md:px-[40px] px-4 justify-center">
           <Routes path="/">
             <Route index element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -160,7 +158,6 @@ export default function App() {
                   <Route path=":name/creneaux" element={<Creneaux />} />
                 </Route>
                 <Route path="reservations" element={<Reservations />} />
-                <Route path="favorites" element={<FavoritesList />} />
                 <Route path="historique" element={<Historique />} />
                 <Route path="profile" element={<ClientProfile />} />
               </Route>

@@ -209,7 +209,7 @@ export function NavBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
-              <AvatarImage src={user.imageProfile} alt="@shadcn" />
+              <AvatarImage className="object-cover cursor-pointer" src={user.imageProfile} alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -259,7 +259,7 @@ export function NavBar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link to="/">
-              <img src={logo} className="h-16 py-2 mx-3 w-auto" alt="Logo" />
+              <img src={logo} className="h-16 py-2 mx-3 w-auto " alt="Logo" />
             </Link>
             <div className="hidden md:flex space-x-4">
               <Link to="/work">

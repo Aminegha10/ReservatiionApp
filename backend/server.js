@@ -4,6 +4,8 @@ import clientRoute from "./routes/client.route.js";
 import servicesRoute from "./routes/services.js";
 import creneauxRoute from "./routes/creneaux.js";
 import reservationRoute from "./routes/reservation.js";
+import favoritesRoute from "./routes/favorites.js";
+
 import dotenv from "dotenv";
 import { connectWithMongoDB } from "./config/db.js";
 import cors from "cors";
@@ -16,12 +18,12 @@ const PORT = process.env.PORT;
 const app = express();
 const server = http.createServer(app); // Create HTTP server
 
-app.use(cors({ origin: "https://reservatiionappfront.vercel.app", credentials: true }));
 const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins or restrict to specific ones
+    methods: ["GET", "POST"],
   },
-}); 
+});
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
@@ -63,6 +65,7 @@ app.use("/api/reservationRoute", reservationRoute);
 app.get("/api/getHello", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
+app.use("/api/favorites", favoritesRoute);
 
 //client routes middleware
 app.use("/api/clients", clientRoute);

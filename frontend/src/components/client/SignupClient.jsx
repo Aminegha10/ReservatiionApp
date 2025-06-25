@@ -150,12 +150,12 @@ const SignupClient = ({ addClient, setSignIn }) => {
         </form>
         <div className="border-b border-gray-500 py-1"></div>
         <div className="mt-4 text-sm flex justify-between items-center container-mr">
-          <p className="mr-3 md:mr-0 ">Si vous avez déjà un compte..</p>
+          <p className="mr-3 md:mr-0 ">If you already have an account..</p>
           <button
             onClick={() => setSignIn(true)}
             className="hover:border register text-white bg-[#000] hover:border-gray-400 rounded-xl py-2 px-5 hover:scale-110 hover:bg-[#002c7424] font-semibold duration-300"
           >
-            Se connecter
+            Login
           </button>
         </div>
       </div>

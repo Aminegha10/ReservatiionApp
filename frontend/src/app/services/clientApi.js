@@ -3,9 +3,18 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const clientApi = createApi({
   reducerPath: "clientApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://reservatiion-app-vhze.vercel.app/", // Ensure this is correct for your environment
+    baseUrl: "http://localhost:5000/api/clients", // Ensure this is correct for your environment
   }),
   endpoints: (builder) => ({
+    EditClient: builder.mutation({
+      query: ({ clientId, data }) => ({
+        url: `Edit/${clientId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Clients"], // Invalidates Clients cache
+    }),
+
     getClients: builder.query({
       query: () => ({
         url: "/",
@@ -20,7 +29,7 @@ export const clientApi = createApi({
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token to headers as Bearer token
         },
       }),
-      providesTags: ["Notifications"], // Invalidates Notifications cache
+      providesTags: ["Notifications", "Clients"], // Invalidates Notifications cache
     }),
     createClient: builder.mutation({
       query: (data) => ({
@@ -88,4 +97,5 @@ export const {
   useDeleteHistoriqueMutation,
   useReadNotificationsClientMutation,
   useCreateNotificationMutation,
+  useEditClientMutation,
 } = clientApi;

@@ -4,13 +4,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const favoritesApi = createApi({
   reducerPath: "favoritesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://reservatiion-app-vhze.vercel.app/",
+    baseUrl: "http://localhost:5000/api/",
   }),
   endpoints: (builder) => ({
     // Add favorite
     addFavorite: builder.mutation({
       query: ({ clientId, prestataireId }) => ({
-        url: `clients/${clientId}/favorites`,
+        url: `favorites/${clientId}`,
         method: "POST",
         body: { prestataireId },
       }),
@@ -20,7 +20,7 @@ export const favoritesApi = createApi({
     // Remove favorite
     removeFavorite: builder.mutation({
       query: ({ clientId, prestataireId }) => ({
-        url: `clients/${clientId}/favorites`,
+        url: `favorites/${clientId}`,
         method: "DELETE",
         body: { prestataireId },
       }),
@@ -29,7 +29,7 @@ export const favoritesApi = createApi({
 
     // Get all favorites for a client
     getAllFavorites: builder.query({
-      query: (clientId) => `clients/${clientId}/favorites`,
+      query: (clientId) => `favorites/${clientId}`,
       providesTags: ["Favorites"],
     }),
   }),
